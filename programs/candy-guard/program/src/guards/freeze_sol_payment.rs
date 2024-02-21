@@ -1,7 +1,7 @@
 use super::*;
 
 use anchor_lang::AccountsClose;
-use mpl_candy_machine_core::{AccountVersion, CandyMachine};
+use mpl_candy_machine_core_asset::{AccountVersion, CandyMachine};
 use mpl_token_metadata::{
     accounts::{Metadata, TokenRecord},
     instructions::{

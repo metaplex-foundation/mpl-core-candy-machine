@@ -138,7 +138,7 @@ export function setCollection(
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+    'CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J'
   );
 
   // Accounts.

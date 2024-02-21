@@ -223,6 +223,12 @@ const defaultsToSplAssociatedTokenProgram = () =>
     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
   );
 
+const defaultsToCandyMachineAssetProgram = () =>
+  k.programDefault(
+    "mplCandyMachine",
+    "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
+  );
+
 // Automatically recognize account default values.
 kinobi.update(
   new k.SetInstructionAccountDefaultValuesVisitor([
@@ -343,6 +349,16 @@ kinobi.update(
         splAtaProgram: { defaultsTo: defaultsToSplAssociatedTokenProgram() },
       },
     },
+    "mplCandyGuard.wrap": {
+      accounts: {
+        candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
+      }
+    },
+    "mplCandyGuard.unwrap": {
+      accounts: {
+        candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
+      }
+    },
     "mplCandyGuard.mint": {
       internal: true,
       args: {
@@ -357,6 +373,7 @@ kinobi.update(
             "candyMachineAuthorityPda"
           ),
         },
+        candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
     "mplCandyGuard.mintV2": {
@@ -381,6 +398,7 @@ kinobi.update(
           ),
         },
         splAtaProgram: { defaultsTo: defaultsToSplAssociatedTokenProgram() },
+        candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
     "mplCandyGuard.route": {
@@ -390,6 +408,7 @@ kinobi.update(
       },
       accounts: {
         candyGuard: { defaultsTo: defaultsToCandyGuardPda("candyMachine") },
+        candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
     "mplCandyMachineCore.setCollectionV2": {

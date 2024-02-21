@@ -10,8 +10,8 @@ You can [**read more about Candy Machines in the official Metaplex documentation
 
 This project contains the following programs:
 
-- [Candy Machine Core](./programs/candy-machine-core/README.md) `CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR`
-- [Candy Guard](./programs/candy-guard/README.md) `Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g`
+- [Candy Machine Core Asset](./programs/candy-machine-core/README.md) `CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J`
+- [Candy Guard Asset](./programs/candy-guard/README.md) `CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ`
 
 You will need a Rust version compatible with BPF to compile the program, currently we recommend using Rust 1.68.0.
 

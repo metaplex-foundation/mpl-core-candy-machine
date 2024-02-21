@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use anchor_lang::{prelude::*, solana_program::sysvar, Discriminator};
-use mpl_candy_machine_core::CandyMachine;
+use mpl_candy_machine_core_asset::CandyMachine;
 use solana_program::{instruction::Instruction, program::invoke_signed};
 
 use crate::{
@@ -160,7 +160,7 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
     let candy_guard = &ctx.accounts.candy_guard;
 
     // candy machine mint instruction accounts
-    let mint_accounts = Box::new(mpl_candy_machine_core::cpi::accounts::MintV2 {
+    let mint_accounts = Box::new(mpl_candy_machine_core_asset::cpi::accounts::MintV2 {
         candy_machine: ctx.accounts.candy_machine.to_account_info(),
         authority_pda: ctx.accounts.candy_machine_authority_pda.clone(),
         mint_authority: candy_guard.to_account_info(),
@@ -197,9 +197,9 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
     });
 
     let mint_ix = Instruction {
-        program_id: mpl_candy_machine_core::ID,
+        program_id: mpl_candy_machine_core_asset::ID,
         accounts: mint_metas,
-        data: mpl_candy_machine_core::instruction::MintV2::DISCRIMINATOR.to_vec(),
+        data: mpl_candy_machine_core_asset::instruction::MintV2::DISCRIMINATOR.to_vec(),
     };
 
     // PDA signer for the transaction
@@ -221,7 +221,7 @@ pub struct MintV2<'info> {
     /// Candy Machine program account.
     ///
     /// CHECK: account constraints checked in account trait
-    #[account(address = mpl_candy_machine_core::id())]
+    #[account(address = mpl_candy_machine_core_asset::id())]
     candy_machine_program: AccountInfo<'info>,
 
     /// Candy machine account.
@@ -337,12 +337,12 @@ pub struct MintV2<'info> {
     /// Token Authorization Rules program.
     ///
     /// CHECK: account checked in CPI
-    #[account(address = mpl_candy_machine_core::constants::MPL_TOKEN_AUTH_RULES_PROGRAM)]
+    #[account(address = mpl_candy_machine_core_asset::constants::MPL_TOKEN_AUTH_RULES_PROGRAM)]
     authorization_rules_program: Option<UncheckedAccount<'info>>,
 
     /// Token Authorization rules account for the collection metadata (if any).
     ///
     /// CHECK: account constraints checked in account trait
-    #[account(owner = mpl_candy_machine_core::constants::MPL_TOKEN_AUTH_RULES_PROGRAM)]
+    #[account(owner = mpl_candy_machine_core_asset::constants::MPL_TOKEN_AUTH_RULES_PROGRAM)]
     authorization_rules: Option<UncheckedAccount<'info>>,
 }

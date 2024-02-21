@@ -1226,8 +1226,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "mpl-candy-machine-core"
-version = "3.0.1"
+name = "mpl-candy-machine-core-asset"
+version = "0.0.1"
 dependencies = [
  "anchor-lang",
  "arrayref",

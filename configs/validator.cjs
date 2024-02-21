@@ -13,13 +13,13 @@ module.exports = {
     programs: [
       {
         label: "Candy Machine Core",
-        programId: "CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR",
-        deployPath: getProgram("mpl_candy_machine_core.so"),
+        programId: "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
+        deployPath: getProgram("mpl_candy_machine_core_asset.so"),
       },
       {
         label: "Candy Guard",
-        programId: "Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g",
-        deployPath: getProgram("mpl_candy_guard.so"),
+        programId: "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
+        deployPath: getProgram("mpl_candy_guard_asset.so"),
       },
       {
         label: "Token Metadata",

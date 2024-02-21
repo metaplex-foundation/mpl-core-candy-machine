@@ -1226,13 +1226,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "mpl-candy-guard"
-version = "3.0.0"
+name = "mpl-candy-guard-asset"
+version = "0.0.1"
 dependencies = [
  "anchor-lang",
  "arrayref",
  "mpl-candy-guard-derive",
- "mpl-candy-machine-core",
+ "mpl-candy-machine-core-asset",
  "mpl-token-metadata",
  "solana-gateway",
  "solana-program",
@@ -1250,8 +1250,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "mpl-candy-machine-core"
-version = "3.0.1"
+name = "mpl-candy-machine-core-asset"
+version = "0.0.1"
 dependencies = [
  "anchor-lang",
  "arrayref",

@@ -64,7 +64,7 @@ export function wrap(
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplCandyGuard',
-    'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g'
+    'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ'
   );
 
   // Accounts.
@@ -99,7 +99,7 @@ export function wrap(
   if (!resolvedAccounts.candyMachineProgram.value) {
     resolvedAccounts.candyMachineProgram.value = context.programs.getPublicKey(
       'mplCandyMachine',
-      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+      'CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J'
     );
     resolvedAccounts.candyMachineProgram.isWritable = false;
   }

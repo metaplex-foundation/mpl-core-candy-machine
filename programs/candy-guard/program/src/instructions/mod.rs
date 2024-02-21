@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 pub use initialize::*;
 pub use mint::*;
 pub use mint_v2::*;
-use mpl_candy_machine_core::CandyMachine;
+use mpl_candy_machine_core_asset::CandyMachine;
 pub use route::*;
 pub use set_authority::*;
 pub use unwrap::*;

@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use mpl_candy_machine_core::{
+use mpl_candy_machine_core_asset::{
     cpi::{accounts::SetMintAuthority, set_mint_authority},
     CandyMachine,
 };
@@ -39,6 +39,6 @@ pub struct Unwrap<'info> {
     // candy machine authority
     pub candy_machine_authority: Signer<'info>,
     /// CHECK: account constraints checked in account trait
-    #[account(address = mpl_candy_machine_core::id())]
+    #[account(address = mpl_candy_machine_core_asset::id())]
     pub candy_machine_program: AccountInfo<'info>,
 }

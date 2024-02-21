@@ -1,4 +1,4 @@
-use mpl_candy_machine_core::{constants::MPL_TOKEN_AUTH_RULES_PROGRAM, AccountVersion};
+use mpl_candy_machine_core_asset::{constants::MPL_TOKEN_AUTH_RULES_PROGRAM, AccountVersion};
 use mpl_token_metadata::{
     accounts::{MasterEdition, Metadata, TokenRecord},
     instructions::TransferV1CpiBuilder,

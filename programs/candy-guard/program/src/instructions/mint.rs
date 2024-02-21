@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use anchor_lang::{prelude::*, solana_program::sysvar};
 
-use mpl_candy_machine_core::{AccountVersion, CandyMachine};
+use mpl_candy_machine_core_asset::{AccountVersion, CandyMachine};
 
 use crate::{
     guards::{CandyGuardError, EvaluationContext},
@@ -69,7 +69,7 @@ pub struct Mint<'info> {
     pub candy_guard: Account<'info, CandyGuard>,
 
     /// CHECK: account constraints checked in account trait
-    #[account(address = mpl_candy_machine_core::id())]
+    #[account(address = mpl_candy_machine_core_asset::id())]
     pub candy_machine_program: AccountInfo<'info>,
 
     #[account(mut,constraint = candy_guard.key() == candy_machine.mint_authority)]
