@@ -35,9 +35,9 @@ test('it burns a specific token to allow minting', async (t) => {
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the tokenBurn guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       tokenBurn: some({ mint: tokenMint.publicKey, amount: 1 }),
@@ -51,8 +51,8 @@ test('it burns a specific token to allow minting', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
@@ -91,9 +91,9 @@ test('it allows minting even when the payer is different from the minter', async
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the tokenBurn guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       tokenBurn: some({ mint: tokenMint.publicKey, amount: 1 }),
@@ -107,9 +107,9 @@ test('it allows minting even when the payer is different from the minter', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
@@ -147,9 +147,9 @@ test('it may burn multiple tokens from a specific mint', async (t) => {
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the tokenBurn guard that requires 5 tokens.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       tokenBurn: some({ mint: tokenMint.publicKey, amount: 5 }),
@@ -163,8 +163,8 @@ test('it may burn multiple tokens from a specific mint', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
@@ -202,9 +202,9 @@ test('it fails to mint if there are not enough tokens to burn', async (t) => {
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the tokenBurn guard that requires 2 tokens.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       tokenBurn: some({ mint: tokenMint.publicKey, amount: 2 }),
@@ -218,8 +218,8 @@ test('it fails to mint if there are not enough tokens to burn', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
@@ -257,9 +257,9 @@ test('it charges a bot tax when trying to mint without the required amount of to
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with a botTax guard and a tokenBurn guard that requires 2 tokens.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.1), lastInstruction: true }),
@@ -274,8 +274,8 @@ test('it charges a bot tax when trying to mint without the required amount of to
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),

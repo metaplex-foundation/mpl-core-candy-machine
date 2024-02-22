@@ -6,11 +6,6 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  TokenStandard,
-  TokenStandardArgs,
-  getTokenStandardSerializer,
-} from '@metaplex-foundation/mpl-token-metadata';
 import { PublicKey } from '@metaplex-foundation/umi';
 import {
   Serializer,
@@ -35,9 +30,10 @@ export type CandyMachineAccountData = {
   discriminator: Array<number>;
   /** Version of the account. */
   version: AccountVersion;
-  /** Token standard to mint NFTs. */
-  tokenStandard: TokenStandard;
-  /** Features flags. */
+  /**
+   * Token standard to mint NFTs.
+   * Features flags.
+   */
   features: Array<number>;
   /** Authority address. */
   authority: PublicKey;
@@ -54,9 +50,10 @@ export type CandyMachineAccountData = {
 export type CandyMachineAccountDataArgs = {
   /** Version of the account. */
   version: AccountVersionArgs;
-  /** Token standard to mint NFTs. */
-  tokenStandard: TokenStandardArgs;
-  /** Features flags. */
+  /**
+   * Token standard to mint NFTs.
+   * Features flags.
+   */
   features: Array<number>;
   /** Authority address. */
   authority: PublicKey;
@@ -83,7 +80,6 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
       [
         ['discriminator', array(u8(), { size: 8 })],
         ['version', getAccountVersionSerializer()],
-        ['tokenStandard', getTokenStandardSerializer()],
         ['features', array(u8(), { size: 6 })],
         ['authority', publicKeySerializer()],
         ['mintAuthority', publicKeySerializer()],

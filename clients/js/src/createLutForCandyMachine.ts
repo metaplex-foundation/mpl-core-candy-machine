@@ -1,9 +1,4 @@
 import {
-  MetadataDelegateRole,
-  findCollectionAuthorityRecordPda,
-  findMasterEditionPda,
-  findMetadataDelegateRecordPda,
-  findMetadataPda,
   getMplTokenMetadataProgramId,
 } from '@metaplex-foundation/mpl-token-metadata';
 import {
@@ -20,8 +15,8 @@ import {
   TransactionBuilder,
   uniquePublicKeys,
 } from '@metaplex-foundation/umi';
+import { getMplAssetProgramId } from '@metaplex-foundation/mpl-asset';
 import {
-  AccountVersion,
   fetchCandyMachine,
   getMplCandyMachineCoreProgramId,
 } from './generated';
@@ -55,33 +50,16 @@ export const getLutAddressesForCandyMachine = async (
   const candyMachineAccount = await fetchCandyMachine(context, candyMachine);
   const { mintAuthority, collectionMint } = candyMachineAccount;
   collectionUpdateAuthority ??= context.identity.publicKey;
-  const [collectionAuthorityPda] = findCandyMachineAuthorityPda(context, {
-    candyMachine,
-  });
-  const [delegateRecordV1] = findCollectionAuthorityRecordPda(context, {
-    mint: collectionMint,
-    collectionAuthority: collectionAuthorityPda,
-  });
-  const [delegateRecordV2] = findMetadataDelegateRecordPda(context, {
-    mint: collectionMint,
-    delegateRole: MetadataDelegateRole.Collection,
-    updateAuthority: collectionUpdateAuthority,
-    delegate: collectionAuthorityPda,
-  });
 
   return uniquePublicKeys([
     candyMachine,
     mintAuthority,
     collectionMint,
-    findMetadataPda(context, { mint: collectionMint })[0],
-    findMasterEditionPda(context, { mint: collectionMint })[0],
     collectionUpdateAuthority,
     findCandyMachineAuthorityPda(context, { candyMachine })[0],
-    candyMachineAccount.version === AccountVersion.V1
-      ? delegateRecordV1
-      : delegateRecordV2,
     getSysvar('instructions'),
     getSysvar('slotHashes'),
+    getMplAssetProgramId(context),
     getSplTokenProgramId(context),
     getSplAssociatedTokenProgramId(context),
     getMplTokenMetadataProgramId(context),

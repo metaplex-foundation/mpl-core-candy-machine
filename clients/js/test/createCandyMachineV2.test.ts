@@ -19,13 +19,12 @@ import {
   createCollectionNft,
   createUmi,
   defaultCandyMachineData,
-  METAPLEX_DEFAULT_RULESET,
 } from './_setup';
 
 test('it can create a candy machine using config line settings', async (t) => {
   // Given an existing collection NFT.
   const umi = await createUmi();
-  const collectionMint = await createCollectionNft(umi);
+  const collection = await createCollectionNft(umi);
 
   // When we create a new candy machine with config line settings.
   const candyMachine = generateSigner(umi);
@@ -35,7 +34,7 @@ test('it can create a candy machine using config line settings', async (t) => {
       await createCandyMachineV2(umi, {
         candyMachine,
         tokenStandard: TokenStandard.NonFungible,
-        collectionMint: collectionMint.publicKey,
+        collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
         sellerFeeBasisPoints: percentAmount(1.23),
@@ -62,9 +61,8 @@ test('it can create a candy machine using config line settings', async (t) => {
     publicKey: publicKey(candyMachine),
     authority: publicKey(umi.identity),
     mintAuthority: publicKey(umi.identity),
-    collectionMint: publicKey(collectionMint),
+    collectionMint: publicKey(collection),
     version: AccountVersion.V2,
-    tokenStandard: TokenStandard.NonFungible,
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
@@ -94,7 +92,7 @@ test('it can create a candy machine using config line settings', async (t) => {
 test('it can create a candy machine using hidden settings', async (t) => {
   // Given an existing collection NFT.
   const umi = await createUmi();
-  const collectionMint = await createCollectionNft(umi);
+  const collection = await createCollectionNft(umi);
 
   // When we create a new candy machine with hidden settings.
   const candyMachine = generateSigner(umi);
@@ -104,7 +102,7 @@ test('it can create a candy machine using hidden settings', async (t) => {
       await createCandyMachineV2(umi, {
         candyMachine,
         tokenStandard: TokenStandard.NonFungible,
-        collectionMint: collectionMint.publicKey,
+        collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
         sellerFeeBasisPoints: percentAmount(1.23),
@@ -129,9 +127,8 @@ test('it can create a candy machine using hidden settings', async (t) => {
     publicKey: publicKey(candyMachine),
     authority: publicKey(umi.identity),
     mintAuthority: publicKey(umi.identity),
-    collectionMint: publicKey(collectionMint),
+    collectionMint: publicKey(collection),
     version: AccountVersion.V2,
-    tokenStandard: TokenStandard.NonFungible,
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
@@ -159,7 +156,7 @@ test('it can create a candy machine using hidden settings', async (t) => {
 test('it cannot create a candy machine without hidden or config line settings', async (t) => {
   // Given an existing collection NFT.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
 
   // When we try to create a new candy machine without any settings.
   const candyMachine = generateSigner(umi);
@@ -167,7 +164,7 @@ test('it cannot create a candy machine without hidden or config line settings', 
     .add(
       await createCandyMachineV2(umi, {
         ...defaultCandyMachineData(umi),
-        collectionMint,
+        collection,
         candyMachine,
         configLineSettings: none(),
         hiddenSettings: none(),
@@ -182,7 +179,7 @@ test('it cannot create a candy machine without hidden or config line settings', 
 test('it can create a candy machine of Programmable NFTs', async (t) => {
   // Given an existing collection NFT.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
 
   // When we create a new candy machine using the Programmable NFTs standard.
   const candyMachine = generateSigner(umi);
@@ -191,7 +188,7 @@ test('it can create a candy machine of Programmable NFTs', async (t) => {
       await createCandyMachineV2(umi, {
         ...defaultCandyMachineData(umi),
         candyMachine,
-        collectionMint,
+        collection,
         tokenStandard: TokenStandard.ProgrammableNonFungible,
       })
     )
@@ -205,14 +202,13 @@ test('it can create a candy machine of Programmable NFTs', async (t) => {
   t.like(candyMachineAccount, <CandyMachine>{
     publicKey: publicKey(candyMachine),
     version: AccountVersion.V2,
-    tokenStandard: TokenStandard.ProgrammableNonFungible,
   });
 });
 
 test("it can create a candy machine that's bigger than 10Kb", async (t) => {
   // Given an existing collection NFT.
   const umi = await createUmi();
-  const collectionMint = await createCollectionNft(umi);
+  const collection = await createCollectionNft(umi);
 
   // When we create a new candy machine with a large amount of items.
   const candyMachine = generateSigner(umi);
@@ -223,7 +219,7 @@ test("it can create a candy machine that's bigger than 10Kb", async (t) => {
         candyMachine,
         itemsAvailable: 20000,
         tokenStandard: TokenStandard.NonFungible,
-        collectionMint: collectionMint.publicKey,
+        collection: collection.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -240,75 +236,3 @@ test("it can create a candy machine that's bigger than 10Kb", async (t) => {
   });
 });
 
-test('it can create a candy machine with an explicit rule set', async (t) => {
-  // Given an existing collection NFT.
-  const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
-
-  // When we create a new PNFT candy machine using an explicit rule set.
-  const candyMachine = generateSigner(umi);
-  const metaplexDefaultRuleSet = publicKey(
-    'eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9'
-  );
-  await transactionBuilder()
-    .add(
-      await createCandyMachineV2(umi, {
-        ...defaultCandyMachineData(umi),
-        candyMachine,
-        collectionMint,
-        tokenStandard: TokenStandard.ProgrammableNonFungible,
-        ruleSet: metaplexDefaultRuleSet,
-      })
-    )
-    .sendAndConfirm(umi);
-
-  // Then we expect the candy machine account to store that information.
-  const candyMachineAccount = await fetchCandyMachine(
-    umi,
-    candyMachine.publicKey
-  );
-  t.like(candyMachineAccount, <CandyMachine>{
-    publicKey: publicKey(candyMachine),
-    version: AccountVersion.V2,
-    tokenStandard: TokenStandard.ProgrammableNonFungible,
-    ruleSet: some(metaplexDefaultRuleSet),
-  });
-});
-
-test('it can create a candy machine with an explicit ruleset and hidden settings', async (t) => {
-  // Given an existing collection NFT.
-  const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
-
-  // When we create a new PNFT candy machine with hidden settings using an explicit rule set.
-  const candyMachine = generateSigner(umi);
-  await transactionBuilder()
-    .add(
-      await createCandyMachineV2(umi, {
-        ...defaultCandyMachineData(umi),
-        configLineSettings: none(),
-        hiddenSettings: some({
-          name: 'My NFT #$ID+1$',
-          uri: 'https://example.com/$ID+1$.json',
-          hash: new Uint8Array(Array(32).fill(42)),
-        }),
-        candyMachine,
-        collectionMint,
-        tokenStandard: TokenStandard.ProgrammableNonFungible,
-        ruleSet: METAPLEX_DEFAULT_RULESET,
-      })
-    )
-    .sendAndConfirm(umi);
-
-  // Then we expect the candy machine account to store that information.
-  const candyMachineAccount = await fetchCandyMachine(
-    umi,
-    candyMachine.publicKey
-  );
-  t.like(candyMachineAccount, <CandyMachine>{
-    publicKey: publicKey(candyMachine),
-    version: AccountVersion.V2,
-    tokenStandard: TokenStandard.ProgrammableNonFungible,
-    ruleSet: some(METAPLEX_DEFAULT_RULESET),
-  });
-});

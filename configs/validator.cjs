@@ -12,6 +12,11 @@ module.exports = {
     accountsCluster: "https://api.devnet.solana.com",
     programs: [
       {
+        label: "MPL Asset",
+        programId: "ASSETp3DinZKfiAyvdQG16YWWLJ2X3ZKjg9zku7n1sZD",
+        deployPath: getProgram("mpl_asset.so"),
+      },
+      {
         label: "Candy Machine Core",
         programId: "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
         deployPath: getProgram("mpl_candy_machine_core_asset.so"),

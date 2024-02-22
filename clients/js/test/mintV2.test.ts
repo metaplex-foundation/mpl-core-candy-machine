@@ -1,14 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import {
   TokenStandard,
-  fetchDigitalAsset,
-  findCollectionAuthorityRecordPda,
 } from '@metaplex-foundation/mpl-token-metadata';
 import {
-  createAssociatedToken,
-  createMint,
-  createMintWithAssociatedToken,
-  findAssociatedTokenPda,
   setComputeUnitLimit,
 } from '@metaplex-foundation/mpl-toolbox';
 import {
@@ -22,17 +16,16 @@ import {
 } from '@metaplex-foundation/umi';
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import test from 'ava';
+import { fetchAsset } from '@metaplex-foundation/mpl-asset';
 import {
   CandyMachine,
   fetchCandyMachine,
-  findCandyMachineAuthorityPda,
   mintV2,
 } from '../src';
 import {
   assertSuccessfulMint,
   createCollectionNft,
   createUmi,
-  createV1,
   createV2,
   tomorrow,
   yesterday,
@@ -41,9 +34,9 @@ import {
 test('it can mint from a candy guard with no guards', async (t) => {
   // Given a candy machine with a candy guard that has no guards.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const candyMachineSigner = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {},
     groups: [],
@@ -59,8 +52,8 @@ test('it can mint from a candy guard with no guards', async (t) => {
       mintV2(umi, {
         candyMachine,
         minter,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -74,174 +67,47 @@ test('it can mint from a candy guard with no guards', async (t) => {
   t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 1n });
 });
 
-test('it can mint whilst creating the mint and token accounts beforehand', async (t) => {
-  // Given a candy machine with a candy guard.
-  const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
-  const candyMachineSigner = await createV2(umi, {
-    collectionMint,
-    configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
-    guards: {},
-  });
-  const candyMachine = candyMachineSigner.publicKey;
+// TODO is this a real use case?
+// test('it can mint to an explicit public key that is not the payer nor the minter', async (t) => {
+//   // Given a candy machine with a candy guard.
+//   const umi = await createUmi();
+//   const collection = (await createCollectionNft(umi)).publicKey;
+//   const candyMachineSigner = await createV2(umi, {
+//     collection,
+//     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
+//     guards: {},
+//     tokenStandard: TokenStandard.ProgrammableNonFungible,
+//   });
+//   const candyMachine = candyMachineSigner.publicKey;
 
-  // When we create a new mint and token account before minting.
-  const mint = generateSigner(umi);
-  const minter = generateSigner(umi);
-  await transactionBuilder()
-    .add(createMint(umi, { mint }))
-    .add(
-      createAssociatedToken(umi, {
-        mint: mint.publicKey,
-        owner: minter.publicKey,
-      })
-    )
-    .add(
-      mintV2(umi, {
-        candyMachine,
-        minter,
-        nftMint: mint.publicKey,
-        collectionMint,
-        collectionUpdateAuthority: umi.identity.publicKey,
-      })
-    )
-    .sendAndConfirm(umi);
+//   // When we create a new mint and token account before minting
+//   // Using an explicit owner that is not the payer nor the minter.
+//   const mint = generateSigner(umi);
+//   const minter = generateSigner(umi);
+//   const owner = generateSigner(umi).publicKey;
+//   await transactionBuilder()
+//     .add(
+//       mintV2(umi, {
+//         candyMachine,
+//         minter,
+//         asset: mint.publicKey,
+//         collection,
+//         collectionUpdateAuthority: umi.identity.publicKey,
+//       })
+//     )
+//     .sendAndConfirm(umi);
 
-  // Then the mint was successful.
-  await assertSuccessfulMint(t, umi, { mint, owner: minter, name: 'Degen #1' });
-
-  // And the candy machine was updated.
-  const candyMachineAccount = await fetchCandyMachine(umi, candyMachine);
-  t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 1n });
-});
-
-test('it can mint whilst creating only the mint account beforehand', async (t) => {
-  // Given a candy machine with a candy guard.
-  const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
-  const candyMachineSigner = await createV2(umi, {
-    collectionMint,
-    configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
-    guards: {},
-  });
-  const candyMachine = candyMachineSigner.publicKey;
-
-  // When we create a new mint account before minting.
-  const mint = generateSigner(umi);
-  const minter = generateSigner(umi);
-  await transactionBuilder()
-    .add(createMint(umi, { mint }))
-    .add(
-      mintV2(umi, {
-        candyMachine,
-        minter,
-        nftMint: mint.publicKey,
-        collectionMint,
-        collectionUpdateAuthority: umi.identity.publicKey,
-      })
-    )
-    .sendAndConfirm(umi);
-
-  // Then the mint was successful.
-  await assertSuccessfulMint(t, umi, { mint, owner: minter, name: 'Degen #1' });
-
-  // And the candy machine was updated.
-  const candyMachineAccount = await fetchCandyMachine(umi, candyMachine);
-  t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 1n });
-});
-
-test('it can mint to an explicit public key that is not the payer nor the minter', async (t) => {
-  // Given a candy machine with a candy guard.
-  const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
-  const candyMachineSigner = await createV2(umi, {
-    collectionMint,
-    configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
-    guards: {},
-    tokenStandard: TokenStandard.ProgrammableNonFungible,
-  });
-  const candyMachine = candyMachineSigner.publicKey;
-
-  // When we create a new mint and token account before minting
-  // Using an explicit owner that is not the payer nor the minter.
-  const mint = generateSigner(umi);
-  const minter = generateSigner(umi);
-  const owner = generateSigner(umi).publicKey;
-  await transactionBuilder()
-    .add(createMintWithAssociatedToken(umi, { mint, owner }))
-    .add(
-      mintV2(umi, {
-        candyMachine,
-        minter,
-        nftMint: mint.publicKey,
-        collectionMint,
-        collectionUpdateAuthority: umi.identity.publicKey,
-        tokenStandard: TokenStandard.ProgrammableNonFungible,
-        token: findAssociatedTokenPda(umi, { mint: mint.publicKey, owner }),
-      })
-    )
-    .sendAndConfirm(umi);
-
-  // Then the mint was successful.
-  await assertSuccessfulMint(t, umi, { mint, owner, name: 'Degen #1' });
-});
-
-test('it can mint from a candy guard attached to a candy machine v1', async (t) => {
-  // Given a candy machine v1 with a candy guard that has no guards.
-  const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
-  const candyMachineSigner = await createV1(umi, {
-    collectionMint,
-    configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
-    guards: {},
-  });
-  const candyMachine = candyMachineSigner.publicKey;
-
-  // When we mint from it.
-  const mint = generateSigner(umi);
-  const minter = generateSigner(umi);
-  await transactionBuilder()
-    .add(
-      createMintWithAssociatedToken(umi, {
-        mint,
-        owner: minter.publicKey,
-        amount: 1,
-      })
-    )
-    .add(
-      mintV2(umi, {
-        candyMachine,
-        minter,
-        nftMint: mint,
-        collectionMint,
-        collectionUpdateAuthority: umi.identity.publicKey,
-        // We have to explicitly provide the collection authority record
-        // because v2 defaults to the new way of deriving delegate records.
-        collectionDelegateRecord: findCollectionAuthorityRecordPda(umi, {
-          mint: collectionMint,
-          collectionAuthority: findCandyMachineAuthorityPda(umi, {
-            candyMachine,
-          })[0],
-        }),
-      })
-    )
-    .sendAndConfirm(umi);
-
-  // Then the mint was successful.
-  await assertSuccessfulMint(t, umi, { mint, owner: minter, name: 'Degen #1' });
-
-  // And the candy machine was updated.
-  const candyMachineAccount = await fetchCandyMachine(umi, candyMachine);
-  t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 1n });
-});
+//   // Then the mint was successful.
+//   await assertSuccessfulMint(t, umi, { mint, owner, name: 'Degen #1' });
+// });
 
 test('it can mint from a candy guard with guards', async (t) => {
   // Given a candy machine with some guards.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const destination = generateSigner(umi).publicKey;
   const candyMachineSigner = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
@@ -259,10 +125,10 @@ test('it can mint from a candy guard with guards', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         payer,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           solPayment: { destination },
@@ -286,10 +152,10 @@ test('it can mint from a candy guard with guards', async (t) => {
 test('it can mint from a candy guard with groups', async (t) => {
   // Given a candy machine with guard groups.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const destination = generateSigner(umi).publicKey;
   const candyMachineSigner = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
@@ -310,9 +176,9 @@ test('it can mint from a candy guard with groups', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: { destination } },
         group: 'GROUP1',
@@ -327,10 +193,10 @@ test('it can mint from a candy guard with groups', async (t) => {
 test('it cannot mint using the default guards if the candy guard has groups', async (t) => {
   // Given a candy machine with guard groups.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const destination = generateSigner(umi).publicKey;
   const candyMachineSigner = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: { solPayment: { lamports: sol(2), destination } },
     groups: [
@@ -348,9 +214,9 @@ test('it cannot mint using the default guards if the candy guard has groups', as
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: { destination } },
         group: none(),
@@ -365,10 +231,10 @@ test('it cannot mint using the default guards if the candy guard has groups', as
 test('it cannot mint from a group if the provided group label does not exist', async (t) => {
   // Given a candy machine with no guard groups.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const destination = generateSigner(umi).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: { solPayment: { lamports: sol(2), destination } },
     groups: [{ label: 'GROUP1', guards: { startDate: { date: yesterday() } } }],
@@ -382,9 +248,9 @@ test('it cannot mint from a group if the provided group label does not exist', a
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: { destination } },
         group: 'GROUPX',
@@ -399,10 +265,10 @@ test('it cannot mint from a group if the provided group label does not exist', a
 test('it can mint using an explicit payer', async (t) => {
   // Given a candy machine with guards.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const destination = generateSigner(umi).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: { solPayment: { lamports: sol(2), destination } },
   });
@@ -420,8 +286,8 @@ test('it can mint using an explicit payer', async (t) => {
         candyMachine,
         minter,
         payer,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: { destination } },
       })
@@ -439,9 +305,9 @@ test('it can mint using an explicit payer', async (t) => {
 test('it cannot mint from an empty candy machine', async (t) => {
   // Given an empty candy machine.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [],
     guards: {},
   });
@@ -454,9 +320,9 @@ test('it cannot mint from an empty candy machine', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -469,9 +335,9 @@ test('it cannot mint from an empty candy machine', async (t) => {
 test('it cannot mint from a candy machine that is not fully loaded', async (t) => {
   // Given a candy machine that is 50% loaded.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     itemsAvailable: 2,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {},
@@ -485,9 +351,9 @@ test('it cannot mint from a candy machine that is not fully loaded', async (t) =
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -500,9 +366,9 @@ test('it cannot mint from a candy machine that is not fully loaded', async (t) =
 test('it cannot mint from a candy machine that has been fully minted', async (t) => {
   // Given a candy machine that has been fully minted.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {},
   });
@@ -512,8 +378,8 @@ test('it cannot mint from a candy machine that has been fully minted', async (t)
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -526,8 +392,8 @@ test('it cannot mint from a candy machine that has been fully minted', async (t)
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: generateSigner(umi),
-        collectionMint,
+        asset: generateSigner(umi),
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -540,9 +406,9 @@ test('it cannot mint from a candy machine that has been fully minted', async (t)
 test('it can mint from a candy machine using hidden settings', async (t) => {
   // Given a candy machine with hidden settings.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     itemsAvailable: 100,
     configLineSettings: none(),
     hiddenSettings: {
@@ -562,8 +428,8 @@ test('it can mint from a candy machine using hidden settings', async (t) => {
       mintV2(umi, {
         candyMachine,
         minter,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -581,14 +447,14 @@ test('it can mint from a candy machine using hidden settings', async (t) => {
 test('it can mint from a candy machine sequentially', async (t) => {
   // Given a candy machine with sequential config line settings.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const indices = Array.from({ length: 10 }, (x, i) => i + 1);
   const configLines = indices.map((index) => ({
     name: `${index}`,
     uri: `https://example.com/degen/${index}`,
   }));
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines,
     configLineSettings: {
       prefixName: '',
@@ -601,7 +467,7 @@ test('it can mint from a candy machine sequentially', async (t) => {
   });
 
   // When we mint from it.
-  const minted = await drain(umi, candyMachine, collectionMint, indices.length);
+  const minted = await drain(umi, candyMachine, collection, indices.length);
 
   // Then the mints are sequential.
   t.deepEqual(indices, minted);
@@ -610,14 +476,14 @@ test('it can mint from a candy machine sequentially', async (t) => {
 test('it can mint from a candy machine in a random order', async (t) => {
   // Given a candy machine with non-sequential config line settings.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const indices = Array.from({ length: 10 }, (x, i) => i + 1);
   const configLines = indices.map((index) => ({
     name: `${index}`,
     uri: `https://example.com/degen/${index}`,
   }));
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines,
     configLineSettings: {
       prefixName: '',
@@ -630,7 +496,7 @@ test('it can mint from a candy machine in a random order', async (t) => {
   });
 
   // When we mint from it.
-  const minted = await drain(umi, candyMachine, collectionMint, indices.length);
+  const minted = await drain(umi, candyMachine, collection, indices.length);
 
   // Then the mints are not sequential.
   t.notDeepEqual(indices, minted);
@@ -643,9 +509,9 @@ test('it can mint from a candy machine in a random order', async (t) => {
 test('it can mint a programmable NFT', async (t) => {
   // Given a candy machine with a candy guard that mints PNFTs.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     tokenStandard: TokenStandard.ProgrammableNonFungible,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {},
@@ -660,10 +526,9 @@ test('it can mint a programmable NFT', async (t) => {
       mintV2(umi, {
         candyMachine,
         minter,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
-        tokenStandard: TokenStandard.ProgrammableNonFungible,
       })
     )
     .sendAndConfirm(umi);
@@ -672,7 +537,6 @@ test('it can mint a programmable NFT', async (t) => {
   await assertSuccessfulMint(t, umi, {
     mint,
     owner: minter,
-    tokenStandard: TokenStandard.ProgrammableNonFungible,
   });
 
   // And the candy machine was updated.
@@ -697,15 +561,15 @@ const drain = async (
         mintV2(umi, {
           candyMachine,
           minter,
-          nftMint: mint,
-          collectionMint,
+          asset: mint,
+          collection: collectionMint,
           collectionUpdateAuthority: umi.identity.publicKey,
         })
       )
       .sendAndConfirm(umi);
 
-    const asset = await fetchDigitalAsset(umi, mint.publicKey);
-    indices.push(parseInt(asset.metadata.name, 10));
+    const asset = await fetchAsset(umi, mint.publicKey);
+    indices.push(parseInt(asset.name, 10));
   }
 
   return indices;

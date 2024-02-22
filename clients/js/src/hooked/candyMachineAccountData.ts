@@ -1,11 +1,8 @@
-import { isProgrammable } from '@metaplex-foundation/mpl-token-metadata';
-import { isNone, none, Option, PublicKey } from '@metaplex-foundation/umi';
+import { isNone } from '@metaplex-foundation/umi';
 import {
   array,
   bitArray,
   mapSerializer,
-  option,
-  publicKey,
   Serializer,
   string,
   struct,
@@ -21,7 +18,6 @@ import {
 export type CandyMachineAccountData = BaseCandyMachineAccountData & {
   itemsLoaded: number;
   items: CandyMachineItem[];
-  ruleSet: Option<PublicKey>;
 };
 
 export type CandyMachineAccountDataArgs = BaseCandyMachineAccountDataArgs;
@@ -70,23 +66,11 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
     (base, bytes, offset) => {
       const slice = bytes.slice(offset + CANDY_MACHINE_HIDDEN_SECTION);
 
-      const deserializeRuleSet = (
-        ruleBytes: Uint8Array,
-        ruleOffset = 0
-      ): [Option<PublicKey>, number] => {
-        if (!isProgrammable(base.tokenStandard)) return [none(), ruleOffset];
-        return option(publicKey(), { fixed: true }).deserialize(
-          ruleBytes,
-          ruleOffset
-        );
-      };
-
       if (isNone(base.data.configLineSettings)) {
         return {
           ...base,
           items: [],
           itemsLoaded: 0,
-          ruleSet: deserializeRuleSet(slice)[0],
         };
       }
 
@@ -113,7 +97,7 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
           ['itemsLeftToMint', array(u32(), { size: itemsAvailable })],
         ]);
 
-      const [hiddenSection, hiddenSectionOffset] =
+      const [hiddenSection] =
         hiddenSectionSerializer.deserialize(slice);
 
       const itemsLeftToMint = hiddenSection.itemsLeftToMint.slice(
@@ -138,7 +122,6 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
         ...base,
         items,
         itemsLoaded: hiddenSection.itemsLoaded,
-        ruleSet: deserializeRuleSet(slice, hiddenSectionOffset)[0],
       };
     }
   );

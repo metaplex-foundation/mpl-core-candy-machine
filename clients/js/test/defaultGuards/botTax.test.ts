@@ -18,9 +18,9 @@ import {
 test('it does nothing if all conditions are valid', async (t) => {
   // Given a candy machine with a bot tax guard.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.01), lastInstruction: true }),
@@ -34,8 +34,8 @@ test('it does nothing if all conditions are valid', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -48,9 +48,9 @@ test('it does nothing if all conditions are valid', async (t) => {
 test('it optionally charges a bot tax if the mint instruction is not the last one', async (t) => {
   // Given a candy machine with a bot tax guard with lastInstruction set to true.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.01), lastInstruction: true }),
@@ -64,8 +64,8 @@ test('it optionally charges a bot tax if the mint instruction is not the last on
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )

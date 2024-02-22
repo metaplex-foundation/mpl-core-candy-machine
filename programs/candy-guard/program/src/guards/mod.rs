@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 pub use anchor_lang::prelude::*;
 
-pub use crate::{errors::CandyGuardError, instructions::mint::*, state::GuardSet};
+pub use crate::{errors::CandyGuardError, state::GuardSet};
 use crate::{
     instructions::{MintAccounts, Route, RouteContext},
     state::CandyGuardData,

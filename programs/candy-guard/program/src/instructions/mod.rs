@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
 pub use initialize::*;
-pub use mint::*;
 pub use mint_v2::*;
 use mpl_candy_machine_core_asset::CandyMachine;
 pub use route::*;
@@ -13,7 +12,6 @@ pub use wrap::*;
 use crate::state::CandyGuard;
 
 pub mod initialize;
-pub mod mint;
 pub mod mint_v2;
 pub mod route;
 pub mod set_authority;
@@ -29,19 +27,12 @@ pub(crate) struct MintAccounts<'b, 'c, 'info> {
     pub(crate) candy_machine_authority_pda: AccountInfo<'info>,
     pub(crate) payer: AccountInfo<'info>,
     pub(crate) minter: AccountInfo<'info>,
-    pub(crate) nft_mint: AccountInfo<'info>,
-    pub(crate) nft_mint_authority: AccountInfo<'info>,
-    pub(crate) nft_metadata: AccountInfo<'info>,
-    pub(crate) nft_master_edition: AccountInfo<'info>,
-    pub(crate) token: Option<AccountInfo<'info>>,
-    pub(crate) token_record: Option<AccountInfo<'info>>,
-    pub(crate) collection_delegate_record: AccountInfo<'info>,
-    pub(crate) collection_mint: AccountInfo<'info>,
-    pub(crate) collection_metadata: AccountInfo<'info>,
-    pub(crate) collection_master_edition: AccountInfo<'info>,
+    pub(crate) asset: AccountInfo<'info>,
+    pub(crate) collection: AccountInfo<'info>,
     pub(crate) collection_update_authority: AccountInfo<'info>,
     pub(crate) _candy_machine_program: AccountInfo<'info>,
     pub(crate) token_metadata_program: AccountInfo<'info>,
+    pub(crate) asset_program: AccountInfo<'info>,
     pub(crate) spl_token_program: AccountInfo<'info>,
     pub(crate) spl_ata_program: Option<AccountInfo<'info>>,
     pub(crate) system_program: AccountInfo<'info>,

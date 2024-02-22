@@ -23,9 +23,9 @@ test('it allows minting with specified program in transaction', async (t) => {
   // Given a loaded Candy Machine with a programGate guard allowing the memo program.
   const umi = await createUmi();
   const memoProgram = getSplMemoProgramId(umi);
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       programGate: some({ additional: [memoProgram] }),
@@ -40,8 +40,8 @@ test('it allows minting with specified program in transaction', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -55,9 +55,9 @@ test('it allows minting even when the payer is different from the minter', async
   // Given a loaded Candy Machine with a programGate guard allowing the memo program.
   const umi = await createUmi();
   const memoProgram = getSplMemoProgramId(umi);
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       programGate: some({ additional: [memoProgram] }),
@@ -74,9 +74,9 @@ test('it allows minting even when the payer is different from the minter', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -89,9 +89,9 @@ test('it allows minting even when the payer is different from the minter', async
 test('it forbids minting with unspecified program in transaction', async (t) => {
   // Given a loaded Candy Machine with a programGate guard allowing no additional programs.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       programGate: some({ additional: [] }),
@@ -106,8 +106,8 @@ test('it forbids minting with unspecified program in transaction', async (t) => 
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -122,9 +122,9 @@ test('it forbids candy machine creation with more than 5 specified programs', as
   // programGate guard allowing more than 5 programs.
   const umi = await createUmi();
   const memoProgram = getSplMemoProgramId(umi);
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const promise = createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       programGate: some({ additional: Array(6).fill(memoProgram) }),
@@ -141,9 +141,9 @@ test('it charges a bot tax when minting with unspecified program in transaction'
   // Given a loaded Candy Machine with a botTax guard
   // and a programGate guard allowing no additional programs.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.1), lastInstruction: true }),
@@ -159,8 +159,8 @@ test('it charges a bot tax when minting with unspecified program in transaction'
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )

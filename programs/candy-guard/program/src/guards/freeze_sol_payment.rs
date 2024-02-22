@@ -185,46 +185,48 @@ impl Condition for FreezeSolPayment {
         let nft_ata = try_get_account_info(ctx.accounts.remaining, index + 1)?;
         ctx.account_cursor += 1;
 
-        if nft_ata.data_is_empty() {
-            // for unitialized accounts, we need to check the derivation since the
-            // account will be created during mint only if it is an ATA
+        // TODO validate something here??
+        // if nft_ata.data_is_empty() {
+        //     // for unitialized accounts, we need to check the derivation since the
+        //     // account will be created during mint only if it is an ATA
 
-            let (derivation, _) = Pubkey::find_program_address(
-                &[
-                    ctx.accounts.minter.key.as_ref(),
-                    spl_token::id().as_ref(),
-                    ctx.accounts.nft_mint.key.as_ref(),
-                ],
-                &spl_associated_token_account::id(),
-            );
+        //     let (derivation, _) = Pubkey::find_program_address(
+        //         &[
+        //             ctx.accounts.minter.key.as_ref(),
+        //             spl_token::id().as_ref(),
+        //             ctx.accounts.nft_mint.key.as_ref(),
+        //         ],
+        //         &spl_associated_token_account::id(),
+        //     );
 
-            assert_keys_equal(&derivation, nft_ata.key)?;
-        } else {
-            // validates if the existing account is a token account
-            assert_is_token_account(nft_ata, ctx.accounts.minter.key, ctx.accounts.nft_mint.key)?;
-        }
+        //     assert_keys_equal(&derivation, nft_ata.key)?;
+        // } else {
+        //     // validates if the existing account is a token account
+        //     assert_is_token_account(nft_ata, ctx.accounts.minter.key, ctx.accounts.nft_mint.key)?;
+        // }
 
-        // it has to match the 'token' account (if present)
-        if let Some(token_info) = &ctx.accounts.token {
-            assert_keys_equal(nft_ata.key, token_info.key)?;
-        }
+        // // it has to match the 'token' account (if present)
+        // if let Some(token_info) = &ctx.accounts.token {
+        //     assert_keys_equal(nft_ata.key, token_info.key)?;
+        // }
 
         let candy_machine_info = ctx.accounts.candy_machine.to_account_info();
         let account_data = candy_machine_info.data.borrow_mut();
 
-        let collection_metadata =
-            Metadata::try_from(&ctx.accounts.collection_metadata.to_account_info())?;
+        // TODO validate freeze plugin instead
+        // let collection_metadata =
+        //     Metadata::try_from(&ctx.accounts.collection_metadata.to_account_info())?;
 
-        let rule_set = ctx
-            .accounts
-            .candy_machine
-            .get_rule_set(&account_data, &collection_metadata)?;
+        // let rule_set = ctx
+        //     .accounts
+        //     .candy_machine
+        //     .get_rule_set(&account_data, &collection_metadata)?;
 
-        if let Some(rule_set) = rule_set {
-            let mint_rule_set = try_get_account_info(ctx.accounts.remaining, index + 2)?;
-            assert_keys_equal(mint_rule_set.key, &rule_set)?;
-            ctx.account_cursor += 1;
-        }
+        // if let Some(rule_set) = rule_set {
+        //     let mint_rule_set = try_get_account_info(ctx.accounts.remaining, index + 2)?;
+        //     assert_keys_equal(mint_rule_set.key, &rule_set)?;
+        //     ctx.account_cursor += 1;
+        // }
 
         ctx.indices.insert("freeze_sol_payment", index);
 
@@ -402,94 +404,57 @@ pub fn freeze_nft(
 
     let nft_ata = try_get_account_info(ctx.accounts.remaining, account_index + 1)?;
 
-    if matches!(ctx.accounts.candy_machine.version, AccountVersion::V1) {
-        invoke(
-            &approve(
-                &spl_token::ID,
-                &nft_ata.key(),
-                &freeze_pda.key(),
-                &owner.key(),
-                &[],
-                1,
-            )?,
-            &[
-                nft_ata.to_account_info(),
-                freeze_pda.to_account_info(),
-                owner.to_account_info(),
-            ],
-        )?;
+    // approves a delegate to lock and transfer the token
 
-        FreezeDelegatedAccountCpiBuilder::new(&ctx.accounts.token_metadata_program)
-            .delegate(freeze_pda)
-            .token_account(nft_ata)
-            .edition(&ctx.accounts.nft_master_edition)
-            .mint(&ctx.accounts.nft_mint)
-            .token_program(&ctx.accounts.spl_token_program)
-            .invoke_signed(&[&signer])?;
-    } else {
-        let token_record = ctx
-            .accounts
-            .token_record
-            .as_ref()
-            .map(|token_record| token_record.to_account_info());
-        let authorization_rules =
-            get_account_info(ctx.accounts.remaining, account_index + rule_set_offset);
+    // TODO use freeze plugin
 
-        // if we have a token account, it must match the 'nft_ata'
-        if let Some(ref token_info) = ctx.accounts.token {
-            assert_keys_equal(nft_ata.key, token_info.key)?;
-        }
+    // DelegateCpiBuilder::new(&ctx.accounts.token_metadata_program)
+    //     .delegate(freeze_pda)
+    //     .metadata(&ctx.accounts.nft_metadata)
+    //     .master_edition(Some(&ctx.accounts.nft_master_edition))
+    //     .token_record(token_record.as_ref())
+    //     .mint(&ctx.accounts.nft_mint)
+    //     .token(Some(nft_ata))
+    //     .authority(&ctx.accounts.minter)
+    //     .payer(&ctx.accounts.payer)
+    //     .system_program(&ctx.accounts.system_program)
+    //     .sysvar_instructions(&ctx.accounts.sysvar_instructions)
+    //     .spl_token_program(Some(&ctx.accounts.spl_token_program))
+    //     .authorization_rules_program(ctx.accounts.authorization_rules_program.as_ref())
+    //     .authorization_rules(authorization_rules)
+    //     .delegate_args(
+    //         if ctx.accounts.candy_machine.token_standard
+    //             == TokenStandard::ProgrammableNonFungible as u8
+    //         {
+    //             DelegateArgs::LockedTransferV1 {
+    //                 amount: 1,
+    //                 locked_address: freeze_escrow.key(),
+    //                 authorization_data: None,
+    //             }
+    //         } else {
+    //             DelegateArgs::StandardV1 { amount: 1 }
+    //         },
+    //     )
+    //     .invoke_signed(&[&signer])?;
 
-        // approves a delegate to lock and transfer the token
+    // // locks the token account
 
-        DelegateCpiBuilder::new(&ctx.accounts.token_metadata_program)
-            .delegate(freeze_pda)
-            .metadata(&ctx.accounts.nft_metadata)
-            .master_edition(Some(&ctx.accounts.nft_master_edition))
-            .token_record(token_record.as_ref())
-            .mint(&ctx.accounts.nft_mint)
-            .token(Some(nft_ata))
-            .authority(&ctx.accounts.minter)
-            .payer(&ctx.accounts.payer)
-            .system_program(&ctx.accounts.system_program)
-            .sysvar_instructions(&ctx.accounts.sysvar_instructions)
-            .spl_token_program(Some(&ctx.accounts.spl_token_program))
-            .authorization_rules_program(ctx.accounts.authorization_rules_program.as_ref())
-            .authorization_rules(authorization_rules)
-            .delegate_args(
-                if ctx.accounts.candy_machine.token_standard
-                    == TokenStandard::ProgrammableNonFungible as u8
-                {
-                    DelegateArgs::LockedTransferV1 {
-                        amount: 1,
-                        locked_address: freeze_escrow.key(),
-                        authorization_data: None,
-                    }
-                } else {
-                    DelegateArgs::StandardV1 { amount: 1 }
-                },
-            )
-            .invoke_signed(&[&signer])?;
-
-        // locks the token account
-
-        LockCpiBuilder::new(&ctx.accounts.token_metadata_program)
-            .authority(freeze_pda)
-            .token_owner(Some(&ctx.accounts.minter))
-            .token(nft_ata)
-            .mint(&ctx.accounts.nft_mint)
-            .metadata(&ctx.accounts.nft_metadata)
-            .edition(Some(&ctx.accounts.nft_master_edition))
-            .token_record(token_record.as_ref())
-            .payer(&ctx.accounts.payer)
-            .system_program(&ctx.accounts.system_program)
-            .sysvar_instructions(&ctx.accounts.sysvar_instructions)
-            .spl_token_program(Some(&ctx.accounts.spl_token_program))
-            .lock_args(LockArgs::V1 {
-                authorization_data: None,
-            })
-            .invoke_signed(&[&signer])?;
-    }
+    // LockCpiBuilder::new(&ctx.accounts.token_metadata_program)
+    //     .authority(freeze_pda)
+    //     .token_owner(Some(&ctx.accounts.minter))
+    //     .token(nft_ata)
+    //     .mint(&ctx.accounts.nft_mint)
+    //     .metadata(&ctx.accounts.nft_metadata)
+    //     .edition(Some(&ctx.accounts.nft_master_edition))
+    //     .token_record(token_record.as_ref())
+    //     .payer(&ctx.accounts.payer)
+    //     .system_program(&ctx.accounts.system_program)
+    //     .sysvar_instructions(&ctx.accounts.sysvar_instructions)
+    //     .spl_token_program(Some(&ctx.accounts.spl_token_program))
+    //     .lock_args(LockArgs::V1 {
+    //         authorization_data: None,
+    //     })
+    //     .invoke_signed(&[&signer])?;
 
     Ok(())
 }

@@ -21,9 +21,9 @@ test('it transfers SOL from the payer to the destination', async (t) => {
   // Given a loaded Candy Machine with a solPayment guard.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       solPayment: some({ lamports: sol(1), destination }),
@@ -39,10 +39,10 @@ test('it transfers SOL from the payer to the destination', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
         payer,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: some({ destination }) },
       })
@@ -65,9 +65,9 @@ test('it fails if the payer does not have enough funds', async (t) => {
   // Given a loaded Candy Machine with a solPayment guard costing 5 SOLs.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       solPayment: some({ lamports: sol(5), destination }),
@@ -82,9 +82,9 @@ test('it fails if the payer does not have enough funds', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         payer,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: some({ destination }) },
       })
@@ -103,9 +103,9 @@ test('it charges a bot tax if the payer does not have enough funds', async (t) =
   // Given a loaded Candy Machine with a solPayment guard costing 5 SOLs and a botTax guard.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.1), lastInstruction: true }),
@@ -121,9 +121,9 @@ test('it charges a bot tax if the payer does not have enough funds', async (t) =
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         payer,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: some({ destination }) },
       })

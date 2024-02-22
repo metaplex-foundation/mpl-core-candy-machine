@@ -38,9 +38,9 @@ test('it transfers Token2022 tokens from the payer to the destination', async (t
   );
 
   // And a loaded Candy Machine with a token2022Payment guard that requires 5 tokens.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       token2022Payment: some({
@@ -58,8 +58,8 @@ test('it transfers Token2022 tokens from the payer to the destination', async (t
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           token2022Payment: some({ mint: tokenMint.publicKey, destinationAta }),

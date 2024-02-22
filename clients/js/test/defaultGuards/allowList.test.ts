@@ -37,9 +37,9 @@ test('it allows minting from wallets of a predefined list', async (t) => {
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with the allow list guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       allowList: some({ merkleRoot }),
@@ -68,8 +68,8 @@ test('it allows minting from wallets of a predefined list', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
@@ -93,9 +93,9 @@ test('it is possible to verify the proof and mint in the same transaction if the
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with the allow list guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       allowList: some({ merkleRoot }),
@@ -121,8 +121,8 @@ test('it is possible to verify the proof and mint in the same transaction if the
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
@@ -147,9 +147,9 @@ test('it allows minting even when the payer is different from the minter', async
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with the allow list guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       allowList: some({ merkleRoot }),
@@ -175,9 +175,9 @@ test('it allows minting even when the payer is different from the minter', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
@@ -200,9 +200,9 @@ test('it forbids minting from wallets that are not part of a predefined list', a
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with the allow list guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       allowList: some({ merkleRoot }),
@@ -242,9 +242,9 @@ test('it forbids minting from wallets that are providing the wrong proof', async
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with the allow list guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       allowList: some({ merkleRoot }),
@@ -287,9 +287,9 @@ test('it forbids minting if the wallet has not been verified via the route instr
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with an allow list guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       allowList: some({ merkleRoot }),
@@ -304,8 +304,8 @@ test('it forbids minting if the wallet has not been verified via the route instr
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
@@ -329,9 +329,9 @@ test('it charges a bot tax when trying to mint whilst not verified', async (t) =
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with an allow list and a bot tax guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.01), lastInstruction: true }),
@@ -347,8 +347,8 @@ test('it charges a bot tax when trying to mint whilst not verified', async (t) =
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
@@ -373,9 +373,9 @@ test('it creates a proof for a minter even when the minter is not a signer', asy
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with the allow list guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       allowList: some({ merkleRoot }),
@@ -438,9 +438,9 @@ test('it creates a proof for the payer when the minter is not present', async (t
   const merkleRoot = getMerkleRoot(allowList);
 
   // And given a loaded Candy Machine with the allow list guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       allowList: some({ merkleRoot }),

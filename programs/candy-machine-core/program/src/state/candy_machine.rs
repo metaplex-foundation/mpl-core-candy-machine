@@ -13,7 +13,7 @@ pub struct CandyMachine {
     /// Version of the account.
     pub version: AccountVersion,
     /// Token standard to mint NFTs.
-    pub token_standard: u8,
+    // pub token_standard: u8,
     /// Features flags.
     pub features: [u8; 6],
     /// Authority address.

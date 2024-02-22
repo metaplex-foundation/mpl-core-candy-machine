@@ -72,13 +72,13 @@ pub fn set_token_standard(ctx: Context<SetTokenStandard>, token_standard: u8) ->
         candy_machine.version = AccountVersion::V2;
     }
 
-    msg!(
-        "Changing token standard from {} to {}",
-        candy_machine.token_standard,
-        token_standard
-    );
+    // msg!(
+    //     "Changing token standard from {} to {}",
+    //     candy_machine.token_standard,
+    //     token_standard
+    // );
 
-    candy_machine.token_standard = token_standard;
+    // candy_machine.token_standard = token_standard;
 
     let required_length = candy_machine.data.get_space_for_candy()?;
     let candy_machine_info = candy_machine.to_account_info();

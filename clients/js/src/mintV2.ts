@@ -1,11 +1,4 @@
 import {
-  TokenStandard,
-  findTokenRecordPda,
-  getTokenRecordSize,
-  isProgrammable,
-} from '@metaplex-foundation/mpl-token-metadata';
-import {
-  findAssociatedTokenPda,
   getMintSize,
   getTokenSize,
 } from '@metaplex-foundation/mpl-toolbox';
@@ -46,8 +39,6 @@ export type MintV2InstructionData<MA extends GuardSetMintArgs> = {
 export type MintV2InstructionDataArgs<MA extends GuardSetMintArgs> = {
   mintArgs?: Partial<MA>;
   group?: OptionOrNullable<string>;
-  /** @defaultValue `TokenStandard.NonFungible`. */
-  tokenStandard?: TokenStandard;
 };
 
 export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
@@ -67,7 +58,7 @@ export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
   const mintContext: MintContext = {
     minter: input.minter ?? context.identity,
     payer: input.payer ?? context.payer,
-    mint: publicKey(input.nftMint, false),
+    asset: publicKey(input.asset, false),
     candyMachine,
     candyGuard: publicKey(
       input.candyGuard ?? findCandyGuardPda(context, { base: candyMachine }),
@@ -78,25 +69,8 @@ export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
     MA extends undefined ? DefaultGuardSetMintArgs : MA
   >(context, program, mintContext, mintArgs);
 
-  // Default token Record value.
-  const tokenStandard = input.tokenStandard ?? TokenStandard.NonFungible;
-  const defaultTokenRecord = isProgrammable(tokenStandard)
-    ? findTokenRecordPda(context, {
-        mint: publicKey(input.nftMint, false),
-        token: publicKey(
-          input.token ??
-            findAssociatedTokenPda(context, {
-              mint: publicKey(input.nftMint),
-              owner: publicKey(input.minter ?? context.identity),
-            }),
-          false
-        ),
-      })
-    : undefined;
-
   const ix = baseMintV2(context, {
     ...rest,
-    tokenRecord: input.tokenRecord ?? defaultTokenRecord,
     mintArgs: data,
     group,
   }).items[0];
@@ -104,16 +78,13 @@ export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
   const [keys, signers] = parseGuardRemainingAccounts(remainingAccounts);
   ix.instruction.keys.push(...keys);
   ix.signers.push(...signers);
+  // TODO fix size calculation
   ix.bytesCreatedOnChain =
     METADATA_SIZE + MASTER_EDITION_SIZE + 2 * ACCOUNT_HEADER_SIZE;
 
-  if (isSigner(input.nftMint)) {
+  if (isSigner(input.asset)) {
     ix.bytesCreatedOnChain +=
       getMintSize() + getTokenSize() + 2 * ACCOUNT_HEADER_SIZE;
-  }
-
-  if (isProgrammable(tokenStandard)) {
-    ix.bytesCreatedOnChain += getTokenRecordSize() + ACCOUNT_HEADER_SIZE;
   }
 
   return transactionBuilder([ix]);

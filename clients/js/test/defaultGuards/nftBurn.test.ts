@@ -34,9 +34,9 @@ test('it burns a specific NFT to allow minting', async (t) => {
   });
 
   // And a loaded Candy Machine with an nftBurn guard on that collection.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftBurn: some({ requiredCollection }),
@@ -50,8 +50,8 @@ test('it burns a specific NFT to allow minting', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
@@ -86,9 +86,9 @@ test('it allows minting even when the payer is different from the minter', async
   });
 
   // And a loaded Candy Machine with an nftBurn guard on that collection.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftBurn: some({ requiredCollection }),
@@ -102,9 +102,9 @@ test('it allows minting even when the payer is different from the minter', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
@@ -128,9 +128,9 @@ test('it fails if there is not valid NFT to burn', async (t) => {
   // Given a loaded Candy Machine with an nftBurn guard on a specific collection.
   const umi = await createUmi();
   const requiredCollection = (await createCollectionNft(umi)).publicKey;
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftBurn: some({ requiredCollection }),
@@ -145,8 +145,8 @@ test('it fails if there is not valid NFT to burn', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
@@ -168,9 +168,9 @@ test('it charges a bot tax when trying to mint using the wrong NFT', async (t) =
   // an nftBurn guard on a specific collection.
   const umi = await createUmi();
   const requiredCollection = (await createCollectionNft(umi)).publicKey;
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.01), lastInstruction: true }),
@@ -186,8 +186,8 @@ test('it charges a bot tax when trying to mint using the wrong NFT', async (t) =
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
@@ -218,9 +218,9 @@ test('it burns a specific Programmable NFT to allow minting', async (t) => {
   });
 
   // And a loaded Candy Machine with an nftBurn guard on that collection.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftBurn: some({ requiredCollection }),
@@ -234,8 +234,8 @@ test('it burns a specific Programmable NFT to allow minting', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({

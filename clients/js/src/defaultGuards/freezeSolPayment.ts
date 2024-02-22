@@ -53,8 +53,10 @@ export const freezeSolPaymentGuardManifest: GuardManifest<
       candyMachine: mintContext.candyMachine,
       candyGuard: mintContext.candyGuard,
     });
+
+    // TODO actually freeze asset
     const [nftAta] = findAssociatedTokenPda(context, {
-      mint: mintContext.mint,
+      mint: mintContext.asset,
       owner: mintContext.minter.publicKey,
     });
     return {

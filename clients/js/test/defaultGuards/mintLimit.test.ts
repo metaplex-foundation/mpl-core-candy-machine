@@ -23,9 +23,9 @@ import {
 test('it allows minting when the mint limit is not reached', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 5.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -42,8 +42,8 @@ test('it allows minting when the mint limit is not reached', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 1 }) },
       })
@@ -67,9 +67,9 @@ test('it allows minting when the mint limit is not reached', async (t) => {
 test('it allows minting even when the payer is different from the minter', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 5.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -87,9 +87,9 @@ test('it allows minting even when the payer is different from the minter', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 1 }) },
       })
@@ -113,9 +113,9 @@ test('it allows minting even when the payer is different from the minter', async
 test('it forbids minting when the mint limit is reached', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 1.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -132,8 +132,8 @@ test('it forbids minting when the mint limit is reached', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
@@ -146,8 +146,8 @@ test('it forbids minting when the mint limit is reached', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: generateSigner(umi),
-        collectionMint,
+        asset: generateSigner(umi),
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
@@ -161,9 +161,9 @@ test('it forbids minting when the mint limit is reached', async (t) => {
 test('the mint limit is local to each wallet', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 1.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -181,9 +181,9 @@ test('the mint limit is local to each wallet', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mintA,
+        asset: mintA,
         minter: minterA,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
@@ -199,9 +199,9 @@ test('the mint limit is local to each wallet', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mintB,
+        asset: mintB,
         minter: minterB,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
@@ -215,9 +215,9 @@ test('the mint limit is local to each wallet', async (t) => {
 test('it charges a bot tax when trying to mint after the limit', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 1 and a bot tax guard.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -235,8 +235,8 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mintA,
-        collectionMint,
+        asset: mintA,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
@@ -250,8 +250,8 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mintB,
-        collectionMint,
+        asset: mintB,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })

@@ -52,9 +52,9 @@ test('it allows minting via a gatekeeper service', async (t) => {
   );
 
   // And a loaded Candy Machine with a gatekeeper guard on that network.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       gatekeeper: some({
@@ -71,8 +71,8 @@ test('it allows minting via a gatekeeper service', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
@@ -104,9 +104,9 @@ test('it defaults to calculating the gateway token PDA for us', async (t) => {
   );
 
   // And a loaded Candy Machine with a gatekeeper guard on that network.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       gatekeeper: some({
@@ -123,8 +123,8 @@ test('it defaults to calculating the gateway token PDA for us', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
@@ -157,9 +157,9 @@ test('it allows minting even when the payer is different from the minter', async
   );
 
   // And a loaded Candy Machine with a gatekeeper guard on that network.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       gatekeeper: some({
@@ -176,9 +176,9 @@ test('it allows minting even when the payer is different from the minter', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
@@ -201,9 +201,9 @@ test('it forbids minting when providing the wrong token', async (t) => {
   const { gatekeeperNetwork } = await createGatekeeperNetwork(umi);
 
   // Given a loaded Candy Machine with a gatekeeper guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       gatekeeper: some({
@@ -220,8 +220,8 @@ test('it forbids minting when providing the wrong token', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
@@ -255,9 +255,9 @@ test('it allows minting using gateway tokens that expire when they are still val
   );
 
   // And a loaded Candy Machine with a gatekeeper guard on that network.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       gatekeeper: some({
@@ -274,8 +274,8 @@ test('it allows minting using gateway tokens that expire when they are still val
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
@@ -309,9 +309,9 @@ test('it forbids minting using gateway tokens that have expired', async (t) => {
   );
 
   // And a loaded Candy Machine with a gatekeeper guard on that network.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       gatekeeper: some({
@@ -328,8 +328,8 @@ test('it forbids minting using gateway tokens that have expired', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
@@ -369,9 +369,9 @@ test('it may immediately mark gateway tokens as expired after using them', async
 
   // And a loaded Candy Machine with a gatekeeper guard
   // that mark tokens as expire after using them.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       gatekeeper: some({
@@ -388,8 +388,8 @@ test('it may immediately mark gateway tokens as expired after using them', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
@@ -425,9 +425,9 @@ test('it charges a bot tax when trying to mint using the wrong token', async (t)
   const { gatekeeperNetwork } = await createGatekeeperNetwork(umi);
 
   // Given a loaded Candy Machine with a gatekeeper guard and a botTax guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.1), lastInstruction: true }),
@@ -445,8 +445,8 @@ test('it charges a bot tax when trying to mint using the wrong token', async (t)
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({

@@ -38,9 +38,9 @@ test('it allows minting when the payer owns an NFT from a certain collection', a
   });
 
   // And a loaded Candy Machine with an nftGate guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftGate: some({ requiredCollection }),
@@ -54,8 +54,8 @@ test('it allows minting when the payer owns an NFT from a certain collection', a
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify.publicKey }),
@@ -83,9 +83,9 @@ test('it allows minting even when the payer is different from the minter', async
   });
 
   // And a loaded Candy Machine with an nftGate guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftGate: some({ requiredCollection }),
@@ -99,9 +99,9 @@ test('it allows minting even when the payer is different from the minter', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify.publicKey }),
@@ -142,9 +142,9 @@ test('it allows minting when the NFT is not on an associated token account', asy
   });
 
   // And a loaded Candy Machine with an nftGate guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftGate: some({ requiredCollection }),
@@ -158,8 +158,8 @@ test('it allows minting when the NFT is not on an associated token account', asy
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({
@@ -209,9 +209,9 @@ test('it forbids minting when the payer does not own an NFT from a certain colle
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with an nftGate guard on that collection.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftGate: some({ requiredCollection }),
@@ -225,8 +225,8 @@ test('it forbids minting when the payer does not own an NFT from a certain colle
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify }),
@@ -257,9 +257,9 @@ test('it forbids minting when the payer tries to provide an NFT from the wrong c
   const { publicKey: requiredCollectionB } = await createCollectionNft(umi, {
     authority: requiredCollectionAuthorityB,
   });
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftGate: some({ requiredCollection: requiredCollectionB }),
@@ -273,8 +273,8 @@ test('it forbids minting when the payer tries to provide an NFT from the wrong c
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify }),
@@ -299,9 +299,9 @@ test('it forbids minting when the payer tries to provide an NFT from an unverifi
   });
 
   // And a loaded Candy Machine with an nftGate guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       nftGate: some({ requiredCollection }),
@@ -315,8 +315,8 @@ test('it forbids minting when the payer tries to provide an NFT from an unverifi
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify }),
@@ -333,9 +333,9 @@ test('it charges a bot tax when trying to mint without owning the right NFT', as
   // Given a loaded Candy Machine with an nftGate guard and a bot tax guard.
   const umi = await createUmi();
   const { publicKey: requiredCollection } = await createCollectionNft(umi);
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.1), lastInstruction: true }),
@@ -351,8 +351,8 @@ test('it charges a bot tax when trying to mint without owning the right NFT', as
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: wrongNft.publicKey }),

@@ -38,7 +38,7 @@ test('it can initialize a new candy machine account', async (t) => {
     .sendAndConfirm(umi);
 
   // And a collection NFT.
-  const collectionMint = await createCollectionNft(umi);
+  const collection = await createCollectionNft(umi);
 
   // When we initialize a candy machine at this address.
   const creator = generateSigner(umi);
@@ -46,7 +46,7 @@ test('it can initialize a new candy machine account', async (t) => {
     .add(
       initializeCandyMachineV2(umi, {
         candyMachine: candyMachine.publicKey,
-        collectionMint: collectionMint.publicKey,
+        collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
         tokenStandard: TokenStandard.NonFungible,
@@ -74,9 +74,8 @@ test('it can initialize a new candy machine account', async (t) => {
     publicKey: publicKey(candyMachine),
     authority: publicKey(umi.identity),
     mintAuthority: publicKey(umi.identity),
-    collectionMint: publicKey(collectionMint),
+    collectionMint: publicKey(collection),
     version: AccountVersion.V2,
-    tokenStandard: TokenStandard.NonFungible,
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,

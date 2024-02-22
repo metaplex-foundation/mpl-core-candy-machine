@@ -46,134 +46,6 @@
       ]
     },
     {
-      "name": "initialize",
-      "docs": [
-        "Initialize the candy machine account with the specified data.",
-        "",
-        "# Accounts",
-        "",
-        "0. `[writable]` Candy Machine account (must be pre-allocated but zero content)",
-        "1. `[writable]` Authority PDA (seeds `[\"candy_machine\", candy machine id]`)",
-        "2. `[]` Candy Machine authority",
-        "3. `[signer]` Payer",
-        "4. `[]` Collection metadata",
-        "5. `[]` Collection mint",
-        "6. `[]` Collection master edition",
-        "7. `[signer]` Collection update authority",
-        "8. `[writable]` Collection authority record",
-        "9. `[]` Token Metadata program",
-        "10. `[]` System program"
-      ],
-      "accounts": [
-        {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Candy Machine account. The account space must be allocated to allow accounts larger",
-            "than 10kb.",
-            ""
-          ]
-        },
-        {
-          "name": "authorityPda",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Authority PDA used to verify minted NFTs to the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Candy Machine authority. This is the address that controls the upate of the candy machine.",
-            ""
-          ]
-        },
-        {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true,
-          "docs": [
-            "Payer of the transaction."
-          ]
-        },
-        {
-          "name": "collectionMetadata",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Metadata account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMint",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Mint account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMasterEdition",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Master Edition account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionUpdateAuthority",
-          "isMut": true,
-          "isSigner": true,
-          "docs": [
-            "Update authority of the collection. This needs to be a signer so the candy",
-            "machine can approve a delegate to verify minted NFTs to the collection."
-          ]
-        },
-        {
-          "name": "collectionAuthorityRecord",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Collection authority record. The delegate is used to verify NFTs.",
-            ""
-          ]
-        },
-        {
-          "name": "tokenMetadataProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Token Metadata program.",
-            ""
-          ]
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "System program."
-          ]
-        }
-      ],
-      "args": [
-        {
-          "name": "data",
-          "type": {
-            "defined": "CandyMachineData"
-          }
-        }
-      ]
-    },
-    {
       "name": "initializeV2",
       "docs": [
         "Initialize the candy machine account with the specified data and token standard.",
@@ -233,39 +105,11 @@
           ]
         },
         {
-          "name": "ruleSet",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Authorization rule set to be used by minted NFTs.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMetadata",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Metadata account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMint",
+          "name": "collection",
           "isMut": false,
           "isSigner": false,
           "docs": [
             "Mint account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMasterEdition",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Master Edition account of the collection.",
             ""
           ]
         },
@@ -279,16 +123,7 @@
           ]
         },
         {
-          "name": "collectionDelegateRecord",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Metadata delegate record. The delegate is used to verify NFTs.",
-            ""
-          ]
-        },
-        {
-          "name": "tokenMetadataProgram",
+          "name": "assetProgram",
           "isMut": false,
           "isSigner": false,
           "docs": [
@@ -310,26 +145,6 @@
           "isSigner": false,
           "docs": [
             "Instructions sysvar account.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRulesProgram",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization Rules program.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRules",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization rules account for the collection metadata (if any).",
             ""
           ]
         }
@@ -348,188 +163,7 @@
       ]
     },
     {
-      "name": "mint",
-      "docs": [
-        "Mint an NFT.",
-        "",
-        "Only the candy machine mint authority is allowed to mint.",
-        "",
-        "# Accounts",
-        "",
-        "0. `[writable]` Candy Machine account (must be pre-allocated but zero content)",
-        "1. `[writable]` Authority PDA (seeds `[\"candy_machine\", candy machine id]`)",
-        "2. `[signer]` Candy Machine mint authority",
-        "3. `[signer]` Payer",
-        "4. `[writable]` Mint account of the NFT",
-        "5. `[signer]` Mint authority of the NFT",
-        "6. `[writable]` Metadata account of the NFT",
-        "7. `[writable]` Master edition account of the NFT",
-        "8. `[optional]` Collection authority record",
-        "9. `[]` Collection mint",
-        "10. `[writable]` Collection metadata",
-        "11. `[]` Collection master edition",
-        "12. `[]` Collection update authority",
-        "13. `[]` Token Metadata program",
-        "14. `[]` SPL Token program",
-        "15. `[]` System program",
-        "16. `[]` SlotHashes sysvar cluster data."
-      ],
-      "accounts": [
-        {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Candy machine account."
-          ]
-        },
-        {
-          "name": "authorityPda",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Candy machine authority account. This is the account that holds a delegate",
-            "to verify an item into the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "mintAuthority",
-          "isMut": false,
-          "isSigner": true,
-          "docs": [
-            "Candy machine mint authority (mint only allowed for the mint_authority)."
-          ]
-        },
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true,
-          "docs": [
-            "Payer for the transaction and account allocation (rent)."
-          ]
-        },
-        {
-          "name": "nftMint",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Mint account of the NFT. The account will be initialized if necessary.",
-            ""
-          ]
-        },
-        {
-          "name": "nftMintAuthority",
-          "isMut": false,
-          "isSigner": true,
-          "docs": [
-            "Mint authority of the NFT. In most cases this will be the owner of the NFT."
-          ]
-        },
-        {
-          "name": "nftMetadata",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Metadata account of the NFT. This account must be uninitialized.",
-            ""
-          ]
-        },
-        {
-          "name": "nftMasterEdition",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Master edition account of the NFT. The account will be initialized if necessary.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionAuthorityRecord",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Collection authority record account is either the delegated authority record (legacy)",
-            "or a metadata delegate record for the `authority_pda`. The delegate is set when a new collection",
-            "is set to the candy machine.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMint",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Mint account of the collection NFT.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMetadata",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Metadata account of the collection NFT.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMasterEdition",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Master edition account of the collection NFT.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionUpdateAuthority",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Update authority of the collection NFT.",
-            ""
-          ]
-        },
-        {
-          "name": "tokenMetadataProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Token Metadata program.",
-            ""
-          ]
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "SPL Token program."
-          ]
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "System program."
-          ]
-        },
-        {
-          "name": "recentSlothashes",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "SlotHashes sysvar cluster data.",
-            ""
-          ]
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "mintV2",
+      "name": "mintAsset",
       "docs": [
         "Mint an NFT.",
         "",
@@ -542,23 +176,14 @@
         "1. `[writable]` Authority PDA (seeds `[\"candy_machine\", candy machine id]`)",
         "2. `[signer]` Candy Machine mint authority",
         "3. `[signer]` Payer",
-        "4. `[writable]` Mint account of the NFT",
-        "5. `[]` Mint authority of the NFT",
-        "6. `[writable]` Metadata account of the NFT",
-        "7. `[writable]` Master edition account of the NFT",
-        "8. `[optional, writable]` Destination token account",
-        "9. `[optional, writable]` Token record",
-        "10. `[]` Collection delegate or authority record",
-        "11. `[]` Collection mint",
-        "12. `[writable]` Collection metadata",
-        "13. `[]` Collection master edition",
-        "14. `[]` Collection update authority",
-        "15. `[]` Token Metadata program",
-        "16. `[]` SPL Token program",
-        "17. `[optional]` SPL Associated Token program",
-        "18. `[]` System program",
-        "19. `[optional]` Instructions sysvar account",
-        "20. `[]` SlotHashes sysvar cluster data."
+        "4. `[]` Asset Owner",
+        "5. `[writable]` Asset account",
+        "6. `[]` Collection",
+        "7. `[]` Collection delegate or update authority",
+        "8. `[]` Asset program",
+        "9. `[]` System program",
+        "10. `[optional]` Instructions sysvar account",
+        "11. `[]` SlotHashes sysvar cluster data."
       ],
       "accounts": [
         {
@@ -596,7 +221,7 @@
           ]
         },
         {
-          "name": "nftOwner",
+          "name": "assetOwner",
           "isMut": false,
           "isSigner": false,
           "docs": [
@@ -605,93 +230,20 @@
           ]
         },
         {
-          "name": "nftMint",
+          "name": "asset",
           "isMut": true,
-          "isSigner": false,
+          "isSigner": true,
           "docs": [
             "Mint account of the NFT. The account will be initialized if necessary.",
             ""
           ]
         },
         {
-          "name": "nftMintAuthority",
-          "isMut": false,
-          "isSigner": true,
-          "docs": [
-            "Mint authority of the NFT. In most cases this will be the owner of the NFT."
-          ]
-        },
-        {
-          "name": "nftMetadata",
+          "name": "collection",
           "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Metadata account of the NFT. This account must be uninitialized.",
-            ""
-          ]
-        },
-        {
-          "name": "nftMasterEdition",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Master edition account of the NFT. The account will be initialized if necessary.",
-            ""
-          ]
-        },
-        {
-          "name": "token",
-          "isMut": true,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Destination token account (required for pNFT).",
-            ""
-          ]
-        },
-        {
-          "name": "tokenRecord",
-          "isMut": true,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token record (required for pNFT).",
-            ""
-          ]
-        },
-        {
-          "name": "collectionDelegateRecord",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Collection authority or metadata delegate record.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMint",
-          "isMut": false,
           "isSigner": false,
           "docs": [
             "Mint account of the collection NFT.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMetadata",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Metadata account of the collection NFT.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMasterEdition",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Master edition account of the collection NFT.",
             ""
           ]
         },
@@ -705,29 +257,12 @@
           ]
         },
         {
-          "name": "tokenMetadataProgram",
+          "name": "assetProgram",
           "isMut": false,
           "isSigner": false,
           "docs": [
             "Token Metadata program.",
             ""
-          ]
-        },
-        {
-          "name": "splTokenProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "SPL Token program."
-          ]
-        },
-        {
-          "name": "splAtaProgram",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "SPL Associated Token program."
           ]
         },
         {
@@ -753,26 +288,6 @@
           "isSigner": false,
           "docs": [
             "SlotHashes sysvar cluster data.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRulesProgram",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization Rules program.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRules",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization rules account for the collection metadata (if any).",
             ""
           ]
         }
@@ -1191,171 +706,6 @@
       "args": []
     },
     {
-      "name": "setTokenStandard",
-      "docs": [
-        "Set the token standard of the minted NFTs.",
-        "",
-        "# Accounts",
-        "",
-        "0. `[writable]` Candy Machine account (must be pre-allocated but zero content)",
-        "1. `[signer]` Candy Machine authority",
-        "2. `[]` Authority PDA (seeds `[\"candy_machine\", candy machine id]`)",
-        "3. `[signer]` Payer",
-        "4. `[optional, writable]` Metadata delegate record",
-        "5. `[]` Collection mint",
-        "6. `[]` Collection metadata",
-        "7. `[optional, writable]` Collection authority record",
-        "8. `[]` Collection update authority",
-        "9. `[]` Token Metadata program",
-        "10. `[]` System program",
-        "11. `[]` Instructions sysvar account",
-        "12. `[optional]` Token Authorization Rules program",
-        "13. `[optional]` Token authorization rules account"
-      ],
-      "accounts": [
-        {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Candy Machine account."
-          ]
-        },
-        {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": true,
-          "docs": [
-            "Candy Machine authority."
-          ]
-        },
-        {
-          "name": "authorityPda",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Authority PDA.",
-            ""
-          ]
-        },
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true,
-          "docs": [
-            "Payer of the transaction."
-          ]
-        },
-        {
-          "name": "ruleSet",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Authorization rule set to be used by minted NFTs.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionDelegateRecord",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Collection metadata delegate record.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMint",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Collection mint.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMetadata",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Collection metadata.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionAuthorityRecord",
-          "isMut": true,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Collection authority record.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionUpdateAuthority",
-          "isMut": false,
-          "isSigner": true,
-          "docs": [
-            "Collection update authority."
-          ]
-        },
-        {
-          "name": "tokenMetadataProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Token Metadata program.",
-            ""
-          ]
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "System program."
-          ]
-        },
-        {
-          "name": "sysvarInstructions",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Instructions sysvar account.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRulesProgram",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization Rules program.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRules",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization rules account for the collection metadata (if any).",
-            ""
-          ]
-        }
-      ],
-      "args": [
-        {
-          "name": "tokenStandard",
-          "type": "u8"
-        }
-      ]
-    },
-    {
       "name": "update",
       "docs": [
         "Update the candy machine configuration.",
@@ -1442,15 +792,9 @@
             }
           },
           {
-            "name": "tokenStandard",
-            "docs": [
-              "Token standard to mint NFTs."
-            ],
-            "type": "u8"
-          },
-          {
             "name": "features",
             "docs": [
+              "Token standard to mint NFTs.",
               "Features flags."
             ],
             "type": {

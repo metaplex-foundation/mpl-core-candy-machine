@@ -7,10 +7,6 @@
  */
 
 import {
-  TokenStandardArgs,
-  getTokenStandardSerializer,
-} from '@metaplex-foundation/mpl-token-metadata';
-import {
   Account,
   Context,
   Pda,
@@ -112,7 +108,6 @@ export function getCandyMachineGpaBuilder(
     .registerFields<{
       discriminator: Array<number>;
       version: AccountVersionArgs;
-      tokenStandard: TokenStandardArgs;
       features: Array<number>;
       authority: PublicKey;
       mintAuthority: PublicKey;
@@ -122,13 +117,12 @@ export function getCandyMachineGpaBuilder(
     }>({
       discriminator: [0, array(u8(), { size: 8 })],
       version: [8, getAccountVersionSerializer()],
-      tokenStandard: [9, getTokenStandardSerializer()],
-      features: [null, array(u8(), { size: 6 })],
-      authority: [null, publicKeySerializer()],
-      mintAuthority: [null, publicKeySerializer()],
-      collectionMint: [null, publicKeySerializer()],
-      itemsRedeemed: [null, u64()],
-      data: [null, getCandyMachineDataSerializer()],
+      features: [9, array(u8(), { size: 6 })],
+      authority: [15, publicKeySerializer()],
+      mintAuthority: [47, publicKeySerializer()],
+      collectionMint: [79, publicKeySerializer()],
+      itemsRedeemed: [111, u64()],
+      data: [119, getCandyMachineDataSerializer()],
     })
     .deserializeUsing<CandyMachine>((account) =>
       deserializeCandyMachine(account)

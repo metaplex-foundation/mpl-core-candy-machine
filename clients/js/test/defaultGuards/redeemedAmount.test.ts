@@ -18,9 +18,9 @@ import {
 test('it allows minting until a threshold of NFTs have been redeemed', async (t) => {
   // Given a loaded Candy Machine with a redeemedAmount guard with a threshold of 1 NFT.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
@@ -37,8 +37,8 @@ test('it allows minting until a threshold of NFTs have been redeemed', async (t)
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -51,9 +51,9 @@ test('it allows minting until a threshold of NFTs have been redeemed', async (t)
 test('it forbids minting once the redeemed threshold has been reached', async (t) => {
   // Given a loaded Candy Machine with a redeemedAmount guard with a threshold of 1 NFT.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
@@ -70,8 +70,8 @@ test('it forbids minting once the redeemed threshold has been reached', async (t
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mintA,
-        collectionMint,
+        asset: mintA,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -85,8 +85,8 @@ test('it forbids minting once the redeemed threshold has been reached', async (t
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mintB,
-        collectionMint,
+        asset: mintB,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -100,9 +100,9 @@ test('it charges a bot tax when trying to mint once the threshold has been reach
   // Given a loaded Candy Machine with a bot tax guard
   // and a redeemedAmount guard with a threshold of 1 NFT.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
@@ -120,8 +120,8 @@ test('it charges a bot tax when trying to mint once the threshold has been reach
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mintA,
-        collectionMint,
+        asset: mintA,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
@@ -135,8 +135,8 @@ test('it charges a bot tax when trying to mint once the threshold has been reach
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mintB,
-        collectionMint,
+        asset: mintB,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
       })
     )

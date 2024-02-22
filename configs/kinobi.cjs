@@ -125,17 +125,17 @@ kinobi.update(
 // Update fields.
 kinobi.update(
   new k.TransformNodesVisitor([
-    {
-      selector: { kind: "structFieldTypeNode", name: "tokenStandard" },
-      transformer: (node) => {
-        return k.structFieldTypeNode({
-          ...node,
-          child: k.linkTypeNode("tokenStandard", {
-            importFrom: "mplTokenMetadata",
-          }),
-        });
-      },
-    },
+    // {
+    //   selector: { kind: "structFieldTypeNode", name: "tokenStandard" },
+    //   transformer: (node) => {
+    //     return k.structFieldTypeNode({
+    //       ...node,
+    //       child: k.linkTypeNode("tokenStandard", {
+    //         importFrom: "mplTokenMetadata",
+    //       }),
+    //     });
+    //   },
+    // },
     {
       selector: { type: "structFieldTypeNode", name: "maxSupply" },
       transformer: (node) => {
@@ -229,6 +229,12 @@ const defaultsToCandyMachineAssetProgram = () =>
     "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
   );
 
+const defaultsToAssetProgram = () =>
+  k.programDefault(
+    "mplAsset",
+    "ASSETp3DinZKfiAyvdQG16YWWLJ2X3ZKjg9zku7n1sZD"
+  );
+
 // Automatically recognize account default values.
 kinobi.update(
   new k.SetInstructionAccountDefaultValuesVisitor([
@@ -314,9 +320,6 @@ kinobi.update(
 // Update instructions.
 kinobi.update(
   new k.UpdateInstructionsVisitor({
-    "mplCandyMachineCore.initialize": {
-      name: "initializeCandyMachine",
-    },
     "mplCandyGuard.initialize": {
       name: "createCandyGuard",
       internal: true,
@@ -326,27 +329,24 @@ kinobi.update(
         },
       },
     },
-    "mplCandyMachineCore.initializeV2": { name: "initializeCandyMachineV2" },
-    "mplCandyMachineCore.mint": {
-      name: "mintFromCandyMachine",
+    "mplCandyMachineCore.initializeV2": {
+      name: "initializeCandyMachineV2",
       accounts: {
-        nftMintAuthority: { defaultsTo: k.identityDefault() },
-      },
+        assetProgram: { defaultsTo: defaultsToAssetProgram() },
+      }
     },
-    "mplCandyMachineCore.mintV2": {
-      name: "mintFromCandyMachineV2",
+    "mplCandyMachineCore.mintAsset": {
+      name: "mintAssetFromCandyMachine",
       accounts: {
-        nftMint: { isSigner: "either" },
-        nftMintAuthority: { defaultsTo: k.identityDefault() },
-        token: {
-          defaultsTo: defaultsToAssociatedTokenPda("nftMint", "nftOwner"),
+        asset: { isSigner: "either" },
+        assetProgram: {
+          defaultsTo: defaultsToAssetProgram(),
         },
         sysvarInstructions: {
           defaultsTo: k.publicKeyDefault(
             "Sysvar1nstructions1111111111111111111111111"
           ),
         },
-        splAtaProgram: { defaultsTo: defaultsToSplAssociatedTokenProgram() },
       },
     },
     "mplCandyGuard.wrap": {
@@ -359,23 +359,6 @@ kinobi.update(
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       }
     },
-    "mplCandyGuard.mint": {
-      internal: true,
-      args: {
-        label: { name: "group" },
-      },
-      accounts: {
-        candyGuard: { defaultsTo: defaultsToCandyGuardPda("candyMachine") },
-        nftMintAuthority: { defaultsTo: k.identityDefault() },
-        collectionAuthorityRecord: {
-          defaultsTo: defaultsToCollectionAuthorityRecordPda(
-            "collectionMint",
-            "candyMachineAuthorityPda"
-          ),
-        },
-        candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
-      },
-    },
     "mplCandyGuard.mintV2": {
       internal: true,
       args: {
@@ -383,21 +366,11 @@ kinobi.update(
       },
       accounts: {
         candyGuard: { defaultsTo: defaultsToCandyGuardPda("candyMachine") },
-        nftMint: { isSigner: "either" },
-        nftMintAuthority: { defaultsTo: k.identityDefault() },
+        asset: { isSigner: "either" },
         minter: { defaultsTo: k.identityDefault() },
-        token: {
-          defaultsTo: defaultsToAssociatedTokenPda("nftMint", "minter"),
-        },
-        collectionDelegateRecord: {
-          defaultsTo: defaultsToMetadataDelegateRecordPda(
-            "collection",
-            "collectionMint",
-            "collectionUpdateAuthority",
-            "candyMachineAuthorityPda"
-          ),
-        },
+
         splAtaProgram: { defaultsTo: defaultsToSplAssociatedTokenProgram() },
+        assetProgram: { defaultsTo: defaultsToAssetProgram() },
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
@@ -408,6 +381,7 @@ kinobi.update(
       },
       accounts: {
         candyGuard: { defaultsTo: defaultsToCandyGuardPda("candyMachine") },
+        assetProgram: { defaultsTo: defaultsToAssetProgram() },
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },

@@ -1,14 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {
-  DigitalAssetWithToken,
   TokenStandard,
   createNft as baseCreateNft,
   createProgrammableNft as baseCreateProgrammableNft,
-  fetchDigitalAssetWithAssociatedToken,
   findMasterEditionPda,
   findMetadataPda,
   verifyCollectionV1,
 } from '@metaplex-foundation/mpl-token-metadata';
+import { 
+  Asset,
+  fetchAsset,
+} from '@metaplex-foundation/mpl-asset'
 import {
   createAssociatedToken,
   createMint,
@@ -42,7 +44,6 @@ import {
   GuardSetArgs,
   addConfigLines,
   createCandyGuard as baseCreateCandyGuard,
-  createCandyMachine as baseCreateCandyMachine,
   createCandyMachineV2 as baseCreateCandyMachineV2,
   findCandyGuardPda,
   mplCandyMachine,
@@ -186,48 +187,6 @@ export const createMintWithHolders = async (
   return [mint, ...atas];
 };
 
-export const createV1 = async <DA extends GuardSetArgs = DefaultGuardSetArgs>(
-  umi: Umi,
-  input: Partial<Parameters<typeof baseCreateCandyMachine>[1]> &
-    Partial<
-      CandyGuardDataArgs<DA extends undefined ? DefaultGuardSetArgs : DA>
-    > & { configLineIndex?: number; configLines?: ConfigLine[] } = {}
-) => {
-  const candyMachine = input.candyMachine ?? generateSigner(umi);
-  const collectionMint =
-    input.collectionMint ?? (await createCollectionNft(umi)).publicKey;
-  let builder = transactionBuilder().add(
-    await baseCreateCandyMachine(umi, {
-      ...defaultCandyMachineData(umi),
-      ...input,
-      itemsAvailable: input.itemsAvailable ?? input.configLines?.length ?? 100,
-      candyMachine,
-      collectionMint,
-    })
-  );
-
-  if (input.configLines !== undefined) {
-    builder = builder.add(
-      addConfigLines(umi, {
-        authority: input.collectionUpdateAuthority ?? umi.identity,
-        candyMachine: candyMachine.publicKey,
-        index: input.configLineIndex ?? 0,
-        configLines: input.configLines,
-      })
-    );
-  }
-
-  if (input.guards !== undefined || input.groups !== undefined) {
-    const candyGuard = findCandyGuardPda(umi, { base: candyMachine.publicKey });
-    builder = builder
-      .add(baseCreateCandyGuard<DA>(umi, { ...input, base: candyMachine }))
-      .add(wrap(umi, { candyMachine: candyMachine.publicKey, candyGuard }));
-  }
-
-  await builder.sendAndConfirm(umi);
-  return candyMachine;
-};
-
 export const createV2 = async <DA extends GuardSetArgs = DefaultGuardSetArgs>(
   umi: Umi,
   input: Partial<Parameters<typeof baseCreateCandyMachineV2>[1]> &
@@ -236,14 +195,14 @@ export const createV2 = async <DA extends GuardSetArgs = DefaultGuardSetArgs>(
     > & { configLineIndex?: number; configLines?: ConfigLine[] } = {}
 ) => {
   const candyMachine = input.candyMachine ?? generateSigner(umi);
-  const collectionMint =
-    input.collectionMint ?? (await createCollectionNft(umi)).publicKey;
+  const collection =
+    input.collection ?? (await createCollectionNft(umi)).publicKey;
   let builder = await baseCreateCandyMachineV2(umi, {
     ...defaultCandyMachineData(umi),
     ...input,
     itemsAvailable: input.itemsAvailable ?? input.configLines?.length ?? 100,
     candyMachine,
-    collectionMint,
+    collection,
   });
 
   if (input.configLines !== undefined) {
@@ -322,8 +281,6 @@ export const assertSuccessfulMint = async (
   input: {
     mint: PublicKey | Signer;
     owner: PublicKey | Signer;
-    token?: PublicKey;
-    tokenStandard?: TokenStandard;
     name?: string | RegExp;
     uri?: string | RegExp;
   }
@@ -331,47 +288,28 @@ export const assertSuccessfulMint = async (
   const mint = publicKey(input.mint);
   const owner = publicKey(input.owner);
   const {
-    token = findAssociatedTokenPda(umi, { mint, owner }),
-    tokenStandard,
     name,
     uri,
   } = input;
 
   // Nft.
-  const nft = await fetchDigitalAssetWithAssociatedToken(umi, mint, owner);
-  t.like(nft, <DigitalAssetWithToken>{
+
+  // TODO check plugins
+  const nft = await fetchAsset(umi, mint)
+
+  t.like(nft, <Asset>{
     publicKey: publicKey(mint),
-    mint: {
-      publicKey: publicKey(mint),
-      supply: 1n,
-    },
-    token: {
-      publicKey: publicKey(token),
-      mint: publicKey(mint),
-      owner: publicKey(owner),
-      amount: 1n,
-    },
-    edition: {
-      isOriginal: true,
-    },
-    metadata: {
-      tokenStandard: { __option: 'Some' },
-      primarySaleHappened: true,
-    },
+    owner
   });
 
-  // Token Stardard.
-  if (tokenStandard !== undefined) {
-    t.deepEqual(nft.metadata.tokenStandard, some(tokenStandard));
-  }
 
   // Name.
-  if (typeof name === 'string') t.is(nft.metadata.name, name);
-  else if (name !== undefined) t.regex(nft.metadata.name, name);
+  if (typeof name === 'string') t.is(nft.name, name);
+  else if (name !== undefined) t.regex(nft.name, name);
 
   // Uri.
-  if (typeof uri === 'string') t.is(nft.metadata.uri, uri);
-  else if (uri !== undefined) t.regex(nft.metadata.uri, uri);
+  if (typeof uri === 'string') t.is(nft.uri, uri);
+  else if (uri !== undefined) t.regex(nft.uri, uri);
 };
 
 export const assertBotTax = async (

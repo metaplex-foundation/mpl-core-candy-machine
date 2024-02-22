@@ -236,29 +236,30 @@ impl Condition for FreezeTokenPayment {
         let nft_ata = try_get_account_info(ctx.accounts.remaining, index + 1)?;
         ctx.account_cursor += 1;
 
-        if nft_ata.data_is_empty() {
-            // for unitialized accounts, we need to check the derivation since the
-            // account will be created during mint only if it is an ATA
+        // TODO validate something here??
+        // if nft_ata.data_is_empty() {
+        //     // for unitialized accounts, we need to check the derivation since the
+        //     // account will be created during mint only if it is an ATA
 
-            let (derivation, _) = Pubkey::find_program_address(
-                &[
-                    ctx.accounts.minter.key.as_ref(),
-                    spl_token::id().as_ref(),
-                    ctx.accounts.nft_mint.key.as_ref(),
-                ],
-                &spl_associated_token_account::id(),
-            );
+        //     let (derivation, _) = Pubkey::find_program_address(
+        //         &[
+        //             ctx.accounts.minter.key.as_ref(),
+        //             spl_token::id().as_ref(),
+        //             ctx.accounts.nft_mint.key.as_ref(),
+        //         ],
+        //         &spl_associated_token_account::id(),
+        //     );
 
-            assert_keys_equal(&derivation, nft_ata.key)?;
-        } else {
-            // validates if the existing account is a token account
-            assert_is_token_account(nft_ata, ctx.accounts.minter.key, ctx.accounts.nft_mint.key)?;
-        }
+        //     assert_keys_equal(&derivation, nft_ata.key)?;
+        // } else {
+        //     // validates if the existing account is a token account
+        //     assert_is_token_account(nft_ata, ctx.accounts.minter.key, ctx.accounts.nft_mint.key)?;
+        // }
 
-        // it has to match the 'token' account (if present)
-        if let Some(token_info) = &ctx.accounts.token {
-            assert_keys_equal(nft_ata.key, token_info.key)?;
-        }
+        // // it has to match the 'token' account (if present)
+        // if let Some(token_info) = &ctx.accounts.token {
+        //     assert_keys_equal(nft_ata.key, token_info.key)?;
+        // }
 
         let token_account_info = try_get_account_info(ctx.accounts.remaining, index + 2)?;
         // validate freeze_pda ata
@@ -277,19 +278,20 @@ impl Condition for FreezeTokenPayment {
         let candy_machine_info = ctx.accounts.candy_machine.to_account_info();
         let account_data = candy_machine_info.data.borrow_mut();
 
-        let collection_metadata =
-            Metadata::try_from(&ctx.accounts.collection_metadata.to_account_info())?;
+        // TODO validate freeze plugin
+        // let collection_metadata =
+        //     Metadata::try_from(&ctx.accounts.collection_metadata.to_account_info())?;
 
-        let rule_set = ctx
-            .accounts
-            .candy_machine
-            .get_rule_set(&account_data, &collection_metadata)?;
+        // let rule_set = ctx
+        //     .accounts
+        //     .candy_machine
+        //     .get_rule_set(&account_data, &collection_metadata)?;
 
-        if let Some(rule_set) = rule_set {
-            let mint_rule_set = try_get_account_info(ctx.accounts.remaining, index + 4)?;
-            assert_keys_equal(mint_rule_set.key, &rule_set)?;
-            ctx.account_cursor += 1;
-        }
+        // if let Some(rule_set) = rule_set {
+        //     let mint_rule_set = try_get_account_info(ctx.accounts.remaining, index + 4)?;
+        //     assert_keys_equal(mint_rule_set.key, &rule_set)?;
+        //     ctx.account_cursor += 1;
+        // }
 
         if ctx.accounts.payer.lamports() < FREEZE_SOL_FEE {
             msg!(

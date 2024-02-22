@@ -22,15 +22,6 @@ pub mod candy_guard {
     }
 
     /// Mint an NFT from a candy machine wrapped in the candy guard.
-    pub fn mint<'info>(
-        ctx: Context<'_, '_, '_, 'info, Mint<'info>>,
-        mint_args: Vec<u8>,
-        label: Option<String>,
-    ) -> Result<()> {
-        instructions::mint(ctx, mint_args, label)
-    }
-
-    /// Mint an NFT from a candy machine wrapped in the candy guard.
     pub fn mint_v2<'info>(
         ctx: Context<'_, '_, '_, 'info, MintV2<'info>>,
         mint_args: Vec<u8>,

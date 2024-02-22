@@ -35,15 +35,15 @@ export type MintContext = {
   minter: Signer;
   /** The wallet to use for SOL fees. */
   payer: Signer;
-  /** The mint account of the NFT being minted. */
-  mint: PublicKey;
+  /** The asset account of the NFT being minted. */
+  asset: PublicKey;
   /** The address of the Candy Machine we are using. */
   candyMachine: PublicKey;
   /** The address of the Candy Guard we are using. */
   candyGuard: PublicKey;
 };
 
-export type RouteContext = Omit<MintContext, 'minter' | 'mint'>;
+export type RouteContext = Omit<MintContext, 'minter' | 'asset'>;
 
 /** Additional data and accounts to pass to the mint or route instruction. */
 export type GuardInstructionExtras = {

@@ -22,15 +22,9 @@ pub fn mint_v2<'info>(
         candy_machine: &ctx.accounts.candy_machine,
         candy_machine_authority_pda: ctx.accounts.candy_machine_authority_pda.to_account_info(),
         _candy_machine_program: ctx.accounts.candy_machine_program.to_account_info(),
-        collection_delegate_record: ctx.accounts.collection_delegate_record.to_account_info(),
-        collection_master_edition: ctx.accounts.collection_master_edition.to_account_info(),
-        collection_metadata: ctx.accounts.collection_metadata.to_account_info(),
-        collection_mint: ctx.accounts.collection_mint.to_account_info(),
+        collection: ctx.accounts.collection.to_account_info(),
         collection_update_authority: ctx.accounts.collection_update_authority.to_account_info(),
-        nft_master_edition: ctx.accounts.nft_master_edition.to_account_info(),
-        nft_metadata: ctx.accounts.nft_metadata.to_account_info(),
-        nft_mint: ctx.accounts.nft_mint.to_account_info(),
-        nft_mint_authority: ctx.accounts.nft_mint_authority.to_account_info(),
+        asset: ctx.accounts.asset.to_account_info(),
         payer: ctx.accounts.payer.to_account_info(),
         minter: ctx.accounts.minter.to_account_info(),
         recent_slothashes: ctx.accounts.recent_slothashes.to_account_info(),
@@ -42,17 +36,8 @@ pub fn mint_v2<'info>(
         spl_token_program: ctx.accounts.spl_token_program.to_account_info(),
         system_program: ctx.accounts.system_program.to_account_info(),
         sysvar_instructions: ctx.accounts.sysvar_instructions.to_account_info(),
-        token: ctx
-            .accounts
-            .token
-            .as_ref()
-            .map(|token| token.to_account_info()),
         token_metadata_program: ctx.accounts.token_metadata_program.to_account_info(),
-        token_record: ctx
-            .accounts
-            .token_record
-            .as_ref()
-            .map(|token_record| token_record.to_account_info()),
+        asset_program: ctx.accounts.asset_program.to_account_info(),
         remaining: ctx.remaining_accounts,
         authorization_rules_program: ctx
             .accounts
@@ -140,17 +125,19 @@ fn process_error(ctx: &EvaluationContext, guard_set: &GuardSet, error: Error) ->
 /// Performs a validation of the transaction before executing the guards.
 fn validate(ctx: &EvaluationContext) -> Result<()> {
     if !cmp_pubkeys(
-        &ctx.accounts.collection_mint.key(),
+        &ctx.accounts.collection.key(),
         &ctx.accounts.candy_machine.collection_mint,
     ) {
         return err!(CandyGuardError::CollectionKeyMismatch);
     }
-    if !cmp_pubkeys(
-        ctx.accounts.collection_metadata.owner,
-        &mpl_token_metadata::ID,
-    ) {
-        return err!(CandyGuardError::IncorrectOwner);
-    }
+
+    // TODO enforce correct collection
+    // if !cmp_pubkeys(
+    //     ctx.accounts.collection.owner,
+    //     &mpl_asset::ID,
+    // ) {
+    //     return err!(CandyGuardError::IncorrectOwner);
+    // }
 
     Ok(())
 }
@@ -160,46 +147,34 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
     let candy_guard = &ctx.accounts.candy_guard;
 
     // candy machine mint instruction accounts
-    let mint_accounts = Box::new(mpl_candy_machine_core_asset::cpi::accounts::MintV2 {
+    let mint_accounts = Box::new(mpl_candy_machine_core_asset::cpi::accounts::MintAsset {
         candy_machine: ctx.accounts.candy_machine.to_account_info(),
         authority_pda: ctx.accounts.candy_machine_authority_pda.clone(),
         mint_authority: candy_guard.to_account_info(),
         payer: ctx.accounts.payer.clone(),
-        nft_owner: ctx.accounts.minter.clone(),
-        nft_mint: ctx.accounts.nft_mint.clone(),
-        nft_mint_authority: ctx.accounts.nft_mint_authority.clone(),
-        nft_metadata: ctx.accounts.nft_metadata.clone(),
-        nft_master_edition: ctx.accounts.nft_master_edition.clone(),
-        token: ctx.accounts.token.clone(),
-        token_record: ctx.accounts.token_record.clone(),
-        collection_delegate_record: ctx.accounts.collection_delegate_record.clone(),
-        collection_mint: ctx.accounts.collection_mint.clone(),
-        collection_metadata: ctx.accounts.collection_metadata.clone(),
-        collection_master_edition: ctx.accounts.collection_master_edition.clone(),
+        asset_owner: ctx.accounts.minter.clone(),
+        asset: ctx.accounts.asset.clone(),
+        collection: ctx.accounts.collection.clone(),
         collection_update_authority: ctx.accounts.collection_update_authority.clone(),
-        token_metadata_program: ctx.accounts.token_metadata_program.clone(),
-        spl_token_program: ctx.accounts.spl_token_program.clone(),
-        spl_ata_program: ctx.accounts.spl_ata_program.clone(),
+        asset_program: ctx.accounts.asset_program.clone(),
         system_program: ctx.accounts.system_program.clone(),
         sysvar_instructions: ctx.accounts.sysvar_instructions.clone(),
         recent_slothashes: ctx.accounts.recent_slothashes.clone(),
-        authorization_rules_program: ctx.accounts.authorization_rules_program.clone(),
-        authorization_rules: ctx.accounts.authorization_rules.clone(),
     });
 
     let mint_infos = mint_accounts.to_account_infos();
     let mut mint_metas = mint_accounts.to_account_metas(None);
 
     mint_metas.iter_mut().for_each(|account_meta| {
-        if account_meta.pubkey == ctx.accounts.nft_mint.key() {
-            account_meta.is_signer = ctx.accounts.nft_mint.is_signer;
+        if account_meta.pubkey == ctx.accounts.asset.key() {
+            account_meta.is_signer = ctx.accounts.asset.is_signer;
         }
     });
 
     let mint_ix = Instruction {
         program_id: mpl_candy_machine_core_asset::ID,
         accounts: mint_metas,
-        data: mpl_candy_machine_core_asset::instruction::MintV2::DISCRIMINATOR.to_vec(),
+        data: mpl_candy_machine_core_asset::instruction::MintAsset::DISCRIMINATOR.to_vec(),
     };
 
     // PDA signer for the transaction
@@ -249,58 +224,13 @@ pub struct MintV2<'info> {
     ///
     /// CHECK: account checked in CPI
     #[account(mut)]
-    nft_mint: UncheckedAccount<'info>,
-
-    /// Mint authority of the NFT before the authority gets transfer to the master edition account.
-    ///
-    /// If nft_mint account exists:
-    ///   * it must match the mint authority of nft_mint.
-    nft_mint_authority: Signer<'info>,
-
-    /// Metadata account of the NFT. This account must be uninitialized.
-    ///
-    /// CHECK: account checked in CPI
-    #[account(mut)]
-    nft_metadata: UncheckedAccount<'info>,
-
-    /// Master edition account of the NFT. The account will be initialized if necessary.
-    ///
-    /// CHECK: account checked in CPI
-    #[account(mut)]
-    nft_master_edition: UncheckedAccount<'info>,
-
-    /// Destination token account (required for pNFT).
-    ///
-    /// CHECK: account checked in CPI
-    #[account(mut)]
-    token: Option<UncheckedAccount<'info>>,
-
-    /// Token record (required for pNFT).
-    ///
-    /// CHECK: account checked in CPI
-    #[account(mut)]
-    token_record: Option<UncheckedAccount<'info>>,
-
-    /// Collection authority or metadata delegate record.
-    ///
-    /// CHECK: account checked in CPI
-    collection_delegate_record: UncheckedAccount<'info>,
+    asset: UncheckedAccount<'info>,
 
     /// Mint account of the collection NFT.
     ///
     /// CHECK: account checked in CPI
-    collection_mint: UncheckedAccount<'info>,
-
-    /// Metadata account of the collection NFT.
-    ///
-    /// CHECK: account checked in CPI
     #[account(mut)]
-    collection_metadata: UncheckedAccount<'info>,
-
-    /// Master edition account of the collection NFT.
-    ///
-    /// CHECK: account checked in CPI
-    collection_master_edition: UncheckedAccount<'info>,
+    collection: UncheckedAccount<'info>,
 
     /// Update authority of the collection NFT.
     ///
@@ -312,6 +242,12 @@ pub struct MintV2<'info> {
     /// CHECK: account checked in CPI
     #[account(address = mpl_token_metadata::ID)]
     token_metadata_program: UncheckedAccount<'info>,
+
+    /// Token Metadata program.
+    ///
+    /// CHECK: account checked in CPI
+    #[account(address = mpl_asset::ID)]
+    asset_program: UncheckedAccount<'info>,
 
     /// SPL Token program.
     spl_token_program: Program<'info, Token>,

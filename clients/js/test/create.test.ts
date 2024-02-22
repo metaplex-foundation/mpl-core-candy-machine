@@ -26,14 +26,14 @@ import {
 test('it can create a candy machine with an associated candy guard', async (t) => {
   // Given an existing collection NFT.
   const umi = await createUmi();
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
 
   // When we create a new candy machine with an associated candy guard.
   const candyMachine = generateSigner(umi);
   const destination = generateSigner(umi).publicKey;
   const createInstructions = await create(umi, {
     candyMachine,
-    collectionMint,
+    collection,
     guards: {
       botTax: some({ lamports: sol(0.01), lastInstruction: true }),
       solPayment: some({ lamports: sol(2), destination }),

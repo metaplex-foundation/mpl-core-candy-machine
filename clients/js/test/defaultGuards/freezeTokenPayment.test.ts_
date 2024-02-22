@@ -59,9 +59,9 @@ test('it transfers tokens to an escrow account and freezes the NFT', async (t) =
   });
 
   // And a loaded Candy Machine with a freezeTokenPayment guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -99,8 +99,8 @@ test('it transfers tokens to an escrow account and freezes the NFT', async (t) =
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
@@ -163,9 +163,9 @@ test('it allows minting even when the payer is different from the minter', async
   });
 
   // And a loaded Candy Machine with a freezeTokenPayment guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -189,9 +189,9 @@ test('it allows minting even when the payer is different from the minter', async
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
+        asset: mint,
         minter,
-        collectionMint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
@@ -219,9 +219,9 @@ test('it allows minting when the mint and token accounts are created beforehand'
   });
 
   // And a loaded Candy Machine with a freezeTokenPayment guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -252,8 +252,8 @@ test('it allows minting when the mint and token accounts are created beforehand'
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
@@ -282,9 +282,9 @@ test('it can thaw an NFT once all NFTs are minted', async (t) => {
 
   // And a loaded Candy Machine with an initialized
   // freezeTokenPayment guard with only one item.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       freezeTokenPayment: some({
@@ -325,9 +325,9 @@ test('it can unlock funds once all NFTs have been thawed', async (t) => {
   });
 
   // And a loaded Candy Machine with an initialized freezeTokenPayment guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       freezeTokenPayment: some({
@@ -393,9 +393,9 @@ test('it cannot unlock funds if not all NFTs have been thawed', async (t) => {
   });
 
   // And a loaded Candy Machine with an initialized freezeTokenPayment guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       freezeTokenPayment: some({
@@ -466,9 +466,9 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
       { owner: umi.identity, amount: 10 },
     ],
   });
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     itemsAvailable: 4,
     guards: {},
     groups: [
@@ -552,8 +552,8 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: nftD,
-        collectionMint,
+        asset: nftD,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         group: some('GROUPD'),
         mintArgs: {
@@ -663,9 +663,9 @@ test('it fails to mint if the freeze escrow was not initialized', async (t) => {
   });
 
   // And a loaded Candy Machine with a freezeTokenPayment guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       freezeTokenPayment: some({
@@ -689,8 +689,8 @@ test('it fails to mint if the freeze escrow was not initialized', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
@@ -719,9 +719,9 @@ test('it fails to mint if the payer does not have enough tokens', async (t) => {
 
   // And a loaded Candy Machine with an initialized
   // freezeTokenPayment guard costing 5 tokens.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       freezeTokenPayment: some({
@@ -746,8 +746,8 @@ test('it fails to mint if the payer does not have enough tokens', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
@@ -775,9 +775,9 @@ test('it charges a bot tax if something goes wrong', async (t) => {
   });
 
   // And a loaded Candy Machine with a freezeTokenPayment guard and a bot tax guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.1), lastInstruction: true }),
@@ -802,8 +802,8 @@ test('it charges a bot tax if something goes wrong', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
@@ -831,11 +831,11 @@ test('it transfers tokens to an escrow account and locks the Programmable NFT', 
   });
 
   // And a loaded PNFT Candy Machine with a freezeTokenPayment guard.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     tokenStandard: TokenStandard.ProgrammableNonFungible,
     ruleSet: METAPLEX_DEFAULT_RULESET,
-    collectionMint,
+    collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
@@ -859,8 +859,8 @@ test('it transfers tokens to an escrow account and locks the Programmable NFT', 
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
@@ -939,9 +939,9 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
 
   // And a loaded Candy Machine with a ruleSet and an initialized
   // freezeTokenPayment guard with only one item.
-  const collectionMint = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollectionNft(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
-    collectionMint,
+    collection,
     tokenStandard: TokenStandard.ProgrammableNonFungible,
     ruleSet: METAPLEX_DEFAULT_RULESET,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -962,8 +962,8 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
@@ -997,7 +997,7 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
         guard: 'freezeTokenPayment',
         routeArgs: {
           path: 'thaw',
-          nftMint: mint.publicKey,
+          asset: mint.publicKey,
           nftOwner: umi.identity.publicKey,
           nftTokenStandard: TokenStandard.ProgrammableNonFungible,
           mint: tokenMint.publicKey,
@@ -1124,8 +1124,8 @@ const mintNft = async (
     .add(
       mintV2(umi, {
         candyMachine,
-        nftMint: mint,
-        collectionMint,
+        asset: mint,
+        collection,
         collectionUpdateAuthority: umi.identity.publicKey,
         group: group ? some(group) : none(),
         mintArgs: {
@@ -1146,7 +1146,7 @@ const thawNft = async (
   candyMachine: PublicKey,
   tokenMint: PublicKey | Signer,
   destinationAta: PublicKey,
-  nftMint: PublicKey,
+  asset: PublicKey,
   group?: string,
   nftOwner?: PublicKey
 ) => {

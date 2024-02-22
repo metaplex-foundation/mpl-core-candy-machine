@@ -5,7 +5,7 @@ use mpl_utils::resize_or_reallocate_account_raw;
 use crate::{
     approve_metadata_delegate, assert_token_standard,
     constants::{
-        AUTHORITY_SEED, HIDDEN_SECTION, MPL_TOKEN_AUTH_RULES_PROGRAM, RULE_SET_LENGTH, SET,
+        AUTHORITY_SEED, HIDDEN_SECTION, RULE_SET_LENGTH, SET,
     },
     state::{CandyMachine, CandyMachineData},
     utils::fixed_length_string,
@@ -40,11 +40,10 @@ pub fn initialize_v2(
     let mut candy_machine = CandyMachine {
         data,
         version: AccountVersion::V2,
-        token_standard,
         features: [0u8; 6],
         authority: ctx.accounts.authority.key(),
         mint_authority: ctx.accounts.authority.key(),
-        collection_mint: ctx.accounts.collection_mint.key(),
+        collection_mint: ctx.accounts.collection.key(),
         items_redeemed: 0,
     };
 
@@ -63,43 +62,32 @@ pub fn initialize_v2(
         account_data[HIDDEN_SECTION..HIDDEN_SECTION + 4].copy_from_slice(&u32::MIN.to_le_bytes());
     }
 
-    if token_standard == TokenStandard::ProgrammableNonFungible as u8 {
-        if let Some(rule_set_info) = &ctx.accounts.rule_set {
-            msg!("Storing rule set pubkey");
-
-            let rule_set = rule_set_info.key();
-            account_data[required_length] = SET;
-
-            let index = required_length + 1;
-            let mut storage = &mut account_data[index..index + RULE_SET_LENGTH];
-            rule_set.serialize(&mut storage)?;
-        }
-    }
-
+    // TODO approve collection delegate to mint to collection
     // approves the metadata delegate so the candy machine can verify minted NFTs
-    let delegate_accounts = ApproveMetadataDelegateHelperAccounts {
-        token_metadata_program: ctx.accounts.token_metadata_program.to_account_info(),
-        authority_pda: ctx.accounts.authority_pda.to_account_info(),
-        collection_metadata: ctx.accounts.collection_metadata.to_account_info(),
-        collection_mint: ctx.accounts.collection_mint.to_account_info(),
-        collection_update_authority: ctx.accounts.collection_update_authority.to_account_info(),
-        delegate_record: ctx.accounts.collection_delegate_record.to_account_info(),
-        payer: ctx.accounts.payer.to_account_info(),
-        system_program: ctx.accounts.system_program.to_account_info(),
-        sysvar_instructions: ctx.accounts.sysvar_instructions.to_account_info(),
-        authorization_rules_program: ctx
-            .accounts
-            .authorization_rules_program
-            .as_ref()
-            .map(|authorization_rules_program| authorization_rules_program.to_account_info()),
-        authorization_rules: ctx
-            .accounts
-            .authorization_rules
-            .as_ref()
-            .map(|authorization_rules| authorization_rules.to_account_info()),
-    };
+    // let delegate_accounts = ApproveMetadataDelegateHelperAccounts {
+    //     token_metadata_program: ctx.accounts.token_metadata_program.to_account_info(),
+    //     authority_pda: ctx.accounts.authority_pda.to_account_info(),
+    //     collection_metadata: ctx.accounts.collection_metadata.to_account_info(),
+    //     collection_mint: ctx.accounts.collection_mint.to_account_info(),
+    //     collection_update_authority: ctx.accounts.collection_update_authority.to_account_info(),
+    //     delegate_record: ctx.accounts.collection_delegate_record.to_account_info(),
+    //     payer: ctx.accounts.payer.to_account_info(),
+    //     system_program: ctx.accounts.system_program.to_account_info(),
+    //     sysvar_instructions: ctx.accounts.sysvar_instructions.to_account_info(),
+    //     authorization_rules_program: ctx
+    //         .accounts
+    //         .authorization_rules_program
+    //         .as_ref()
+    //         .map(|authorization_rules_program| authorization_rules_program.to_account_info()),
+    //     authorization_rules: ctx
+    //         .accounts
+    //         .authorization_rules
+    //         .as_ref()
+    //         .map(|authorization_rules| authorization_rules.to_account_info()),
+    // };
 
-    approve_metadata_delegate(delegate_accounts)
+    // approve_metadata_delegate(delegate_accounts)
+    Ok(())
 }
 
 /// Initializes a new candy machine.
@@ -136,44 +124,21 @@ pub struct InitializeV2<'info> {
     #[account(mut)]
     payer: Signer<'info>,
 
-    /// Authorization rule set to be used by minted NFTs.
-    ///
-    /// CHECK: must be ownwed by mpl_token_auth_rules
-    #[account(owner = MPL_TOKEN_AUTH_RULES_PROGRAM)]
-    rule_set: Option<UncheckedAccount<'info>>,
-
-    /// Metadata account of the collection.
-    ///
-    /// CHECK: account checked in CPI
-    #[account(mut)]
-    collection_metadata: UncheckedAccount<'info>,
-
     /// Mint account of the collection.
     ///
     /// CHECK: account checked in CPI
-    collection_mint: UncheckedAccount<'info>,
-
-    /// Master Edition account of the collection.
-    ///
-    /// CHECK: account checked in CPI
-    collection_master_edition: UncheckedAccount<'info>,
+    collection: UncheckedAccount<'info>,
 
     /// Update authority of the collection. This needs to be a signer so the candy
     /// machine can approve a delegate to verify minted NFTs to the collection.
     #[account(mut)]
     collection_update_authority: Signer<'info>,
 
-    /// Metadata delegate record. The delegate is used to verify NFTs.
-    ///
-    /// CHECK: account checked in CPI
-    #[account(mut)]
-    collection_delegate_record: UncheckedAccount<'info>,
-
     /// Token Metadata program.
     ///
     /// CHECK: account constraint checked in account trait
-    #[account(address = mpl_token_metadata::ID)]
-    token_metadata_program: UncheckedAccount<'info>,
+    #[account(address = mpl_asset::ID)]
+    asset_program: UncheckedAccount<'info>,
 
     /// System program.
     system_program: Program<'info, System>,
@@ -184,15 +149,4 @@ pub struct InitializeV2<'info> {
     #[account(address = sysvar::instructions::id())]
     sysvar_instructions: UncheckedAccount<'info>,
 
-    /// Token Authorization Rules program.
-    ///
-    /// CHECK: account constraint checked in account trait
-    #[account(address = MPL_TOKEN_AUTH_RULES_PROGRAM)]
-    authorization_rules_program: Option<UncheckedAccount<'info>>,
-
-    /// Token Authorization rules account for the collection metadata (if any).
-    ///
-    /// CHECK: account checked in CPI
-    #[account(owner = MPL_TOKEN_AUTH_RULES_PROGRAM)]
-    authorization_rules: Option<UncheckedAccount<'info>>,
 }
