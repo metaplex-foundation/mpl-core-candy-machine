@@ -10,7 +10,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -19,7 +19,7 @@ test('it allows minting from a specific address only', async (t) => {
   // Given a loaded Candy Machine with an addressGate guard.
   const umi = await createUmi();
   const allowedAddress = generateSigner(umi);
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -50,7 +50,7 @@ test('it allows minting from a specific address only', async (t) => {
 test('it forbids minting from anyone else', async (t) => {
   // Given a candy machine with an addressGate guard.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -82,7 +82,7 @@ test('it forbids minting from anyone else', async (t) => {
 test('it charges a bot tax when trying to mint using the wrong address', async (t) => {
   // Given a candy machine with an addressGate guard and a bot tax.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

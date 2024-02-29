@@ -11,7 +11,7 @@ import {
 } from '../src';
 import {
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from './_setup';
@@ -19,7 +19,7 @@ import {
 test('it can mint directly from a candy machine as the mint authority', async (t) => {
   // Given a loaded candy machine.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const candyMachineSigner = await createV2(umi, {
     collection,
     configLines: [
@@ -41,7 +41,6 @@ test('it can mint directly from a candy machine as the mint authority', async (t
         assetOwner: owner,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -58,8 +57,8 @@ test('it cannot mint directly from a candy machine if we are not the mint author
   // Given a loaded candy machine with a mint authority A.
   const umi = await createUmi();
   const mintAuthorityA = generateSigner(umi);
-  const collection = await createCollectionNft(umi, {
-    authority: mintAuthorityA,
+  const collection = await createCollection(umi, {
+    updateAuthority: mintAuthorityA.publicKey
   });
   const candyMachineSigner = await createV2(umi, {
     authority: mintAuthorityA.publicKey,
@@ -85,7 +84,6 @@ test('it cannot mint directly from a candy machine if we are not the mint author
         asset: mint.publicKey,
         assetOwner: owner,
         collection: collection.publicKey,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);

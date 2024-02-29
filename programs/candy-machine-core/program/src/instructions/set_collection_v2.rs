@@ -18,15 +18,15 @@ pub fn set_collection_v2(ctx: Context<SetCollectionV2>) -> Result<()> {
     // we don't enforce the "mint in progress" constraint
     if !cmp_pubkeys(
         accounts.new_collection_mint.key,
-        &candy_machine.collection_mint,
+        &candy_machine.collection,
     ) {
         if candy_machine.items_redeemed > 0 {
             return err!(CandyError::NoChangingCollectionDuringMint);
-        } else if !cmp_pubkeys(accounts.collection_mint.key, &candy_machine.collection_mint) {
+        } else if !cmp_pubkeys(accounts.collection_mint.key, &candy_machine.collection) {
             return err!(CandyError::MintMismatch);
         }
 
-        candy_machine.collection_mint = accounts.new_collection_mint.key();
+        candy_machine.collection = accounts.new_collection_mint.key();
     }
 
     if matches!(candy_machine.version, AccountVersion::V2) {

@@ -229,10 +229,10 @@ const defaultsToCandyMachineAssetProgram = () =>
     "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
   );
 
-const defaultsToAssetProgram = () =>
+const defaultsToMplCoreProgram = () =>
   k.programDefault(
-    "mplAsset",
-    "ASSETp3DinZKfiAyvdQG16YWWLJ2X3ZKjg9zku7n1sZD"
+    "mplCore",
+    "CoREzp6dAdLVRKf3EM5tWrsXM2jQwRFeu5uhzsAyjYXL"
   );
 
 // Automatically recognize account default values.
@@ -332,15 +332,15 @@ kinobi.update(
     "mplCandyMachineCore.initializeV2": {
       name: "initializeCandyMachineV2",
       accounts: {
-        assetProgram: { defaultsTo: defaultsToAssetProgram() },
+        mplCoreProgram: { defaultsTo: defaultsToMplCoreProgram() },
       }
     },
     "mplCandyMachineCore.mintAsset": {
       name: "mintAssetFromCandyMachine",
       accounts: {
         asset: { isSigner: "either" },
-        assetProgram: {
-          defaultsTo: defaultsToAssetProgram(),
+        mplCoreProgram: {
+          defaultsTo: defaultsToMplCoreProgram(),
         },
         sysvarInstructions: {
           defaultsTo: k.publicKeyDefault(
@@ -370,7 +370,7 @@ kinobi.update(
         minter: { defaultsTo: k.identityDefault() },
 
         splAtaProgram: { defaultsTo: defaultsToSplAssociatedTokenProgram() },
-        assetProgram: { defaultsTo: defaultsToAssetProgram() },
+        mplCoreProgram: { defaultsTo: defaultsToMplCoreProgram() },
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
@@ -381,7 +381,7 @@ kinobi.update(
       },
       accounts: {
         candyGuard: { defaultsTo: defaultsToCandyGuardPda("candyMachine") },
-        assetProgram: { defaultsTo: defaultsToAssetProgram() },
+        mplCoreProgram: { defaultsTo: defaultsToMplCoreProgram() },
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },

@@ -91,7 +91,7 @@ export type InitializeCandyMachineV2InstructionAccounts = {
    *
    */
 
-  assetProgram?: PublicKey | Pda;
+  mplCoreProgram?: PublicKey | Pda;
   /** System program. */
   systemProgram?: PublicKey | Pda;
   /**
@@ -121,7 +121,6 @@ export type InitializeCandyMachineV2InstructionData = {
   configLineSettings: Option<ConfigLineSettings>;
   /** Hidden setttings */
   hiddenSettings: Option<HiddenSettings>;
-  tokenStandard: number;
 };
 
 export type InitializeCandyMachineV2InstructionDataArgs = {
@@ -141,7 +140,6 @@ export type InitializeCandyMachineV2InstructionDataArgs = {
   configLineSettings?: OptionOrNullable<ConfigLineSettingsArgs>;
   /** Hidden setttings */
   hiddenSettings?: OptionOrNullable<HiddenSettingsArgs>;
-  tokenStandard: number;
 };
 
 export function getInitializeCandyMachineV2InstructionDataSerializer(): Serializer<
@@ -164,7 +162,6 @@ export function getInitializeCandyMachineV2InstructionDataSerializer(): Serializ
         ['creators', array(getCreatorSerializer())],
         ['configLineSettings', option(getConfigLineSettingsSerializer())],
         ['hiddenSettings', option(getHiddenSettingsSerializer())],
-        ['tokenStandard', u8()],
       ],
       { description: 'InitializeCandyMachineV2InstructionData' }
     ),
@@ -213,20 +210,16 @@ export function initializeCandyMachineV2(
     },
     authority: { index: 2, isWritable: false, value: input.authority ?? null },
     payer: { index: 3, isWritable: true, value: input.payer ?? null },
-    collection: {
-      index: 4,
-      isWritable: false,
-      value: input.collection ?? null,
-    },
+    collection: { index: 4, isWritable: true, value: input.collection ?? null },
     collectionUpdateAuthority: {
       index: 5,
       isWritable: true,
       value: input.collectionUpdateAuthority ?? null,
     },
-    assetProgram: {
+    mplCoreProgram: {
       index: 6,
       isWritable: false,
-      value: input.assetProgram ?? null,
+      value: input.mplCoreProgram ?? null,
     },
     systemProgram: {
       index: 7,
@@ -256,12 +249,12 @@ export function initializeCandyMachineV2(
   if (!resolvedAccounts.payer.value) {
     resolvedAccounts.payer.value = context.payer;
   }
-  if (!resolvedAccounts.assetProgram.value) {
-    resolvedAccounts.assetProgram.value = context.programs.getPublicKey(
-      'mplAsset',
-      'ASSETp3DinZKfiAyvdQG16YWWLJ2X3ZKjg9zku7n1sZD'
+  if (!resolvedAccounts.mplCoreProgram.value) {
+    resolvedAccounts.mplCoreProgram.value = context.programs.getPublicKey(
+      'mplCore',
+      'CoREzp6dAdLVRKf3EM5tWrsXM2jQwRFeu5uhzsAyjYXL'
     );
-    resolvedAccounts.assetProgram.isWritable = false;
+    resolvedAccounts.mplCoreProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(

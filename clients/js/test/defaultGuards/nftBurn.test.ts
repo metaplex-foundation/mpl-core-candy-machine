@@ -12,6 +12,7 @@ import {
   assertBotTax,
   assertBurnedNft,
   assertSuccessfulMint,
+  createCollection,
   createCollectionNft,
   createNft,
   createUmi,
@@ -34,7 +35,7 @@ test('it burns a specific NFT to allow minting', async (t) => {
   });
 
   // And a loaded Candy Machine with an nftBurn guard on that collection.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -86,7 +87,7 @@ test('it allows minting even when the payer is different from the minter', async
   });
 
   // And a loaded Candy Machine with an nftBurn guard on that collection.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -128,7 +129,7 @@ test('it fails if there is not valid NFT to burn', async (t) => {
   // Given a loaded Candy Machine with an nftBurn guard on a specific collection.
   const umi = await createUmi();
   const requiredCollection = (await createCollectionNft(umi)).publicKey;
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -168,7 +169,7 @@ test('it charges a bot tax when trying to mint using the wrong NFT', async (t) =
   // an nftBurn guard on a specific collection.
   const umi = await createUmi();
   const requiredCollection = (await createCollectionNft(umi)).publicKey;
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -218,7 +219,7 @@ test('it burns a specific Programmable NFT to allow minting', async (t) => {
   });
 
   // And a loaded Candy Machine with an nftBurn guard on that collection.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

@@ -10,7 +10,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -19,7 +19,7 @@ test('it allows minting when the third party signer is provided', async (t) => {
   // Given a loaded Candy Machine with a third party signer guard.
   const umi = await createUmi();
   const thirdPartySigner = generateSigner(umi);
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -53,7 +53,7 @@ test('it forbids minting when the third party signer is wrong', async (t) => {
   // Given a loaded Candy Machine with a third party signer guard.
   const umi = await createUmi();
   const thirdPartySigner = generateSigner(umi);
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -88,7 +88,7 @@ test('it charges a bot tax when trying to mint using the wrong third party signe
   // Given a loaded Candy Machine with a third party signer guard and a bot tax guard.
   const umi = await createUmi();
   const thirdPartySigner = generateSigner(umi);
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

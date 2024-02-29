@@ -10,14 +10,14 @@ import {
   mintAssetFromCandyMachine,
   setCollectionV2,
 } from '../src';
-import { createCollectionNft, createUmi, createV2 } from './_setup';
+import { createCollection, createUmi, createV2 } from './_setup';
 
 // TODO reenable this test
 // test('it can update the collection of a candy machine v2', async (t) => {
 //   // Given a Candy Machine associated with Collection A.
 //   const umi = await createUmi();
 //   const collectionUpdateAuthorityA = generateSigner(umi);
-//   const collectionA = await createCollectionNft(umi, {
+//   const collectionA = await createCollection(umi, {
 //     authority: collectionUpdateAuthorityA,
 //   });
 //   const candyMachine = await createV2(umi, {
@@ -27,7 +27,7 @@ import { createCollectionNft, createUmi, createV2 } from './_setup';
 
 //   // When we update its collection to Collection B.
 //   const collectionUpdateAuthorityB = generateSigner(umi);
-//   const collectionB = await createCollectionNft(umi, {
+//   const collectionB = await createCollection(umi, {
 //     authority: collectionUpdateAuthorityB,
 //   });
 //   await setCollectionV2(umi, {
@@ -53,7 +53,7 @@ test('it cannot update the collection of a candy machine when mint is in progres
   // Given a Candy Machine associated with Collection A.
   const umi = await createUmi();
   const collectionUpdateAuthorityA = umi.identity;
-  const collectionA = await createCollectionNft(umi);
+  const collectionA = await createCollection(umi);
   const candyMachine = await createV2(umi, {
     collection: collectionA.publicKey,
     collectionUpdateAuthority: collectionUpdateAuthorityA,
@@ -75,15 +75,14 @@ test('it cannot update the collection of a candy machine when mint is in progres
         assetOwner: owner,
         asset: mint,
         collection: publicKey(collectionA),
-        collectionUpdateAuthority: publicKey(collectionUpdateAuthorityA),
       })
     )
     .sendAndConfirm(umi);
 
   // When we try to update its collection to Collection B.
   const collectionUpdateAuthorityB = generateSigner(umi);
-  const collectionB = await createCollectionNft(umi, {
-    authority: collectionUpdateAuthorityB,
+  const collectionB = await createCollection(umi, {
+    updateAuthority: collectionUpdateAuthorityB.publicKey,
   });
   const promise = setCollectionV2(umi, {
     candyMachine: candyMachine.publicKey,
@@ -104,7 +103,7 @@ test('it cannot update the collection of a candy machine when mint is in progres
 //   // Given a Candy Machine associated with Collection A.
 //   const umi = await createUmi();
 //   const collectionUpdateAuthorityA = umi.identity;
-//   const collectionA = await createCollectionNft(umi);
+//   const collectionA = await createCollection(umi);
 //   const candyMachine = await createV2(umi, {
 //     collection: collectionA.publicKey,
 //     collectionUpdateAuthority: collectionUpdateAuthorityA,

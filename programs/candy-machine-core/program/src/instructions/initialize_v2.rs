@@ -1,39 +1,18 @@
 use anchor_lang::{prelude::*, solana_program::sysvar, Discriminator};
-use mpl_token_metadata::{types::TokenStandard, MAX_SYMBOL_LENGTH};
-use mpl_utils::resize_or_reallocate_account_raw;
+use mpl_token_metadata::MAX_SYMBOL_LENGTH;
 
 use crate::{
-    approve_metadata_delegate, assert_token_standard,
-    constants::{
-        AUTHORITY_SEED, HIDDEN_SECTION, RULE_SET_LENGTH, SET,
-    },
-    state::{CandyMachine, CandyMachineData},
-    utils::fixed_length_string,
-    AccountVersion, ApproveMetadataDelegateHelperAccounts,
+    approve_asset_delegate, constants::{
+        AUTHORITY_SEED, HIDDEN_SECTION,
+    }, state::{CandyMachine, CandyMachineData}, utils::fixed_length_string, AccountVersion, ApproveAssetDelegateHelperAccounts, ApproveMetadataDelegateHelperAccounts
 };
 
 pub fn initialize_v2(
     ctx: Context<InitializeV2>,
     data: CandyMachineData,
-    token_standard: u8,
 ) -> Result<()> {
-    // make sure we got a valid token standard
-    assert_token_standard(token_standard)?;
-
     let required_length = data.get_space_for_candy()?;
 
-    if token_standard == TokenStandard::ProgrammableNonFungible as u8
-        && ctx.accounts.candy_machine.data_len() < (required_length + RULE_SET_LENGTH + 1)
-    {
-        msg!("Allocating space to store the rule set");
-
-        resize_or_reallocate_account_raw(
-            &ctx.accounts.candy_machine.to_account_info(),
-            &ctx.accounts.payer.to_account_info(),
-            &ctx.accounts.system_program.to_account_info(),
-            required_length + (1 + RULE_SET_LENGTH),
-        )?;
-    }
 
     let candy_machine_account = &mut ctx.accounts.candy_machine;
 
@@ -43,7 +22,7 @@ pub fn initialize_v2(
         features: [0u8; 6],
         authority: ctx.accounts.authority.key(),
         mint_authority: ctx.accounts.authority.key(),
-        collection_mint: ctx.accounts.collection.key(),
+        collection: ctx.accounts.collection.key(),
         items_redeemed: 0,
     };
 
@@ -62,37 +41,22 @@ pub fn initialize_v2(
         account_data[HIDDEN_SECTION..HIDDEN_SECTION + 4].copy_from_slice(&u32::MIN.to_le_bytes());
     }
 
-    // TODO approve collection delegate to mint to collection
-    // approves the metadata delegate so the candy machine can verify minted NFTs
-    // let delegate_accounts = ApproveMetadataDelegateHelperAccounts {
-    //     token_metadata_program: ctx.accounts.token_metadata_program.to_account_info(),
-    //     authority_pda: ctx.accounts.authority_pda.to_account_info(),
-    //     collection_metadata: ctx.accounts.collection_metadata.to_account_info(),
-    //     collection_mint: ctx.accounts.collection_mint.to_account_info(),
-    //     collection_update_authority: ctx.accounts.collection_update_authority.to_account_info(),
-    //     delegate_record: ctx.accounts.collection_delegate_record.to_account_info(),
-    //     payer: ctx.accounts.payer.to_account_info(),
-    //     system_program: ctx.accounts.system_program.to_account_info(),
-    //     sysvar_instructions: ctx.accounts.sysvar_instructions.to_account_info(),
-    //     authorization_rules_program: ctx
-    //         .accounts
-    //         .authorization_rules_program
-    //         .as_ref()
-    //         .map(|authorization_rules_program| authorization_rules_program.to_account_info()),
-    //     authorization_rules: ctx
-    //         .accounts
-    //         .authorization_rules
-    //         .as_ref()
-    //         .map(|authorization_rules| authorization_rules.to_account_info()),
-    // };
+    let delegate_accounts = ApproveAssetDelegateHelperAccounts {
+        payer: ctx.accounts.payer.to_account_info(),
+        authority_pda: ctx.accounts.authority_pda.to_account_info(),
+        collection: ctx.accounts.collection.to_account_info(),
+        collection_update_authority: ctx.accounts.collection_update_authority.to_account_info(),
+        system_program: ctx.accounts.system_program.to_account_info(),
+        sysvar_instructions: ctx.accounts.sysvar_instructions.to_account_info(),
+        mpl_core_program: ctx.accounts.mpl_core_program.to_account_info(),
+    };
 
-    // approve_metadata_delegate(delegate_accounts)
-    Ok(())
+    approve_asset_delegate(delegate_accounts)
 }
 
 /// Initializes a new candy machine.
 #[derive(Accounts)]
-#[instruction(data: CandyMachineData, token_standard: u8)]
+#[instruction(data: CandyMachineData)]
 pub struct InitializeV2<'info> {
     /// Candy Machine account. The account space must be allocated to allow accounts larger
     /// than 10kb.
@@ -127,6 +91,7 @@ pub struct InitializeV2<'info> {
     /// Mint account of the collection.
     ///
     /// CHECK: account checked in CPI
+    #[account(mut)]
     collection: UncheckedAccount<'info>,
 
     /// Update authority of the collection. This needs to be a signer so the candy
@@ -137,8 +102,8 @@ pub struct InitializeV2<'info> {
     /// Token Metadata program.
     ///
     /// CHECK: account constraint checked in account trait
-    #[account(address = mpl_asset::ID)]
-    asset_program: UncheckedAccount<'info>,
+    #[account(address = mpl_core::ID)]
+    mpl_core_program: UncheckedAccount<'info>,
 
     /// System program.
     system_program: Program<'info, System>,

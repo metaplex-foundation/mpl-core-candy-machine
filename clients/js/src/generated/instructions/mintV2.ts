@@ -90,7 +90,7 @@ export type MintV2InstructionAccounts = {
    *
    */
 
-  assetProgram?: PublicKey | Pda;
+  mplCoreProgram?: PublicKey | Pda;
   /** SPL Token program. */
   splTokenProgram?: PublicKey | Pda;
   /** SPL Associated Token program. */
@@ -205,10 +205,10 @@ export function mintV2(
       isWritable: false,
       value: input.tokenMetadataProgram ?? null,
     },
-    assetProgram: {
+    mplCoreProgram: {
       index: 10,
       isWritable: false,
-      value: input.assetProgram ?? null,
+      value: input.mplCoreProgram ?? null,
     },
     splTokenProgram: {
       index: 11,
@@ -282,12 +282,12 @@ export function mintV2(
     );
     resolvedAccounts.tokenMetadataProgram.isWritable = false;
   }
-  if (!resolvedAccounts.assetProgram.value) {
-    resolvedAccounts.assetProgram.value = context.programs.getPublicKey(
-      'mplAsset',
-      'ASSETp3DinZKfiAyvdQG16YWWLJ2X3ZKjg9zku7n1sZD'
+  if (!resolvedAccounts.mplCoreProgram.value) {
+    resolvedAccounts.mplCoreProgram.value = context.programs.getPublicKey(
+      'mplCore',
+      'CoREzp6dAdLVRKf3EM5tWrsXM2jQwRFeu5uhzsAyjYXL'
     );
-    resolvedAccounts.assetProgram.isWritable = false;
+    resolvedAccounts.mplCoreProgram.isWritable = false;
   }
   if (!resolvedAccounts.splTokenProgram.value) {
     resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(

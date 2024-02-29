@@ -10,7 +10,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -18,7 +18,7 @@ import {
 test('it allows minting until a threshold of NFTs have been redeemed', async (t) => {
   // Given a loaded Candy Machine with a redeemedAmount guard with a threshold of 1 NFT.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [
@@ -51,7 +51,7 @@ test('it allows minting until a threshold of NFTs have been redeemed', async (t)
 test('it forbids minting once the redeemed threshold has been reached', async (t) => {
   // Given a loaded Candy Machine with a redeemedAmount guard with a threshold of 1 NFT.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [
@@ -100,7 +100,7 @@ test('it charges a bot tax when trying to mint once the threshold has been reach
   // Given a loaded Candy Machine with a bot tax guard
   // and a redeemedAmount guard with a threshold of 1 NFT.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [

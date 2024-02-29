@@ -106,7 +106,7 @@
         },
         {
           "name": "collection",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "Mint account of the collection.",
@@ -123,7 +123,7 @@
           ]
         },
         {
-          "name": "assetProgram",
+          "name": "mplCoreProgram",
           "isMut": false,
           "isSigner": false,
           "docs": [
@@ -155,10 +155,6 @@
           "type": {
             "defined": "CandyMachineData"
           }
-        },
-        {
-          "name": "tokenStandard",
-          "type": "u8"
         }
       ]
     },
@@ -248,16 +244,7 @@
           ]
         },
         {
-          "name": "collectionUpdateAuthority",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Update authority of the collection NFT.",
-            ""
-          ]
-        },
-        {
-          "name": "assetProgram",
+          "name": "mplCoreProgram",
           "isMut": false,
           "isSigner": false,
           "docs": [
@@ -328,153 +315,6 @@
           "type": "publicKey"
         }
       ]
-    },
-    {
-      "name": "setCollection",
-      "docs": [
-        "Set the collection mint for the candy machine.",
-        "",
-        "# Accounts",
-        "",
-        "0. `[writable]` Candy Machine account (must be pre-allocated but zero content)",
-        "1. `[signer]` Candy Machine authority",
-        "2. `[]` Authority PDA (seeds `[\"candy_machine\", candy machine id]`)",
-        "3. `[signer]` Payer",
-        "4. `[]` Collection mint",
-        "5. `[]` Collection metadata",
-        "6. `[writable]` Collection authority record",
-        "7. `[signer]` New collection update authority",
-        "8. `[]` Collection metadata",
-        "9. `[]` Collection mint",
-        "10. `[]` New collection master edition",
-        "11. `[]` New collection authority record",
-        "12. `[]` Token Metadata program",
-        "13. `[]` System program"
-      ],
-      "accounts": [
-        {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Candy Machine account."
-          ]
-        },
-        {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": true,
-          "docs": [
-            "Candy Machine authority."
-          ]
-        },
-        {
-          "name": "authorityPda",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Authority PDA.",
-            ""
-          ]
-        },
-        {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true,
-          "docs": [
-            "Payer of the transaction."
-          ]
-        },
-        {
-          "name": "collectionMint",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Mint account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMetadata",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Metadata account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionAuthorityRecord",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Collection authority record.",
-            ""
-          ]
-        },
-        {
-          "name": "newCollectionUpdateAuthority",
-          "isMut": true,
-          "isSigner": true,
-          "docs": [
-            "Update authority of the new collection NFT."
-          ]
-        },
-        {
-          "name": "newCollectionMetadata",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "New collection metadata.",
-            ""
-          ]
-        },
-        {
-          "name": "newCollectionMint",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "New collection mint.",
-            ""
-          ]
-        },
-        {
-          "name": "newCollectionMasterEdition",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "New collection master edition.",
-            ""
-          ]
-        },
-        {
-          "name": "newCollectionAuthorityRecord",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "New collection authority record.",
-            ""
-          ]
-        },
-        {
-          "name": "tokenMetadataProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Token Metadata program.",
-            ""
-          ]
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "System program."
-          ]
-        }
-      ],
-      "args": []
     },
     {
       "name": "setCollectionV2",
@@ -794,7 +634,6 @@
           {
             "name": "features",
             "docs": [
-              "Token standard to mint NFTs.",
               "Features flags."
             ],
             "type": {
@@ -819,7 +658,7 @@
             "type": "publicKey"
           },
           {
-            "name": "collectionMint",
+            "name": "collection",
             "docs": [
               "The collection mint for the candy machine."
             ],

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
-use mpl_asset::{self, instructions::CreateCpiBuilder};
+use mpl_core::{self, instructions::CreateCpiBuilder};
 use solana_program::sysvar;
 
 use crate::{
@@ -16,8 +16,7 @@ pub(crate) struct MintAccounts<'info> {
     pub asset_owner: AccountInfo<'info>,
     pub asset: AccountInfo<'info>,
     pub collection: AccountInfo<'info>,
-    pub collection_update_authority: AccountInfo<'info>,
-    pub asset_program: AccountInfo<'info>,
+    pub mpl_core_program: AccountInfo<'info>,
     pub system_program: AccountInfo<'info>,
     pub sysvar_instructions: Option<AccountInfo<'info>>,
     pub recent_slothashes: AccountInfo<'info>,
@@ -29,11 +28,10 @@ pub fn mint_asset<'info>(ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>) -> R
         collection: ctx.accounts.collection.to_account_info(),
         asset_owner: ctx.accounts.asset_owner.to_account_info(),
         asset: ctx.accounts.asset.to_account_info(),
-        collection_update_authority: ctx.accounts.collection_update_authority.to_account_info(),
         payer: ctx.accounts.payer.to_account_info(),
         recent_slothashes: ctx.accounts.recent_slothashes.to_account_info(),
         system_program: ctx.accounts.system_program.to_account_info(),
-        asset_program: ctx.accounts.asset_program.to_account_info(),
+        mpl_core_program: ctx.accounts.mpl_core_program.to_account_info(),
         sysvar_instructions: Some(ctx.accounts.sysvar_instructions.to_account_info()),
     };
 
@@ -64,15 +62,13 @@ pub(crate) fn process_mint_asset(
     }
 
     // check that we got the correct collection mint
-    if !cmp_pubkeys(&accounts.collection.key(), &candy_machine.collection_mint) {
+    if !cmp_pubkeys(&accounts.collection.key(), &candy_machine.collection) {
         return err!(CandyError::CollectionKeyMismatch);
     }
 
-    // TODO check collection owner
-    // collection metadata must be owner by token metadata
-    // if !cmp_pubkeys(accounts.collection.owner, &mpl_asset::ID) {
-    //     return err!(CandyError::IncorrectOwner);
-    // }
+    // collection metadata must be owner by mpl core
+    if !cmp_pubkeys(accounts.collection.owner, &mpl_core::ID) {
+    }
 
     // TODO check collection stuff
     // let collection_metadata: Metadata =
@@ -110,22 +106,7 @@ pub(crate) fn process_mint_asset(
 
     // (3) minting
 
-    let mut creators: Vec<mpl_token_metadata::types::Creator> =
-        vec![mpl_token_metadata::types::Creator {
-            address: accounts.authority_pda.key(),
-            verified: true,
-            share: 0,
-        }];
-
-    for c in &candy_machine.data.creators {
-        creators.push(mpl_token_metadata::types::Creator {
-            address: c.address,
-            verified: false,
-            share: c.percentage_share,
-        });
-    }
-
-    create_and_mint(candy_machine, accounts, bump, config_line, creators)
+    create_and_mint(candy_machine, accounts, bump, config_line)
 }
 
 /// Selects and returns the information of a config line.
@@ -224,7 +205,6 @@ fn create_and_mint(
     accounts: MintAccounts,
     bump: u8,
     config_line: ConfigLine,
-    creators: Vec<mpl_token_metadata::types::Creator>,
     // collection_metadata: Metadata,
 ) -> Result<()> {
     let candy_machine_key = candy_machine.key();
@@ -239,14 +219,23 @@ fn create_and_mint(
         .as_ref()
         .ok_or(CandyError::MissingInstructionsSysvar)?;
 
-    CreateCpiBuilder::new(&accounts.asset_program)
+    msg!("authority_pda {:?}", accounts.authority_pda);
+
+    let pda = Pubkey::find_program_address(&[
+        AUTHORITY_SEED.as_bytes(),
+        candy_machine_key.as_ref(),], &crate::ID);
+    msg!("generated_pda {:?}", pda);
+
+    CreateCpiBuilder::new(&accounts.mpl_core_program)
         .payer(&accounts.payer)
         .asset_address(&accounts.asset)
         .owner(Some(&accounts.asset_owner))
         .name(config_line.name)
         .uri(config_line.uri)
-        .data_state(mpl_asset::types::DataState::AccountState)
-        .update_authority(Some(&accounts.collection_update_authority))
+        .collection(Some(&accounts.collection))
+        .plugins([].to_vec())
+        .data_state(mpl_core::types::DataState::AccountState)
+        .authority(Some(&accounts.authority_pda))
         .system_program(&accounts.system_program)
         .invoke_signed(&[&authority_seeds])
         .map_err(|error| error.into())
@@ -290,16 +279,11 @@ pub struct MintAsset<'info> {
     #[account(mut)]
     collection: UncheckedAccount<'info>,
 
-    /// Update authority of the collection NFT.
-    ///
-    /// CHECK: account checked in CPI
-    collection_update_authority: UncheckedAccount<'info>,
-
     /// Token Metadata program.
     ///
     /// CHECK: account checked in CPI
-    #[account(address = mpl_asset::ID)]
-    asset_program: UncheckedAccount<'info>,
+    #[account(address = mpl_core::ID)]
+    mpl_core_program: UncheckedAccount<'info>,
 
     /// System program.
     system_program: Program<'info, System>,

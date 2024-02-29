@@ -14,7 +14,7 @@ import {
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -35,7 +35,7 @@ test('it burns a specific token to allow minting', async (t) => {
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the tokenBurn guard.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -91,7 +91,7 @@ test('it allows minting even when the payer is different from the minter', async
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the tokenBurn guard.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -147,7 +147,7 @@ test('it may burn multiple tokens from a specific mint', async (t) => {
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the tokenBurn guard that requires 5 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -202,7 +202,7 @@ test('it fails to mint if there are not enough tokens to burn', async (t) => {
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the tokenBurn guard that requires 2 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -257,7 +257,7 @@ test('it charges a bot tax when trying to mint without the required amount of to
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with a botTax guard and a tokenBurn guard that requires 2 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

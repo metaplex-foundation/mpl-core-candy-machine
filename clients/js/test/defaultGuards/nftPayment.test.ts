@@ -19,6 +19,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
+  createCollection,
   createCollectionNft,
   createNft,
   createUmi,
@@ -35,7 +36,7 @@ test('it transfers an NFT from the payer to the destination', async (t) => {
   const { publicKey: requiredCollection } = await createCollectionNft(umi, {
     authority: requiredCollectionAuthority,
   });
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -93,7 +94,7 @@ test('it allows minting even when the payer is different from the minter', async
   const { publicKey: requiredCollection } = await createCollectionNft(umi, {
     authority: requiredCollectionAuthority,
   });
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -153,7 +154,7 @@ test('it works when the provided NFT is not on an associated token account', asy
   const { publicKey: requiredCollection } = await createCollectionNft(umi, {
     authority: requiredCollectionAuthority,
   });
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -228,7 +229,7 @@ test('it fails if the payer does not own the right NFT', async (t) => {
   const { publicKey: requiredCollection } = await createCollectionNft(umi, {
     authority: requiredCollectionAuthority,
   });
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -276,7 +277,7 @@ test('it fails if the payer tries to provide an NFT from an unverified collectio
   const { publicKey: requiredCollection } = await createCollectionNft(umi, {
     authority: requiredCollectionAuthority,
   });
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -325,7 +326,7 @@ test('it charges a bot tax when trying to pay with the wrong NFT', async (t) => 
   const { publicKey: requiredCollection } = await createCollectionNft(umi, {
     authority: requiredCollectionAuthority,
   });
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -374,7 +375,7 @@ test('it transfers a Programmable NFT from the payer to the destination', async 
   const { publicKey: requiredCollection } = await createCollectionNft(umi, {
     authority: requiredCollectionAuthority,
   });
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

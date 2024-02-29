@@ -13,7 +13,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createMintWithHolders,
   createUmi,
   createV2,
@@ -36,7 +36,7 @@ test('it transfers tokens from the payer to the destination', async (t) => {
   );
 
   // And a loaded Candy Machine with a tokenPayment guard that requires 5 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -96,7 +96,7 @@ test('it allows minting even when the payer is different from the minter', async
   );
 
   // And a loaded Candy Machine with a tokenPayment guard that requires 5 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -154,7 +154,7 @@ test('it fails if the payer does not have enough tokens', async (t) => {
   );
 
   // And a loaded Candy Machine with a tokenPayment guard that requires 5 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -207,7 +207,7 @@ test('it charges a bot tax if the payer does not have enough tokens', async (t) 
   );
 
   // And a loaded Candy Machine with a bot tax guard and a tokenPayment guard that requires 5 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

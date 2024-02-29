@@ -11,7 +11,7 @@ import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -21,7 +21,7 @@ test('it transfers SOL from the payer to the destination', async (t) => {
   // Given a loaded Candy Machine with a solPayment guard.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -65,7 +65,7 @@ test('it fails if the payer does not have enough funds', async (t) => {
   // Given a loaded Candy Machine with a solPayment guard costing 5 SOLs.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -103,7 +103,7 @@ test('it charges a bot tax if the payer does not have enough funds', async (t) =
   // Given a loaded Candy Machine with a solPayment guard costing 5 SOLs and a botTax guard.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

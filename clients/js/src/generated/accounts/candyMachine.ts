@@ -111,7 +111,7 @@ export function getCandyMachineGpaBuilder(
       features: Array<number>;
       authority: PublicKey;
       mintAuthority: PublicKey;
-      collectionMint: PublicKey;
+      collection: PublicKey;
       itemsRedeemed: number | bigint;
       data: CandyMachineDataArgs;
     }>({
@@ -120,7 +120,7 @@ export function getCandyMachineGpaBuilder(
       features: [9, array(u8(), { size: 6 })],
       authority: [15, publicKeySerializer()],
       mintAuthority: [47, publicKeySerializer()],
-      collectionMint: [79, publicKeySerializer()],
+      collection: [79, publicKeySerializer()],
       itemsRedeemed: [111, u64()],
       data: [119, getCandyMachineDataSerializer()],
     })

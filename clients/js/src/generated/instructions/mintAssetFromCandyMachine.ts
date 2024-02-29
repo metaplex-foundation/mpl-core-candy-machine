@@ -64,17 +64,11 @@ export type MintAssetFromCandyMachineInstructionAccounts = {
 
   collection: PublicKey | Pda;
   /**
-   * Update authority of the collection NFT.
-   *
-   */
-
-  collectionUpdateAuthority: PublicKey | Pda;
-  /**
    * Token Metadata program.
    *
    */
 
-  assetProgram?: PublicKey | Pda;
+  mplCoreProgram?: PublicKey | Pda;
   /** System program. */
   systemProgram?: PublicKey | Pda;
   /**
@@ -157,28 +151,23 @@ export function mintAssetFromCandyMachine(
     },
     asset: { index: 5, isWritable: true, value: input.asset ?? null },
     collection: { index: 6, isWritable: true, value: input.collection ?? null },
-    collectionUpdateAuthority: {
+    mplCoreProgram: {
       index: 7,
       isWritable: false,
-      value: input.collectionUpdateAuthority ?? null,
-    },
-    assetProgram: {
-      index: 8,
-      isWritable: false,
-      value: input.assetProgram ?? null,
+      value: input.mplCoreProgram ?? null,
     },
     systemProgram: {
-      index: 9,
+      index: 8,
       isWritable: false,
       value: input.systemProgram ?? null,
     },
     sysvarInstructions: {
-      index: 10,
+      index: 9,
       isWritable: false,
       value: input.sysvarInstructions ?? null,
     },
     recentSlothashes: {
-      index: 11,
+      index: 10,
       isWritable: false,
       value: input.recentSlothashes ?? null,
     },
@@ -194,12 +183,12 @@ export function mintAssetFromCandyMachine(
   if (!resolvedAccounts.payer.value) {
     resolvedAccounts.payer.value = context.payer;
   }
-  if (!resolvedAccounts.assetProgram.value) {
-    resolvedAccounts.assetProgram.value = context.programs.getPublicKey(
-      'mplAsset',
-      'ASSETp3DinZKfiAyvdQG16YWWLJ2X3ZKjg9zku7n1sZD'
+  if (!resolvedAccounts.mplCoreProgram.value) {
+    resolvedAccounts.mplCoreProgram.value = context.programs.getPublicKey(
+      'mplCore',
+      'CoREzp6dAdLVRKf3EM5tWrsXM2jQwRFeu5uhzsAyjYXL'
     );
-    resolvedAccounts.assetProgram.isWritable = false;
+    resolvedAccounts.mplCoreProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(

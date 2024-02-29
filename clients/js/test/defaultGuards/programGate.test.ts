@@ -14,7 +14,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -23,7 +23,7 @@ test('it allows minting with specified program in transaction', async (t) => {
   // Given a loaded Candy Machine with a programGate guard allowing the memo program.
   const umi = await createUmi();
   const memoProgram = getSplMemoProgramId(umi);
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -55,7 +55,7 @@ test('it allows minting even when the payer is different from the minter', async
   // Given a loaded Candy Machine with a programGate guard allowing the memo program.
   const umi = await createUmi();
   const memoProgram = getSplMemoProgramId(umi);
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -89,7 +89,7 @@ test('it allows minting even when the payer is different from the minter', async
 test('it forbids minting with unspecified program in transaction', async (t) => {
   // Given a loaded Candy Machine with a programGate guard allowing no additional programs.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -122,7 +122,7 @@ test('it forbids candy machine creation with more than 5 specified programs', as
   // programGate guard allowing more than 5 programs.
   const umi = await createUmi();
   const memoProgram = getSplMemoProgramId(umi);
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const promise = createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -141,7 +141,7 @@ test('it charges a bot tax when minting with unspecified program in transaction'
   // Given a loaded Candy Machine with a botTax guard
   // and a programGate guard allowing no additional programs.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

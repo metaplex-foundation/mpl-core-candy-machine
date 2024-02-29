@@ -54,9 +54,8 @@ pub mod candy_machine_core {
     pub fn initialize_v2(
         ctx: Context<InitializeV2>,
         data: CandyMachineData,
-        token_standard: u8,
     ) -> Result<()> {
-        instructions::initialize_v2(ctx, data, token_standard)
+        instructions::initialize_v2(ctx, data)
     }
 
     /// Mint an NFT.
@@ -90,28 +89,6 @@ pub mod candy_machine_core {
     ///   1. `[signer]` Candy Machine authority
     pub fn set_authority(ctx: Context<SetAuthority>, new_authority: Pubkey) -> Result<()> {
         instructions::set_authority(ctx, new_authority)
-    }
-
-    /// Set the collection mint for the candy machine.
-    ///
-    /// # Accounts
-    ///
-    ///   0. `[writable]` Candy Machine account (must be pre-allocated but zero content)
-    ///   1. `[signer]` Candy Machine authority
-    ///   2. `[]` Authority PDA (seeds `["candy_machine", candy machine id]`)
-    ///   3. `[signer]` Payer
-    ///   4. `[]` Collection mint
-    ///   5. `[]` Collection metadata
-    ///   6. `[writable]` Collection authority record
-    ///   7. `[signer]` New collection update authority
-    ///   8. `[]` Collection metadata
-    ///   9. `[]` Collection mint
-    ///   10. `[]` New collection master edition
-    ///   11. `[]` New collection authority record
-    ///   12. `[]` Token Metadata program
-    ///   13. `[]` System program
-    pub fn set_collection(ctx: Context<SetCollection>) -> Result<()> {
-        instructions::set_collection(ctx)
     }
 
     /// Set the collection mint for the candy machine.

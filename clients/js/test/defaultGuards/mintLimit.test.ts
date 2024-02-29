@@ -15,7 +15,7 @@ import {
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -23,7 +23,7 @@ import {
 test('it allows minting when the mint limit is not reached', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 5.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [
@@ -67,7 +67,7 @@ test('it allows minting when the mint limit is not reached', async (t) => {
 test('it allows minting even when the payer is different from the minter', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 5.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [
@@ -113,7 +113,7 @@ test('it allows minting even when the payer is different from the minter', async
 test('it forbids minting when the mint limit is reached', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 1.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [
@@ -161,7 +161,7 @@ test('it forbids minting when the mint limit is reached', async (t) => {
 test('the mint limit is local to each wallet', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 1.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [
@@ -215,7 +215,7 @@ test('the mint limit is local to each wallet', async (t) => {
 test('it charges a bot tax when trying to mint after the limit', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 1 and a bot tax guard.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [

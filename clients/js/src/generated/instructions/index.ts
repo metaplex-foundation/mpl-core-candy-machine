@@ -13,7 +13,6 @@ export * from './initializeCandyMachineV2';
 export * from './mintAssetFromCandyMachine';
 export * from './setCandyGuardAuthority';
 export * from './setCandyMachineAuthority';
-export * from './setCollection';
 export * from './setCollectionV2';
 export * from './setMintAuthority';
 export * from './unwrap';

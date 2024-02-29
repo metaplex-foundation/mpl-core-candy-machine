@@ -15,7 +15,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -35,7 +35,7 @@ test('it allows minting when the payer owns a specific token', async (t) => {
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the token gate guard.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -81,7 +81,7 @@ test('it allows minting even when the payer is different from the minter', async
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the token gate guard.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -127,7 +127,7 @@ test('it allows minting when the payer owns multiple tokens from a specific mint
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the token gate guard that requires 5 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -182,7 +182,7 @@ test('it forbids minting when the owner does not own any required tokens', async
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the token gate guard.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -227,7 +227,7 @@ test('it forbids minting when the owner does not own enough tokens', async (t) =
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the token gate guard that requires 10 tokens.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -272,7 +272,7 @@ test('it charges a bot tax when trying to mint without the right amount of token
     .sendAndConfirm(umi);
 
   // And a loaded Candy Machine with the token gate guard and a bot tax guard.
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

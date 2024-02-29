@@ -18,7 +18,7 @@ import {
   GuardSet,
 } from '../src';
 import {
-  createCollectionNft,
+  createCollection,
   createUmi,
   defaultCandyMachineData,
 } from './_setup';
@@ -26,7 +26,7 @@ import {
 test('it can create a candy machine with an associated candy guard', async (t) => {
   // Given an existing collection NFT.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
 
   // When we create a new candy machine with an associated candy guard.
   const candyMachine = generateSigner(umi);

@@ -10,7 +10,7 @@ import {
 } from '@metaplex-foundation/mpl-toolbox';
 import { generateSigner, transactionBuilder } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { getMplAssetProgramId } from '@metaplex-foundation/mpl-asset';
+import { getMplCoreProgramId } from '@metaplex-foundation/mpl-core';
 import {
   createLutForCandyMachine,
   findCandyGuardPda,
@@ -21,7 +21,7 @@ import {
 } from '../src';
 import {
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from './_setup';
@@ -29,7 +29,7 @@ import {
 test('it can create a LUT for a candy machine v2', async (t) => {
   // Given a candy machine with a candy guard.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -72,7 +72,7 @@ test('it can create a LUT for a candy machine v2', async (t) => {
       collectionAuthorityPda,
       getSysvar('instructions'),
       getSysvar('slotHashes'),
-      getMplAssetProgramId(umi),
+      getMplCoreProgramId(umi),
       getSplTokenProgramId(umi),
       getSplAssociatedTokenProgramId(umi),
       getMplTokenMetadataProgramId(umi),
@@ -103,7 +103,7 @@ test('it can create a LUT for a candy machine v2', async (t) => {
 test('it can create a LUT for a candy machine with no candy guard', async (t) => {
   // Given a candy machine with no candy guard.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

@@ -1,5 +1,4 @@
 import { createAccountWithRent } from '@metaplex-foundation/mpl-toolbox';
-import { TokenStandard } from '@metaplex-foundation/mpl-token-metadata';
 import {
   generateSigner,
   none,
@@ -16,7 +15,7 @@ import {
   fetchCandyMachine,
   initializeCandyMachineV2,
 } from '../src';
-import { createCollectionNft, createUmi } from './_setup';
+import { createCollection, createUmi } from './_setup';
 
 /**
  * Note that most of the tests for the "initializeCandyMachineV2" instructions are
@@ -38,7 +37,7 @@ test('it can initialize a new candy machine account', async (t) => {
     .sendAndConfirm(umi);
 
   // And a collection NFT.
-  const collection = await createCollectionNft(umi);
+  const collection = await createCollection(umi);
 
   // When we initialize a candy machine at this address.
   const creator = generateSigner(umi);
@@ -49,7 +48,6 @@ test('it can initialize a new candy machine account', async (t) => {
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
-        tokenStandard: TokenStandard.NonFungible,
         sellerFeeBasisPoints: percentAmount(1.23),
         creators: [
           { address: creator.publicKey, verified: false, percentageShare: 100 },
@@ -74,7 +72,7 @@ test('it can initialize a new candy machine account', async (t) => {
     publicKey: publicKey(candyMachine),
     authority: publicKey(umi.identity),
     mintAuthority: publicKey(umi.identity),
-    collectionMint: publicKey(collection),
+    collection: publicKey(collection),
     version: AccountVersion.V2,
     itemsRedeemed: 0n,
     data: {

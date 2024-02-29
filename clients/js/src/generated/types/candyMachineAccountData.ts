@@ -30,17 +30,14 @@ export type CandyMachineAccountData = {
   discriminator: Array<number>;
   /** Version of the account. */
   version: AccountVersion;
-  /**
-   * Token standard to mint NFTs.
-   * Features flags.
-   */
+  /** Features flags. */
   features: Array<number>;
   /** Authority address. */
   authority: PublicKey;
   /** Authority address allowed to mint from the candy machine. */
   mintAuthority: PublicKey;
   /** The collection mint for the candy machine. */
-  collectionMint: PublicKey;
+  collection: PublicKey;
   /** Number of assets redeemed. */
   itemsRedeemed: bigint;
   /** Candy machine configuration data. */
@@ -50,17 +47,14 @@ export type CandyMachineAccountData = {
 export type CandyMachineAccountDataArgs = {
   /** Version of the account. */
   version: AccountVersionArgs;
-  /**
-   * Token standard to mint NFTs.
-   * Features flags.
-   */
+  /** Features flags. */
   features: Array<number>;
   /** Authority address. */
   authority: PublicKey;
   /** Authority address allowed to mint from the candy machine. */
   mintAuthority: PublicKey;
   /** The collection mint for the candy machine. */
-  collectionMint: PublicKey;
+  collection: PublicKey;
   /** Number of assets redeemed. */
   itemsRedeemed: number | bigint;
   /** Candy machine configuration data. */
@@ -83,7 +77,7 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
         ['features', array(u8(), { size: 6 })],
         ['authority', publicKeySerializer()],
         ['mintAuthority', publicKeySerializer()],
-        ['collectionMint', publicKeySerializer()],
+        ['collection', publicKeySerializer()],
         ['itemsRedeemed', u64()],
         ['data', getCandyMachineDataSerializer()],
       ],

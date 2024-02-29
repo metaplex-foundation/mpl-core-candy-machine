@@ -12,8 +12,6 @@ use super::candy_machine_data::CandyMachineData;
 pub struct CandyMachine {
     /// Version of the account.
     pub version: AccountVersion,
-    /// Token standard to mint NFTs.
-    // pub token_standard: u8,
     /// Features flags.
     pub features: [u8; 6],
     /// Authority address.
@@ -21,7 +19,7 @@ pub struct CandyMachine {
     /// Authority address allowed to mint from the candy machine.
     pub mint_authority: Pubkey,
     /// The collection mint for the candy machine.
-    pub collection_mint: Pubkey,
+    pub collection: Pubkey,
     /// Number of assets redeemed.
     pub items_redeemed: u64,
     /// Candy machine configuration data.

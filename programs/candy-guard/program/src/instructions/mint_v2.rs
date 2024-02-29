@@ -37,7 +37,7 @@ pub fn mint_v2<'info>(
         system_program: ctx.accounts.system_program.to_account_info(),
         sysvar_instructions: ctx.accounts.sysvar_instructions.to_account_info(),
         token_metadata_program: ctx.accounts.token_metadata_program.to_account_info(),
-        asset_program: ctx.accounts.asset_program.to_account_info(),
+        mpl_core_program: ctx.accounts.mpl_core_program.to_account_info(),
         remaining: ctx.remaining_accounts,
         authorization_rules_program: ctx
             .accounts
@@ -126,18 +126,17 @@ fn process_error(ctx: &EvaluationContext, guard_set: &GuardSet, error: Error) ->
 fn validate(ctx: &EvaluationContext) -> Result<()> {
     if !cmp_pubkeys(
         &ctx.accounts.collection.key(),
-        &ctx.accounts.candy_machine.collection_mint,
+        &ctx.accounts.candy_machine.collection,
     ) {
         return err!(CandyGuardError::CollectionKeyMismatch);
     }
 
-    // TODO enforce correct collection
-    // if !cmp_pubkeys(
-    //     ctx.accounts.collection.owner,
-    //     &mpl_asset::ID,
-    // ) {
-    //     return err!(CandyGuardError::IncorrectOwner);
-    // }
+    if !cmp_pubkeys(
+        ctx.accounts.collection.owner,
+        &mpl_core::ID,
+    ) {
+        return err!(CandyGuardError::IncorrectOwner);
+    }
 
     Ok(())
 }
@@ -155,8 +154,7 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
         asset_owner: ctx.accounts.minter.clone(),
         asset: ctx.accounts.asset.clone(),
         collection: ctx.accounts.collection.clone(),
-        collection_update_authority: ctx.accounts.collection_update_authority.clone(),
-        asset_program: ctx.accounts.asset_program.clone(),
+        mpl_core_program: ctx.accounts.mpl_core_program.clone(),
         system_program: ctx.accounts.system_program.clone(),
         sysvar_instructions: ctx.accounts.sysvar_instructions.clone(),
         recent_slothashes: ctx.accounts.recent_slothashes.clone(),
@@ -246,8 +244,8 @@ pub struct MintV2<'info> {
     /// Token Metadata program.
     ///
     /// CHECK: account checked in CPI
-    #[account(address = mpl_asset::ID)]
-    asset_program: UncheckedAccount<'info>,
+    #[account(address = mpl_core::ID)]
+    mpl_core_program: UncheckedAccount<'info>,
 
     /// SPL Token program.
     spl_token_program: Program<'info, Token>,

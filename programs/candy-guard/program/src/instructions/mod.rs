@@ -32,7 +32,7 @@ pub(crate) struct MintAccounts<'b, 'c, 'info> {
     pub(crate) collection_update_authority: AccountInfo<'info>,
     pub(crate) _candy_machine_program: AccountInfo<'info>,
     pub(crate) token_metadata_program: AccountInfo<'info>,
-    pub(crate) asset_program: AccountInfo<'info>,
+    pub(crate) mpl_core_program: AccountInfo<'info>,
     pub(crate) spl_token_program: AccountInfo<'info>,
     pub(crate) spl_ata_program: Option<AccountInfo<'info>>,
     pub(crate) system_program: AccountInfo<'info>,

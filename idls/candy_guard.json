@@ -137,7 +137,7 @@
           ]
         },
         {
-          "name": "assetProgram",
+          "name": "mplCoreProgram",
           "isMut": false,
           "isSigner": false,
           "docs": [

@@ -6,7 +6,7 @@ OUTPUT="./programs/.bin"
 source ${SCRIPT_DIR}/dump.sh ${OUTPUT}
 
 # FIXME TODO Remove this
-cp ~/src/mpl-asset/programs/.bin/mpl_asset_program.so ${OUTPUT}/mpl_asset.so
+cp ~/src/mpl-core/programs/.bin/mpl_core_program.so ${OUTPUT}/mpl_core_program.so
 
 # go to parent folder
 cd $( dirname $( dirname ${SCRIPT_DIR} ) )

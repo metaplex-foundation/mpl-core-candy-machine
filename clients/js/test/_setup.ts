@@ -10,7 +10,8 @@ import {
 import { 
   Asset,
   fetchAsset,
-} from '@metaplex-foundation/mpl-asset'
+  createCollection as baseCreateCollection,
+} from '@metaplex-foundation/mpl-core'
 import {
   createAssociatedToken,
   createMint,
@@ -84,6 +85,20 @@ export const createProgrammableNft = async (
 
   return mint;
 };
+
+export const createCollection = async (
+  umi: Umi,
+  input: Partial<Parameters<typeof baseCreateCollection>[1]> = {}
+): Promise<Signer> => {
+  const mint = generateSigner(umi);
+  await baseCreateCollection(umi, {
+    collectionAddress: mint,
+    ...defaultAssetData(),
+    ...input,
+  }).sendAndConfirm(umi);
+
+  return mint;
+}
 
 export const createCollectionNft = async (
   umi: Umi,
@@ -196,7 +211,7 @@ export const createV2 = async <DA extends GuardSetArgs = DefaultGuardSetArgs>(
 ) => {
   const candyMachine = input.candyMachine ?? generateSigner(umi);
   const collection =
-    input.collection ?? (await createCollectionNft(umi)).publicKey;
+    input.collection ?? (await createCollection(umi)).publicKey;
   let builder = await baseCreateCandyMachineV2(umi, {
     ...defaultCandyMachineData(umi),
     ...input,
@@ -231,6 +246,7 @@ export const defaultAssetData = () => ({
   name: 'My Asset',
   sellerFeeBasisPoints: percentAmount(10, 2),
   uri: 'https://example.com/my-asset.json',
+  plugins: []
 });
 
 export const defaultCandyMachineData = (

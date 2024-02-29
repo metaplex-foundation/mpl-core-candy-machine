@@ -10,7 +10,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
 } from '../_setup';
@@ -18,7 +18,7 @@ import {
 test('it does nothing if all conditions are valid', async (t) => {
   // Given a candy machine with a bot tax guard.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -48,7 +48,7 @@ test('it does nothing if all conditions are valid', async (t) => {
 test('it optionally charges a bot tax if the mint instruction is not the last one', async (t) => {
   // Given a candy machine with a bot tax guard with lastInstruction set to true.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

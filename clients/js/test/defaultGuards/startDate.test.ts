@@ -10,7 +10,7 @@ import { mintV2 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
-  createCollectionNft,
+  createCollection,
   createUmi,
   createV2,
   tomorrow,
@@ -20,7 +20,7 @@ import {
 test('it allows minting after the start date', async (t) => {
   // Given a candy machine with a start date in the past.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -50,7 +50,7 @@ test('it allows minting after the start date', async (t) => {
 test('it forbids minting before the start date', async (t) => {
   // Given a candy machine with a start date in the future.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
@@ -80,7 +80,7 @@ test('it forbids minting before the start date', async (t) => {
 test('it charges a bot tax when trying to mint before the start date', async (t) => {
   // Given a candy machine with a bot tax and start date in the future.
   const umi = await createUmi();
-  const collection = (await createCollectionNft(umi)).publicKey;
+  const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],

@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
+use mpl_core::{instructions::{AddPluginCpiBuilder, AddAuthorityCpiBuilder }, types::{Authority, PluginType, Plugin, UpdateDelegate}};
 use mpl_token_metadata::{
     accounts::Metadata,
     instructions::{
@@ -97,6 +98,23 @@ pub struct ApproveMetadataDelegateHelperAccounts<'info> {
     pub authorization_rules: Option<AccountInfo<'info>>,
     /// CHECK: account checked in CPI
     pub token_metadata_program: AccountInfo<'info>,
+}
+
+pub struct ApproveAssetDelegateHelperAccounts<'info> {
+    /// CHECK: account checked in CPI
+    pub authority_pda: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub collection: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub collection_update_authority: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub payer: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub system_program: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub sysvar_instructions: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub mpl_core_program: AccountInfo<'info>,
 }
 
 pub struct RevokeMetadataDelegateHelperAccounts<'info> {
@@ -240,6 +258,34 @@ pub fn revoke_collection_authority_helper(
             ]])
             .map_err(|error| error.into())
     }
+}
+
+pub fn approve_asset_delegate(accounts: ApproveAssetDelegateHelperAccounts) -> Result<()> {
+    //TODO check whether UpdateDelegate plugin exists
+
+    let add_plugin_res = AddPluginCpiBuilder::new(&accounts.mpl_core_program)
+        .asset_address(&accounts.collection)
+        .authority(&accounts.collection_update_authority)
+        .plugin(Plugin::UpdateDelegate(UpdateDelegate {}))
+        .payer(Some(&accounts.payer))
+        .system_program(&accounts.system_program)
+        .invoke()?;
+        // .map_err(|error| error.into())?;
+        
+
+    // TODO check whether authority exists
+
+    AddAuthorityCpiBuilder::new(&accounts.mpl_core_program)
+        .asset_address(&accounts.collection)
+        .authority(&accounts.collection_update_authority)
+        .plugin_type(PluginType::UpdateDelegate)
+        .system_program(&accounts.system_program)
+        .new_authority(Authority::Pubkey {
+            address: accounts.authority_pda.key()
+        })
+        .payer(Some(&accounts.payer))
+        .invoke()
+        .map_err(|error| error.into())
 }
 
 pub fn approve_metadata_delegate(accounts: ApproveMetadataDelegateHelperAccounts) -> Result<()> {
