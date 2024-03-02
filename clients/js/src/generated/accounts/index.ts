@@ -11,3 +11,4 @@ export * from './allowListProof';
 export * from './candyMachine';
 export * from './freezeEscrow';
 export * from './mintCounter';
+export * from './nftMintCounter';

@@ -31,6 +31,8 @@ export enum GuardType {
   ProgramGate,
   Allocation,
   Token2022Payment,
+  SolFixedFee,
+  NftMintLimit,
 }
 
 export type GuardTypeArgs = GuardType;

@@ -64,40 +64,6 @@ test('it can mint from a candy guard with no guards', async (t) => {
   t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 1n });
 });
 
-// TODO is this a real use case?
-// test('it can mint to an explicit public key that is not the payer nor the minter', async (t) => {
-//   // Given a candy machine with a candy guard.
-//   const umi = await createUmi();
-//   const collection = (await createCollection(umi)).publicKey;
-//   const candyMachineSigner = await createV2(umi, {
-//     collection,
-//     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
-//     guards: {},
-//     tokenStandard: TokenStandard.ProgrammableNonFungible,
-//   });
-//   const candyMachine = candyMachineSigner.publicKey;
-
-//   // When we create a new mint and token account before minting
-//   // Using an explicit owner that is not the payer nor the minter.
-//   const mint = generateSigner(umi);
-//   const minter = generateSigner(umi);
-//   const owner = generateSigner(umi).publicKey;
-//   await transactionBuilder()
-//     .add(
-//       mintV2(umi, {
-//         candyMachine,
-//         minter,
-//         asset: mint.publicKey,
-//         collection,
-//         collectionUpdateAuthority: umi.identity.publicKey,
-//       })
-//     )
-//     .sendAndConfirm(umi);
-
-//   // Then the mint was successful.
-//   await assertSuccessfulMint(t, umi, { mint, owner, name: 'Degen #1' });
-// });
-
 test('it can mint from a candy guard with guards', async (t) => {
   // Given a candy machine with some guards.
   const umi = await createUmi();

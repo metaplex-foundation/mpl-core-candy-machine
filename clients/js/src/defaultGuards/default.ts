@@ -22,12 +22,16 @@ import {
   NftBurnArgs,
   NftGate,
   NftGateArgs,
+  NftMintLimit,
+  NftMintLimitArgs,
   NftPayment,
   NftPaymentArgs,
   ProgramGate,
   ProgramGateArgs,
   RedeemedAmount,
   RedeemedAmountArgs,
+  SolFixedFee,
+  SolFixedFeeArgs,
   SolPayment,
   SolPaymentArgs,
   StartDate,
@@ -70,6 +74,8 @@ import { Token2022PaymentMintArgs } from './token2022Payment';
 import { TokenBurnMintArgs } from './tokenBurn';
 import { TokenGateMintArgs } from './tokenGate';
 import { TokenPaymentMintArgs } from './tokenPayment';
+import { SolFixedFeeMintArgs } from './solFixedFee';
+import { NftMintLimitMintArgs } from './nftMintLimit';
 
 /**
  * The arguments for all default Candy Machine guards.
@@ -96,6 +102,8 @@ export type DefaultGuardSetArgs = GuardSetArgs & {
   programGate: OptionOrNullable<ProgramGateArgs>;
   allocation: OptionOrNullable<AllocationArgs>;
   token2022Payment: OptionOrNullable<Token2022PaymentArgs>;
+  solFixedFee: OptionOrNullable<SolFixedFeeArgs>;
+  nftMintLimit: OptionOrNullable<NftMintLimitArgs>;
 };
 
 /**
@@ -123,6 +131,8 @@ export type DefaultGuardSet = GuardSet & {
   programGate: Option<ProgramGate>;
   allocation: Option<Allocation>;
   token2022Payment: Option<Token2022Payment>;
+  solFixedFee: Option<SolFixedFee>;
+  nftMintLimit: Option<NftMintLimit>;
 };
 
 /**
@@ -150,6 +160,8 @@ export type DefaultGuardSetMintArgs = GuardSetMintArgs & {
   // programGate: no mint settings
   allocation: OptionOrNullable<AllocationMintArgs>;
   token2022Payment: OptionOrNullable<Token2022PaymentMintArgs>;
+  solFixedFee: OptionOrNullable<SolFixedFeeMintArgs>;
+  nftMintLimit: OptionOrNullable<NftMintLimitMintArgs>;
 };
 
 /**
@@ -202,6 +214,8 @@ export const defaultCandyGuardNames: string[] = [
   'programGate',
   'allocation',
   'token2022Payment',
+  'solFixedFee',
+  'nftMintLimit',
 ];
 
 /** @internal */

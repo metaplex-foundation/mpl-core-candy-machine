@@ -7,46 +7,47 @@ import test from 'ava';
 
 import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
 import {
+  CandyMachine,
+  fetchCandyMachine,
   mintAssetFromCandyMachine,
   setCollectionV2,
 } from '../src';
 import { createCollection, createUmi, createV2 } from './_setup';
 
-// TODO reenable this test
-// test('it can update the collection of a candy machine v2', async (t) => {
-//   // Given a Candy Machine associated with Collection A.
-//   const umi = await createUmi();
-//   const collectionUpdateAuthorityA = generateSigner(umi);
-//   const collectionA = await createCollection(umi, {
-//     authority: collectionUpdateAuthorityA,
-//   });
-//   const candyMachine = await createV2(umi, {
-//     collection: collectionA.publicKey,
-//     collectionUpdateAuthority: collectionUpdateAuthorityA,
-//   });
+test('it can update the collection of a candy machine v2', async (t) => {
+  // Given a Candy Machine associated with Collection A.
+  const umi = await createUmi();
+  const collectionUpdateAuthorityA = generateSigner(umi);
+  const collectionA = await createCollection(umi, {
+    updateAuthority: collectionUpdateAuthorityA.publicKey,
+  });
+  const candyMachine = await createV2(umi, {
+    collection: collectionA.publicKey,
+    collectionUpdateAuthority: collectionUpdateAuthorityA,
+  });
 
-//   // When we update its collection to Collection B.
-//   const collectionUpdateAuthorityB = generateSigner(umi);
-//   const collectionB = await createCollection(umi, {
-//     authority: collectionUpdateAuthorityB,
-//   });
-//   await setCollectionV2(umi, {
-//     candyMachine: candyMachine.publicKey,
-//     collectionMint: collectionA.publicKey,
-//     collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,
-//     newCollectionMint: collectionB.publicKey,
-//     newCollectionUpdateAuthority: collectionUpdateAuthorityB,
-//   }).sendAndConfirm(umi);
+  // When we update its collection to Collection B.
+  const collectionUpdateAuthorityB = generateSigner(umi);
+  const collectionB = await createCollection(umi, {
+    updateAuthority: collectionUpdateAuthorityB.publicKey,
+  });
+  await setCollectionV2(umi, {
+    candyMachine: candyMachine.publicKey,
+    collection: collectionA.publicKey,
+    collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,
+    newCollection: collectionB.publicKey,
+    newCollectionUpdateAuthority: collectionUpdateAuthorityB,
+  }).sendAndConfirm(umi);
 
-//   // Then the Candy Machine's collection was updated accordingly.
-//   const candyMachineAccount = await fetchCandyMachine(
-//     umi,
-//     candyMachine.publicKey
-//   );
-//   t.like(candyMachineAccount, <CandyMachine>{
-//     collectionMint: publicKey(collectionB.publicKey),
-//   });
-// });
+  // Then the Candy Machine's collection was updated accordingly.
+  const candyMachineAccount = await fetchCandyMachine(
+    umi,
+    candyMachine.publicKey
+  );
+  t.like(candyMachineAccount, <CandyMachine>{
+    collection: publicKey(collectionB.publicKey),
+  });
+});
 
 
 test('it cannot update the collection of a candy machine when mint is in progress', async (t) => {
@@ -86,9 +87,9 @@ test('it cannot update the collection of a candy machine when mint is in progres
   });
   const promise = setCollectionV2(umi, {
     candyMachine: candyMachine.publicKey,
-    collectionMint: collectionA.publicKey,
+    collection: collectionA.publicKey,
     collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,
-    newCollectionMint: collectionB.publicKey,
+    newCollection: collectionB.publicKey,
     newCollectionUpdateAuthority: collectionUpdateAuthorityB,
   }).sendAndConfirm(umi);
 
@@ -98,7 +99,7 @@ test('it cannot update the collection of a candy machine when mint is in progres
   });
 });
 
-// TODO reenable this test
+// TODO this test probably does not apply anymore because update auth is not required verify collections anymore?
 // test.only('it can set the same collection of a candy machine when mint is in progress', async (t) => {
 //   // Given a Candy Machine associated with Collection A.
 //   const umi = await createUmi();
@@ -125,14 +126,13 @@ test('it cannot update the collection of a candy machine when mint is in progres
 //         assetOwner: owner,
 //         asset: mint,
 //         collection: publicKey(collectionA),
-//         collectionUpdateAuthority: publicKey(collectionUpdateAuthorityA),
 //       })
 //     )
 //     .sendAndConfirm(umi);
 
 //   // And we update the collection update authority to Authority B.
 //   const collectionUpdateAuthorityB = generateSigner(umi);
-//   await updateV1(umi, {
+//   await updateCollection(umi, {
 //     mint: collectionA.publicKey,
 //     newUpdateAuthority: collectionUpdateAuthorityB.publicKey,
 //   }).sendAndConfirm(umi);
@@ -140,9 +140,9 @@ test('it cannot update the collection of a candy machine when mint is in progres
 //   // When we set the same collection.
 //   await setCollectionV2(umi, {
 //     candyMachine: candyMachine.publicKey,
-//     collectionMint: collectionA.publicKey,
+//     collection: collectionA.publicKey,
 //     collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,
-//     newCollectionMint: collectionA.publicKey,
+//     newCollection: collectionA.publicKey,
 //     newCollectionUpdateAuthority: collectionUpdateAuthorityB,
 //   }).sendAndConfirm(umi);
 
@@ -152,6 +152,6 @@ test('it cannot update the collection of a candy machine when mint is in progres
 //     candyMachine.publicKey
 //   );
 //   t.like(candyMachineAccount, <CandyMachine>{
-//     collectionMint: publicKey(collectionA.publicKey),
+//     collection: publicKey(collectionA.publicKey),
 //   });
 // });

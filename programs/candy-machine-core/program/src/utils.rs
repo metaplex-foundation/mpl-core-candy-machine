@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
-use mpl_core::{instructions::{AddPluginCpiBuilder, AddAuthorityCpiBuilder }, types::{Authority, PluginType, Plugin, UpdateDelegate}};
+use mpl_core::{instructions::{AddAuthorityCpiBuilder, AddPluginCpiBuilder, RemoveAuthorityCpiBuilder }, types::{Authority, Plugin, PluginType, UpdateDelegate}};
 use mpl_token_metadata::{
     accounts::Metadata,
     instructions::{
@@ -100,23 +100,6 @@ pub struct ApproveMetadataDelegateHelperAccounts<'info> {
     pub token_metadata_program: AccountInfo<'info>,
 }
 
-pub struct ApproveAssetDelegateHelperAccounts<'info> {
-    /// CHECK: account checked in CPI
-    pub authority_pda: AccountInfo<'info>,
-    /// CHECK: account checked in CPI
-    pub collection: AccountInfo<'info>,
-    /// CHECK: account checked in CPI
-    pub collection_update_authority: AccountInfo<'info>,
-    /// CHECK: account checked in CPI
-    pub payer: AccountInfo<'info>,
-    /// CHECK: account checked in CPI
-    pub system_program: AccountInfo<'info>,
-    /// CHECK: account checked in CPI
-    pub sysvar_instructions: AccountInfo<'info>,
-    /// CHECK: account checked in CPI
-    pub mpl_core_program: AccountInfo<'info>,
-}
-
 pub struct RevokeMetadataDelegateHelperAccounts<'info> {
     /// CHECK: account checked in CPI
     pub delegate_record: AccountInfo<'info>,
@@ -140,6 +123,38 @@ pub struct RevokeMetadataDelegateHelperAccounts<'info> {
     pub authorization_rules: Option<AccountInfo<'info>>,
     /// CHECK: account checked in CPI
     pub token_metadata_program: AccountInfo<'info>,
+}
+
+pub struct ApproveAssetDelegateHelperAccounts<'info> {
+    /// CHECK: account checked in CPI
+    pub authority_pda: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub collection: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub collection_update_authority: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub payer: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub system_program: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub sysvar_instructions: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub mpl_core_program: AccountInfo<'info>,
+}
+
+pub struct RevokeAssetDelegateHelperAccounts<'info> {
+    /// CHECK: account checked in CPI
+    pub authority_pda: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub collection: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub payer: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub system_program: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub sysvar_instructions: AccountInfo<'info>,
+    /// CHECK: account checked in CPI
+    pub mpl_core_program: AccountInfo<'info>,
 }
 
 pub fn assert_initialized<T: Pack + IsInitialized>(account_info: &AccountInfo) -> Result<T> {
@@ -286,6 +301,30 @@ pub fn approve_asset_delegate(accounts: ApproveAssetDelegateHelperAccounts) -> R
         .payer(Some(&accounts.payer))
         .invoke()
         .map_err(|error| error.into())
+}
+
+pub fn revoke_asset_delegate(
+    accounts: RevokeAssetDelegateHelperAccounts,
+    candy_machine: Pubkey,
+    signer_bump: u8,
+) -> Result<()> {
+    RemoveAuthorityCpiBuilder::new(&accounts.mpl_core_program)
+        .asset_address(&accounts.collection)
+        .authority(&accounts.authority_pda)
+        .plugin_type(PluginType::UpdateDelegate)
+        .system_program(&accounts.system_program)
+        .authority_to_remove(Authority::Pubkey {
+            address: accounts.authority_pda.key()
+        })
+        .payer(Some(&accounts.payer))
+        .invoke_signed(&[&[
+            AUTHORITY_SEED.as_bytes(),
+            candy_machine.as_ref(),
+            &[signer_bump],
+        ]])
+        .map_err(|error| error.into())
+
+    // TODO remove plugin if empty
 }
 
 pub fn approve_metadata_delegate(accounts: ApproveMetadataDelegateHelperAccounts) -> Result<()> {

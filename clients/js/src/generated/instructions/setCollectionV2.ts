@@ -7,12 +7,6 @@
  */
 
 import {
-  MetadataDelegateRole,
-  findMasterEditionPda,
-  findMetadataDelegateRecordPda,
-  findMetadataPda,
-} from '@metaplex-foundation/mpl-token-metadata';
-import {
   Context,
   Pda,
   PublicKey,
@@ -61,19 +55,7 @@ export type SetCollectionV2InstructionAccounts = {
    *
    */
 
-  collectionMint: PublicKey | Pda;
-  /**
-   * Metadata account of the collection.
-   *
-   */
-
-  collectionMetadata?: PublicKey | Pda;
-  /**
-   * Collection authority or metadata delegate record.
-   *
-   */
-
-  collectionDelegateRecord?: PublicKey | Pda;
+  collection: PublicKey | Pda;
   /** Update authority of the new collection NFT. */
   newCollectionUpdateAuthority: Signer;
   /**
@@ -81,31 +63,13 @@ export type SetCollectionV2InstructionAccounts = {
    *
    */
 
-  newCollectionMint: PublicKey | Pda;
-  /**
-   * New collection metadata.
-   *
-   */
-
-  newCollectionMetadata?: PublicKey | Pda;
-  /**
-   * New collection master edition.
-   *
-   */
-
-  newCollectionMasterEdition?: PublicKey | Pda;
-  /**
-   * New metadata delegate record.
-   *
-   */
-
-  newCollectionDelegateRecord?: PublicKey | Pda;
+  newCollection: PublicKey | Pda;
   /**
    * Token Metadata program.
    *
    */
 
-  tokenMetadataProgram?: PublicKey | Pda;
+  mplCoreProgram?: PublicKey | Pda;
   /** System program. */
   systemProgram?: PublicKey | Pda;
   /**
@@ -114,18 +78,6 @@ export type SetCollectionV2InstructionAccounts = {
    */
 
   sysvarInstructions?: PublicKey | Pda;
-  /**
-   * Token Authorization Rules program.
-   *
-   */
-
-  authorizationRulesProgram?: PublicKey | Pda;
-  /**
-   * Token Authorization rules account for the collection metadata (if any).
-   *
-   */
-
-  authorizationRules?: PublicKey | Pda;
 };
 
 // Data.
@@ -183,70 +135,31 @@ export function setCollectionV2(
       isWritable: false,
       value: input.collectionUpdateAuthority ?? null,
     },
-    collectionMint: {
-      index: 5,
-      isWritable: false,
-      value: input.collectionMint ?? null,
-    },
-    collectionMetadata: {
-      index: 6,
-      isWritable: true,
-      value: input.collectionMetadata ?? null,
-    },
-    collectionDelegateRecord: {
-      index: 7,
-      isWritable: true,
-      value: input.collectionDelegateRecord ?? null,
-    },
+    collection: { index: 5, isWritable: true, value: input.collection ?? null },
     newCollectionUpdateAuthority: {
-      index: 8,
+      index: 6,
       isWritable: false,
       value: input.newCollectionUpdateAuthority ?? null,
     },
-    newCollectionMint: {
-      index: 9,
-      isWritable: false,
-      value: input.newCollectionMint ?? null,
-    },
-    newCollectionMetadata: {
-      index: 10,
+    newCollection: {
+      index: 7,
       isWritable: true,
-      value: input.newCollectionMetadata ?? null,
+      value: input.newCollection ?? null,
     },
-    newCollectionMasterEdition: {
-      index: 11,
+    mplCoreProgram: {
+      index: 8,
       isWritable: false,
-      value: input.newCollectionMasterEdition ?? null,
-    },
-    newCollectionDelegateRecord: {
-      index: 12,
-      isWritable: true,
-      value: input.newCollectionDelegateRecord ?? null,
-    },
-    tokenMetadataProgram: {
-      index: 13,
-      isWritable: false,
-      value: input.tokenMetadataProgram ?? null,
+      value: input.mplCoreProgram ?? null,
     },
     systemProgram: {
-      index: 14,
+      index: 9,
       isWritable: false,
       value: input.systemProgram ?? null,
     },
     sysvarInstructions: {
-      index: 15,
+      index: 10,
       isWritable: false,
       value: input.sysvarInstructions ?? null,
-    },
-    authorizationRulesProgram: {
-      index: 16,
-      isWritable: false,
-      value: input.authorizationRulesProgram ?? null,
-    },
-    authorizationRules: {
-      index: 17,
-      isWritable: false,
-      value: input.authorizationRules ?? null,
     },
   };
 
@@ -263,50 +176,12 @@ export function setCollectionV2(
   if (!resolvedAccounts.payer.value) {
     resolvedAccounts.payer.value = context.payer;
   }
-  if (!resolvedAccounts.collectionMetadata.value) {
-    resolvedAccounts.collectionMetadata.value = findMetadataPda(context, {
-      mint: expectPublicKey(resolvedAccounts.collectionMint.value),
-    });
-  }
-  if (!resolvedAccounts.collectionDelegateRecord.value) {
-    resolvedAccounts.collectionDelegateRecord.value =
-      findMetadataDelegateRecordPda(context, {
-        mint: expectPublicKey(resolvedAccounts.collectionMint.value),
-        delegateRole: MetadataDelegateRole.Collection,
-        updateAuthority: expectPublicKey(
-          resolvedAccounts.collectionUpdateAuthority.value
-        ),
-        delegate: expectPublicKey(resolvedAccounts.authorityPda.value),
-      });
-  }
-  if (!resolvedAccounts.newCollectionMetadata.value) {
-    resolvedAccounts.newCollectionMetadata.value = findMetadataPda(context, {
-      mint: expectPublicKey(resolvedAccounts.newCollectionMint.value),
-    });
-  }
-  if (!resolvedAccounts.newCollectionMasterEdition.value) {
-    resolvedAccounts.newCollectionMasterEdition.value = findMasterEditionPda(
-      context,
-      { mint: expectPublicKey(resolvedAccounts.newCollectionMint.value) }
+  if (!resolvedAccounts.mplCoreProgram.value) {
+    resolvedAccounts.mplCoreProgram.value = context.programs.getPublicKey(
+      'mplCore',
+      'CoREzp6dAdLVRKf3EM5tWrsXM2jQwRFeu5uhzsAyjYXL'
     );
-  }
-  if (!resolvedAccounts.newCollectionDelegateRecord.value) {
-    resolvedAccounts.newCollectionDelegateRecord.value =
-      findMetadataDelegateRecordPda(context, {
-        mint: expectPublicKey(resolvedAccounts.newCollectionMint.value),
-        delegateRole: MetadataDelegateRole.Collection,
-        updateAuthority: expectPublicKey(
-          resolvedAccounts.newCollectionUpdateAuthority.value
-        ),
-        delegate: expectPublicKey(resolvedAccounts.authorityPda.value),
-      });
-  }
-  if (!resolvedAccounts.tokenMetadataProgram.value) {
-    resolvedAccounts.tokenMetadataProgram.value = context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    );
-    resolvedAccounts.tokenMetadataProgram.isWritable = false;
+    resolvedAccounts.mplCoreProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(

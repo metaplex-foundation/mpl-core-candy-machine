@@ -387,29 +387,11 @@
           ]
         },
         {
-          "name": "collectionMint",
-          "isMut": false,
+          "name": "collection",
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "Mint account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionMetadata",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Metadata account of the collection.",
-            ""
-          ]
-        },
-        {
-          "name": "collectionDelegateRecord",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "Collection authority or metadata delegate record.",
             ""
           ]
         },
@@ -422,8 +404,8 @@
           ]
         },
         {
-          "name": "newCollectionMint",
-          "isMut": false,
+          "name": "newCollection",
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "New collection mint.",
@@ -431,34 +413,7 @@
           ]
         },
         {
-          "name": "newCollectionMetadata",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "New collection metadata.",
-            ""
-          ]
-        },
-        {
-          "name": "newCollectionMasterEdition",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "New collection master edition.",
-            ""
-          ]
-        },
-        {
-          "name": "newCollectionDelegateRecord",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "New metadata delegate record.",
-            ""
-          ]
-        },
-        {
-          "name": "tokenMetadataProgram",
+          "name": "mplCoreProgram",
           "isMut": false,
           "isSigner": false,
           "docs": [
@@ -480,26 +435,6 @@
           "isSigner": false,
           "docs": [
             "Instructions sysvar account.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRulesProgram",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization Rules program.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRules",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization rules account for the collection metadata (if any).",
             ""
           ]
         }

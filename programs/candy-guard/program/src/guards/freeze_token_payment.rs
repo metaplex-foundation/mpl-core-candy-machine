@@ -34,7 +34,6 @@ use crate::{
 ///   2. `[writable]` Token account holding the required amount.
 ///   3. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA
 ///                   pubkey, token program pubkey, nft mint pubkey]`).
-///   4. `[optional]` Authorization rule set for the minted pNFT.
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct FreezeTokenPayment {
     pub amount: u64,
@@ -236,31 +235,6 @@ impl Condition for FreezeTokenPayment {
         let nft_ata = try_get_account_info(ctx.accounts.remaining, index + 1)?;
         ctx.account_cursor += 1;
 
-        // TODO validate something here??
-        // if nft_ata.data_is_empty() {
-        //     // for unitialized accounts, we need to check the derivation since the
-        //     // account will be created during mint only if it is an ATA
-
-        //     let (derivation, _) = Pubkey::find_program_address(
-        //         &[
-        //             ctx.accounts.minter.key.as_ref(),
-        //             spl_token::id().as_ref(),
-        //             ctx.accounts.nft_mint.key.as_ref(),
-        //         ],
-        //         &spl_associated_token_account::id(),
-        //     );
-
-        //     assert_keys_equal(&derivation, nft_ata.key)?;
-        // } else {
-        //     // validates if the existing account is a token account
-        //     assert_is_token_account(nft_ata, ctx.accounts.minter.key, ctx.accounts.nft_mint.key)?;
-        // }
-
-        // // it has to match the 'token' account (if present)
-        // if let Some(token_info) = &ctx.accounts.token {
-        //     assert_keys_equal(nft_ata.key, token_info.key)?;
-        // }
-
         let token_account_info = try_get_account_info(ctx.accounts.remaining, index + 2)?;
         // validate freeze_pda ata
         let destination_ata = try_get_account_info(ctx.accounts.remaining, index + 3)?;
@@ -355,7 +329,6 @@ impl Condition for FreezeTokenPayment {
             ctx,
             ctx.indices["freeze_token_payment"],
             &self.destination_ata,
-            4,
         )
     }
 }

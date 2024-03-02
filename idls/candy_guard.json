@@ -650,8 +650,7 @@
         "0. `[writable]` Freeze PDA to receive the funds (seeds `[\"freeze_escrow\",",
         "destination pubkey, candy guard pubkey, candy machine pubkey]`).",
         "1. `[]` Associate token account of the NFT (seeds `[payer pubkey, token",
-        "program pubkey, nft mint pubkey]`).",
-        "2. `[optional]` Authorization rule set for the minted pNFT."
+        "program pubkey, nft mint pubkey]`)."
       ],
       "type": {
         "kind": "struct",
@@ -680,8 +679,7 @@
         "program pubkey, nft mint pubkey]`).",
         "2. `[writable]` Token account holding the required amount.",
         "3. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA",
-        "pubkey, token program pubkey, nft mint pubkey]`).",
-        "4. `[optional]` Authorization rule set for the minted pNFT."
+        "pubkey, token program pubkey, nft mint pubkey]`)."
       ],
       "type": {
         "kind": "struct",
@@ -825,6 +823,61 @@
       }
     },
     {
+      "name": "NftMintLimit",
+      "docs": [
+        "Gaurd to set a limit of mints per wallet based on holding a specific NFT.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[writable]` Mint counter PDA. The PDA is derived",
+        "using the seed `[\"nft_mint_limit\", nft mint guard id, mint key,",
+        "candy guard pubkey, candy machine pubkey]`.",
+        "1. `[]` Token account of the NFT.",
+        "2. `[]` Metadata account of the NFT."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": [
+              "Unique identifier of the mint limit."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "limit",
+            "docs": [
+              "Limit of mints per individual mint address."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "requiredCollection",
+            "docs": [
+              "Required collection of the mint."
+            ],
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NftMintCounter",
+      "docs": [
+        "PDA to track the number of mints for an individual address."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
       "name": "NftPayment",
       "docs": [
         "Guard that charges another NFT (token) from a specific collection as payment",
@@ -888,6 +941,29 @@
           {
             "name": "maximum",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SolFixedFee",
+      "docs": [
+        "Guard that charges an amount in SOL (lamports) for the mint.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[]` Account to receive the fees."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lamports",
+            "type": "u64"
+          },
+          {
+            "name": "destination",
+            "type": "publicKey"
           }
         ]
       }
@@ -1366,6 +1442,28 @@
                 "defined": "Token2022Payment"
               }
             }
+          },
+          {
+            "name": "solFixedFee",
+            "docs": [
+              "Sol fixed fee for launchpads, marketplaces to define custom fees"
+            ],
+            "type": {
+              "option": {
+                "defined": "SolFixedFee"
+              }
+            }
+          },
+          {
+            "name": "nftMintLimit",
+            "docs": [
+              "NFT mint limit guard (add a limit on the number of mints per NFT)."
+            ],
+            "type": {
+              "option": {
+                "defined": "NftMintLimit"
+              }
+            }
           }
         ]
       }
@@ -1457,6 +1555,12 @@
           },
           {
             "name": "Token2022Payment"
+          },
+          {
+            "name": "SolFixedFee"
+          },
+          {
+            "name": "NftMintLimit"
           }
         ]
       }

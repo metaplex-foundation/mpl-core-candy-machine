@@ -11,6 +11,7 @@ import {
   Asset,
   fetchAsset,
   createCollection as baseCreateCollection,
+  AssetWithPlugins
 } from '@metaplex-foundation/mpl-core'
 import {
   createAssociatedToken,
@@ -371,3 +372,7 @@ export const assertBurnedNft = async (
 
 export const yesterday = (): DateTime => now() - 3600n * 24n;
 export const tomorrow = (): DateTime => now() + 3600n * 24n;
+
+// TODO move to mpl-core
+export const isFrozen = (asset: AssetWithPlugins): boolean => 
+  (asset.plugins?.find((p) => p.plugin.__kind === 'Freeze')?.plugin as any).fields[0].frozen || false;

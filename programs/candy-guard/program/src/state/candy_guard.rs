@@ -55,6 +55,8 @@ pub struct CandyGuard {
     // 19) program gate
     // 20) allocation
     // 21) token2022 payment
+    // 22) sol fixed fee
+    // 23) nft mint limit
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
@@ -116,6 +118,10 @@ pub struct GuardSet {
     pub allocation: Option<Allocation>,
     /// Token2022 payment guard (set the price for the mint in spl-token-2022 amount).
     pub token2022_payment: Option<Token2022Payment>,
+    /// Sol fixed fee for launchpads, marketplaces to define custom fees
+    pub sol_fixed_fee: Option<SolFixedFee>,
+    /// NFT mint limit guard (add a limit on the number of mints per NFT).
+    pub nft_mint_limit: Option<NftMintLimit>,
 }
 
 /// Available guard types.
@@ -142,6 +148,8 @@ pub enum GuardType {
     ProgramGate,
     Allocation,
     Token2022Payment,
+    SolFixedFee,
+    NftMintLimit,
 }
 
 impl GuardType {

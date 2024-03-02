@@ -25,6 +25,7 @@ kinobi.update(
     "mintCounter",
     "allowListProof",
     "allocationTracker",
+    "nftMintCounter",
   ])
 );
 
@@ -106,6 +107,21 @@ kinobi.update(
           k.numberTypeNode("u8"),
           "Unique identifier of the allocation"
         ),
+        candyGuardSeed,
+        candyMachineSeed,
+      ],
+    },
+    nftMintCounter: {
+      size: 2,
+      discriminator: k.sizeAccountDiscriminator(),
+      seeds: [
+        k.stringConstantSeed("nft_mint_limit"),
+        k.variableSeed(
+          "id",
+          k.numberTypeNode("u8"),
+          "A unique identifier in the context of a NFT mint/Candy Machine/Candy Guard combo"
+        ),
+        k.publicKeySeed("mint", "The address of the NFT mint"),
         candyGuardSeed,
         candyMachineSeed,
       ],
@@ -239,6 +255,11 @@ const defaultsToMplCoreProgram = () =>
 kinobi.update(
   new k.SetInstructionAccountDefaultValuesVisitor([
     {
+      ...defaultsToMplCoreProgram(),
+      account: "mplCoreProgram",
+      ignoreIfOptional: true,
+    },
+    {
       ...k.publicKeyDefault("SysvarS1otHashes111111111111111111111111111"),
       account: /^recentSlothashes$/,
       ignoreIfOptional: true,
@@ -331,9 +352,6 @@ kinobi.update(
     },
     "mplCandyMachineCore.initializeV2": {
       name: "initializeCandyMachineV2",
-      accounts: {
-        mplCoreProgram: { defaultsTo: defaultsToMplCoreProgram() },
-      }
     },
     "mplCandyMachineCore.mintAsset": {
       name: "mintAssetFromCandyMachine",
@@ -370,7 +388,6 @@ kinobi.update(
         minter: { defaultsTo: k.identityDefault() },
 
         splAtaProgram: { defaultsTo: defaultsToSplAssociatedTokenProgram() },
-        mplCoreProgram: { defaultsTo: defaultsToMplCoreProgram() },
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
@@ -381,7 +398,6 @@ kinobi.update(
       },
       accounts: {
         candyGuard: { defaultsTo: defaultsToCandyGuardPda("candyMachine") },
-        mplCoreProgram: { defaultsTo: defaultsToMplCoreProgram() },
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
@@ -443,6 +459,7 @@ kinobi.update(
     "botTax.lamports": { kind: "SolAmount" },
     "solPayment.lamports": { kind: "SolAmount" },
     "freezeSolPayment.lamports": { kind: "SolAmount" },
+    "solFixedFee.lamports": { kind: "SolAmount" },
   })
 );
 
