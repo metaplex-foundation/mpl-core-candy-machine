@@ -61,7 +61,6 @@ test('it transfers an NFT from the payer to the destination', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftPayment: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -121,7 +120,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftPayment: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -195,7 +193,6 @@ test('it works when the provided NFT is not on an associated token account', asy
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftPayment: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -252,7 +249,6 @@ test('it fails if the payer does not own the right NFT', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftPayment: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -301,7 +297,6 @@ test('it fails if the payer tries to provide an NFT from an unverified collectio
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftPayment: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -350,7 +345,6 @@ test('it charges a bot tax when trying to pay with the wrong NFT', async (t) => 
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftPayment: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -401,7 +395,6 @@ test('it transfers a Programmable NFT from the payer to the destination', async 
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftPayment: some({
             tokenStandard: TokenStandard.ProgrammableNonFungible,

@@ -25,11 +25,13 @@ import {
  * 3. `[]` Account to receive the NFT.
  * 4. `[writeable]` Destination PDA key (seeds [destination pubkey, token program id, nft mint pubkey]).
  * 5. `[]` spl-associate-token program ID.
- * 6. `[]` Master edition (pNFT)
- * 7. `[writable]` Owner token record (pNFT)
- * 8. `[writable]` Destination token record (pNFT)
- * 9. `[]` Token Authorization Rules program (pNFT)
- * 10. `[]` Token Authorization Rules account (pNFT)
+ * 6. `[]` SPL token program.
+ * 7. `[]` Token Metadata program.
+ * 8. `[]` Master edition (pNFT)
+ * 9. `[writable]` Owner token record (pNFT)
+ * 10. `[writable]` Destination token record (pNFT)
+ * 11. `[]` Token Authorization Rules program (pNFT)
+ * 12. `[]` Token Authorization Rules account (pNFT)
  */
 
 export type NftPayment = {

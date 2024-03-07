@@ -58,7 +58,6 @@ test('it transfers tokens from the payer to the destination', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenPayment: some({ mint: tokenMint.publicKey, destinationAta }),
         },
@@ -119,7 +118,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenPayment: some({ mint: tokenMint.publicKey, destinationAta }),
         },
@@ -176,7 +174,6 @@ test('it fails if the payer does not have enough tokens', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenPayment: some({ mint: tokenMint.publicKey, destinationAta }),
         },
@@ -230,7 +227,6 @@ test('it charges a bot tax if the payer does not have enough tokens', async (t) 
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenPayment: some({ mint: tokenMint.publicKey, destinationAta }),
         },

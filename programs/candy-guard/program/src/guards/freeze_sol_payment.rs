@@ -107,7 +107,7 @@ impl Guard for FreezeSolPayment {
             //   0. `[writable]` Freeze PDA to receive the funds (seeds `["freeze_escrow",
             //                   destination pubkey, candy guard pubkey, candy machine pubkey]`).
             //   1. `[writable]` Mint account for the Asset.
-            //   2. `[]` Collection account for the Asset.
+            //   2. `[writable]` Collection account for the Asset.
             //   3. `[]` MPL Core program ID.
             //   4. `[]` System program.
             FreezeInstruction::Thaw => {
@@ -317,7 +317,6 @@ pub fn freeze_nft(
 
     let candy_guard_key = &ctx.accounts.candy_guard.key();
     let candy_machine_key = &ctx.accounts.candy_machine.key();
-    let owner = &ctx.accounts.minter;
 
     let seeds = [
         FreezeEscrow::PREFIX_SEED,
@@ -363,9 +362,7 @@ pub fn freeze_nft(
         .authority(&ctx.accounts.minter)
         .asset(&ctx.accounts.asset)
         .plugin_type(PluginType::Freeze)
-        .authority_to_remove(Authority::Pubkey {
-            address: owner.key(),
-        })
+        .authority_to_remove(Authority::Owner)
         .payer(Some(&ctx.accounts.payer))
         .system_program(&ctx.accounts.system_program)
         .invoke()
@@ -539,7 +536,6 @@ pub fn thaw_nft<'info>(
             .system_program(system_program)
             .invoke_signed(&[&signer])?;
 
-        // TODO remove the plugin if there will be only the owner authority left?
         RemovePluginAuthorityCpiBuilder::new(mpl_core_program)
             .authority(freeze_pda)
             .collection(Some(collection))

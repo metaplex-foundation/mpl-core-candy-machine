@@ -42,7 +42,6 @@ test('it allows minting with specified program in transaction', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -77,7 +76,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -108,7 +106,6 @@ test('it forbids minting with unspecified program in transaction', async (t) => 
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -161,7 +158,6 @@ test('it charges a bot tax when minting with unspecified program in transaction'
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);

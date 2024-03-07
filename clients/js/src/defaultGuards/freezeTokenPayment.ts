@@ -59,6 +59,7 @@ export const freezeTokenPaymentGuardManifest: GuardManifest<
         { publicKey: freezeEscrow, isWritable: true },
         { publicKey: tokenAddress, isWritable: true },
         { publicKey: freezeAta, isWritable: true },
+        { publicKey: getSplTokenProgramId(context), isWritable: false}
       ],
     };
   },
@@ -238,7 +239,7 @@ const thawRouteInstruction: RouteParser<FreezeTokenPaymentRouteArgsThaw> = (
   const remainingAccounts: GuardRemainingAccount[] = [
     { publicKey: freezeEscrow, isWritable: true },
     { publicKey: args.asset, isWritable: true },
-    { publicKey: args.collection, isWritable: false },
+    { publicKey: args.collection, isWritable: true },
     { publicKey: getMplCoreProgramId(context), isWritable: false },
     { publicKey: getSplSystemProgramId(context), isWritable: false },
   ];

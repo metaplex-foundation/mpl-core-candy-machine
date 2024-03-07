@@ -25,7 +25,6 @@ import {
   findCandyGuardPda,
   findFreezeEscrowPda,
   FreezeEscrow,
-  getMplTokenAuthRulesProgramId,
   mintV2,
   route,
 } from '../../src';
@@ -94,7 +93,6 @@ test('it transfers tokens to an escrow account and freezes the NFT', async (t) =
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
             mint: publicKey(tokenMint),
@@ -180,7 +178,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
             mint: publicKey(tokenMint),
@@ -482,7 +479,6 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
         candyMachine,
         asset: nftD,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         group: some('GROUPD'),
         mintArgs: {
           tokenPayment: some({
@@ -617,7 +613,6 @@ test('it fails to mint if the freeze escrow was not initialized', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
             mint: publicKey(tokenMint),
@@ -674,7 +669,6 @@ test('it fails to mint if the payer does not have enough tokens', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
             mint: publicKey(tokenMint),
@@ -730,7 +724,6 @@ test('it charges a bot tax if something goes wrong', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
             mint: publicKey(tokenMint),
@@ -785,14 +778,12 @@ test('it transfers tokens to an escrow account and locks the Programmable NFT', 
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
             mint: tokenMint.publicKey,
             destinationAta,
           }),
         },
-        authorizationRulesProgram: getMplTokenAuthRulesProgramId(umi),
       })
     )
     .sendAndConfirm(umi);
@@ -872,7 +863,6 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeTokenPayment: some({
             mint: tokenMint.publicKey,
@@ -880,7 +870,6 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
             nftRuleSet: METAPLEX_DEFAULT_RULESET,
           }),
         },
-        authorizationRulesProgram: getMplTokenAuthRulesProgramId(umi),
       })
     )
     .sendAndConfirm(umi);
@@ -1009,7 +998,6 @@ const mintNft = async (
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         group: group ? some(group) : none(),
         mintArgs: {
           freezeTokenPayment: some({

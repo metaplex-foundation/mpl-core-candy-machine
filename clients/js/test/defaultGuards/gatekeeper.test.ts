@@ -73,7 +73,6 @@ test('it allows minting via a gatekeeper service', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
             gatekeeperNetwork: gatekeeperNetwork.publicKey,
@@ -125,7 +124,6 @@ test('it defaults to calculating the gateway token PDA for us', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
             gatekeeperNetwork: gatekeeperNetwork.publicKey,
@@ -179,7 +177,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
             gatekeeperNetwork: gatekeeperNetwork.publicKey,
@@ -222,7 +219,6 @@ test('it forbids minting when providing the wrong token', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
             gatekeeperNetwork: gatekeeperNetwork.publicKey,
@@ -276,7 +272,6 @@ test('it allows minting using gateway tokens that expire when they are still val
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
             gatekeeperNetwork: gatekeeperNetwork.publicKey,
@@ -330,7 +325,6 @@ test('it forbids minting using gateway tokens that have expired', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
             gatekeeperNetwork: gatekeeperNetwork.publicKey,
@@ -390,7 +384,6 @@ test('it may immediately mark gateway tokens as expired after using them', async
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
             gatekeeperNetwork: gatekeeperNetwork.publicKey,
@@ -447,7 +440,6 @@ test('it charges a bot tax when trying to mint using the wrong token', async (t)
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           gatekeeper: some({
             gatekeeperNetwork: gatekeeperNetwork.publicKey,

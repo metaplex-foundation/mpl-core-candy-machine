@@ -24,11 +24,13 @@ use crate::{
 ///   3. `[]` Account to receive the NFT.
 ///   4. `[writeable]` Destination PDA key (seeds [destination pubkey, token program id, nft mint pubkey]).
 ///   5. `[]` spl-associate-token program ID.
-///   6. `[]` Master edition (pNFT)
-///   7. `[writable]` Owner token record (pNFT)
-///   8. `[writable]` Destination token record (pNFT)
-///   9. `[]` Token Authorization Rules program (pNFT)
-///   10. `[]` Token Authorization Rules account (pNFT)
+///   6. `[]` SPL token program.
+///   7. `[]` Token Metadata program.
+///   8. `[]` Master edition (pNFT)
+///   9. `[writable]` Owner token record (pNFT)
+///   10. `[writable]` Destination token record (pNFT)
+///   11. `[]` Token Authorization Rules program (pNFT)
+///   12. `[]` Token Authorization Rules account (pNFT)
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct NftPayment {
     pub required_collection: Pubkey,
@@ -92,20 +94,24 @@ impl Condition for NftPayment {
         );
 
         assert_keys_equal(destination_ata.key, &ata)?;
-
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 6)?;
+        let token_metadata_program = try_get_account_info(ctx.accounts.remaining, index + 7)?;
+        assert_keys_equal(spl_token_program.key, &spl_token::ID)?;
+        assert_keys_equal(token_metadata_program.key, &mpl_token_metadata::ID)?;
+        ctx.account_cursor += 2;
         if matches!(
             metadata.token_standard,
             Some(TokenStandard::ProgrammableNonFungible)
         ) {
-            let nft_master_edition = try_get_account_info(ctx.accounts.remaining, index + 6)?;
+            let nft_master_edition = try_get_account_info(ctx.accounts.remaining, index + 8)?;
             let (nft_master_edition_key, _) = MasterEdition::find_pda(nft_mint.key);
             assert_keys_equal(&nft_master_edition_key, nft_master_edition.key)?;
 
-            let owner_token_record = try_get_account_info(ctx.accounts.remaining, index + 7)?;
+            let owner_token_record = try_get_account_info(ctx.accounts.remaining, index + 9)?;
             let (owner_token_record_key, _) = TokenRecord::find_pda(nft_mint.key, nft_account.key);
             assert_keys_equal(&owner_token_record_key, owner_token_record.key)?;
 
-            let destination_token_record = try_get_account_info(ctx.accounts.remaining, index + 8)?;
+            let destination_token_record = try_get_account_info(ctx.accounts.remaining, index + 10)?;
             let (destination_token_record_key, _) =
                 TokenRecord::find_pda(nft_mint.key, destination_ata.key);
             assert_keys_equal(&destination_token_record_key, destination_token_record.key)?;
@@ -116,10 +122,10 @@ impl Condition for NftPayment {
                 rule_set: Some(rule_set),
             }) = metadata.programmable_config
             {
-                let auth_rules_program = try_get_account_info(ctx.accounts.remaining, index + 9)?;
+                let auth_rules_program = try_get_account_info(ctx.accounts.remaining, index + 11)?;
                 assert_keys_equal(auth_rules_program.key, &MPL_TOKEN_AUTH_RULES_PROGRAM)?;
 
-                let auth_rules = try_get_account_info(ctx.accounts.remaining, index + 10)?;
+                let auth_rules = try_get_account_info(ctx.accounts.remaining, index + 12)?;
                 assert_keys_equal(&rule_set, auth_rules.key)?;
 
                 ctx.account_cursor += 2;
@@ -144,9 +150,14 @@ impl Condition for NftPayment {
         let destination = try_get_account_info(ctx.accounts.remaining, index + 3)?;
         let destination_ata = try_get_account_info(ctx.accounts.remaining, index + 4)?;
         let spl_ata_program = try_get_account_info(ctx.accounts.remaining, index + 5)?;
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 6)?;
+        let token_metadata_program = try_get_account_info(ctx.accounts.remaining, index + 7)?;
+        
+        let spl_token_info = spl_token_program.to_account_info();
+        let token_metadata_info = spl_token_program.to_account_info();
 
         if matches!(ctx.accounts.candy_machine.version, AccountVersion::V2) {
-            let mut transfer_cpi = TransferV1CpiBuilder::new(&ctx.accounts.token_metadata_program);
+            let mut transfer_cpi = TransferV1CpiBuilder::new(&token_metadata_info);
             transfer_cpi
                 .token(nft_account)
                 .token_owner(&ctx.accounts.minter)
@@ -158,7 +169,7 @@ impl Condition for NftPayment {
                 .payer(&ctx.accounts.payer)
                 .system_program(&ctx.accounts.system_program)
                 .sysvar_instructions(&ctx.accounts.sysvar_instructions)
-                .spl_token_program(&ctx.accounts.spl_token_program)
+                .spl_token_program(&spl_token_info)
                 .spl_ata_program(spl_ata_program)
                 .amount(1);
 
@@ -168,10 +179,10 @@ impl Condition for NftPayment {
                 metadata.token_standard,
                 Some(TokenStandard::ProgrammableNonFungible)
             ) {
-                let nft_master_edition = try_get_account_info(ctx.accounts.remaining, index + 6)?;
-                let owner_token_record = try_get_account_info(ctx.accounts.remaining, index + 7)?;
+                let nft_master_edition = try_get_account_info(ctx.accounts.remaining, index + 8)?;
+                let owner_token_record = try_get_account_info(ctx.accounts.remaining, index + 9)?;
                 let destination_token_record =
-                    try_get_account_info(ctx.accounts.remaining, index + 8)?;
+                    try_get_account_info(ctx.accounts.remaining, index + 10)?;
 
                 transfer_cpi
                     .edition(Some(nft_master_edition))
@@ -182,8 +193,8 @@ impl Condition for NftPayment {
                     metadata.programmable_config
                 {
                     let auth_rules_program =
-                        try_get_account_info(ctx.accounts.remaining, index + 9)?;
-                    let auth_rules = try_get_account_info(ctx.accounts.remaining, index + 10)?;
+                        try_get_account_info(ctx.accounts.remaining, index + 11)?;
+                    let auth_rules = try_get_account_info(ctx.accounts.remaining, index + 12)?;
 
                     transfer_cpi
                         .authorization_rules_program(Some(auth_rules_program))
@@ -218,7 +229,7 @@ impl Condition for NftPayment {
                 destination: destination_ata.to_account_info(),
                 authority: ctx.accounts.payer.to_account_info(),
                 authority_signer_seeds: &[],
-                token_program: ctx.accounts.spl_token_program.to_account_info(),
+                token_program: spl_token_program.to_account_info(),
                 // fixed to always require 1 NFT
                 amount: 1,
             })?;

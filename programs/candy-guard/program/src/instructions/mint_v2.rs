@@ -10,7 +10,7 @@ use crate::{
     utils::cmp_pubkeys,
 };
 
-use super::{AssociatedToken, MintAccounts, Token};
+use super::{MintAccounts, Token};
 
 pub fn mint_v2<'info>(
     ctx: Context<'_, '_, '_, 'info, MintV2<'info>>,
@@ -23,32 +23,14 @@ pub fn mint_v2<'info>(
         candy_machine_authority_pda: ctx.accounts.candy_machine_authority_pda.to_account_info(),
         _candy_machine_program: ctx.accounts.candy_machine_program.to_account_info(),
         collection: ctx.accounts.collection.to_account_info(),
-        collection_update_authority: ctx.accounts.collection_update_authority.to_account_info(),
         asset: ctx.accounts.asset.to_account_info(),
         payer: ctx.accounts.payer.to_account_info(),
         minter: ctx.accounts.minter.to_account_info(),
         recent_slothashes: ctx.accounts.recent_slothashes.to_account_info(),
-        spl_ata_program: ctx
-            .accounts
-            .spl_ata_program
-            .as_ref()
-            .map(|spl_ata_program| spl_ata_program.to_account_info()),
-        spl_token_program: ctx.accounts.spl_token_program.to_account_info(),
         system_program: ctx.accounts.system_program.to_account_info(),
         sysvar_instructions: ctx.accounts.sysvar_instructions.to_account_info(),
-        token_metadata_program: ctx.accounts.token_metadata_program.to_account_info(),
         mpl_core_program: ctx.accounts.mpl_core_program.to_account_info(),
         remaining: ctx.remaining_accounts,
-        authorization_rules_program: ctx
-            .accounts
-            .authorization_rules_program
-            .as_ref()
-            .map(|authorization_rules_program| authorization_rules_program.to_account_info()),
-        authorization_rules: ctx
-            .accounts
-            .authorization_rules
-            .as_ref()
-            .map(|authorization_rules| authorization_rules.to_account_info()),
     };
 
     // evaluation context for this transaction
@@ -131,10 +113,7 @@ fn validate(ctx: &EvaluationContext) -> Result<()> {
         return err!(CandyGuardError::CollectionKeyMismatch);
     }
 
-    if !cmp_pubkeys(
-        ctx.accounts.collection.owner,
-        &mpl_core::ID,
-    ) {
+    if !cmp_pubkeys(ctx.accounts.collection.owner, &mpl_core::ID) {
         return err!(CandyGuardError::IncorrectOwner);
     }
 
@@ -230,16 +209,11 @@ pub struct MintV2<'info> {
     #[account(mut)]
     collection: UncheckedAccount<'info>,
 
-    /// Update authority of the collection NFT.
-    ///
-    /// CHECK: account checked in CPI
-    collection_update_authority: UncheckedAccount<'info>,
-
     /// Token Metadata program.
     ///
     /// CHECK: account checked in CPI
-    #[account(address = mpl_token_metadata::ID)]
-    token_metadata_program: UncheckedAccount<'info>,
+    // #[account(address = mpl_token_metadata::ID)]
+    // token_metadata_program: Option<UncheckedAccount<'info>>,
 
     /// Token Metadata program.
     ///
@@ -248,10 +222,7 @@ pub struct MintV2<'info> {
     mpl_core_program: UncheckedAccount<'info>,
 
     /// SPL Token program.
-    spl_token_program: Program<'info, Token>,
-
-    /// SPL Associated Token program.
-    spl_ata_program: Option<Program<'info, AssociatedToken>>,
+    // spl_token_program: Program<'info, Token>,
 
     /// System program.
     system_program: Program<'info, System>,
@@ -267,16 +238,4 @@ pub struct MintV2<'info> {
     /// CHECK: account constraints checked in account trait
     #[account(address = sysvar::slot_hashes::id())]
     recent_slothashes: UncheckedAccount<'info>,
-
-    /// Token Authorization Rules program.
-    ///
-    /// CHECK: account checked in CPI
-    #[account(address = mpl_candy_machine_core_asset::constants::MPL_TOKEN_AUTH_RULES_PROGRAM)]
-    authorization_rules_program: Option<UncheckedAccount<'info>>,
-
-    /// Token Authorization rules account for the collection metadata (if any).
-    ///
-    /// CHECK: account constraints checked in account trait
-    #[account(owner = mpl_candy_machine_core_asset::constants::MPL_TOKEN_AUTH_RULES_PROGRAM)]
-    authorization_rules: Option<UncheckedAccount<'info>>,
 }

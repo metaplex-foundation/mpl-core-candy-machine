@@ -1,8 +1,9 @@
-import { findAssociatedTokenPda } from '@metaplex-foundation/mpl-toolbox';
+import { findAssociatedTokenPda, getSplTokenProgramId } from '@metaplex-foundation/mpl-toolbox';
 import {
   findMasterEditionPda,
   findMetadataPda,
   findTokenRecordPda,
+  getMplTokenMetadataProgramId,
   isProgrammable,
   TokenStandard,
 } from '@metaplex-foundation/mpl-token-metadata';
@@ -47,6 +48,8 @@ export const nftBurnGuardManifest: GuardManifest<
       { publicKey: nftMasterEdition, isWritable: true },
       { publicKey: args.mint, isWritable: true },
       { publicKey: collectionMetadata, isWritable: true },
+      { publicKey: getSplTokenProgramId(context), isWritable: false },
+      { publicKey: getMplTokenMetadataProgramId(context), isWritable: false },
     ];
 
     if (isProgrammable(args.tokenStandard)) {

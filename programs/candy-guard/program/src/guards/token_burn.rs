@@ -9,6 +9,7 @@ use crate::{state::GuardType, utils::*};
 ///
 ///   0. `[writable]` Token account holding the required amount.
 ///   1. `[writable]` Token mint account.
+///   2. `[]` SPL token program.
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct TokenBurn {
     pub amount: u64,
@@ -52,7 +53,9 @@ impl Condition for TokenBurn {
         } else {
             return err!(CandyGuardError::NotEnoughTokens);
         }
-
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, token_gate_index + 2)?;
+        ctx.account_cursor += 1;
+        assert_keys_equal(spl_token_program.key, &spl_token::ID)?;
         ctx.indices.insert("token_burn_index", token_gate_index);
 
         Ok(())
@@ -68,6 +71,7 @@ impl Condition for TokenBurn {
         // the accounts have already being validated
         let token_gate_account = try_get_account_info(ctx.accounts.remaining, token_gate_index)?;
         let token_gate_mint = try_get_account_info(ctx.accounts.remaining, token_gate_index + 1)?;
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, token_gate_index + 2)?;
 
         spl_token_burn(TokenBurnParams {
             mint: token_gate_mint.to_account_info(),
@@ -75,7 +79,7 @@ impl Condition for TokenBurn {
             amount: self.amount,
             authority: ctx.accounts.minter.to_account_info(),
             authority_signer_seeds: None,
-            token_program: ctx.accounts.spl_token_program.to_account_info(),
+            token_program: spl_token_program.to_account_info(),
         })?;
 
         Ok(())

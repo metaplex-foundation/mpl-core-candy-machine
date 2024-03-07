@@ -42,7 +42,6 @@ test('it transfers SOL from the payer to the destination', async (t) => {
         minter,
         payer,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solFixedFee: { destination } },
       })
     )
@@ -84,7 +83,6 @@ test('it fails if the payer does not have enough funds', async (t) => {
         asset: mint,
         payer,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solFixedFee: { destination } },
       })
     )
@@ -123,7 +121,6 @@ test('it charges a bot tax if the payer does not have enough funds', async (t) =
         asset: mint,
         payer,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solFixedFee: { destination } },
       })
     )

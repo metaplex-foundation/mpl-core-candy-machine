@@ -70,7 +70,6 @@ test('it allows minting from wallets of a predefined list', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
     )
@@ -123,7 +122,6 @@ test('it is possible to verify the proof and mint in the same transaction if the
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
     )
@@ -178,7 +176,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
     )
@@ -306,7 +303,6 @@ test('it forbids minting if the wallet has not been verified via the route instr
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
     )
@@ -349,7 +345,6 @@ test('it charges a bot tax when trying to mint whilst not verified', async (t) =
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allowList: some({ merkleRoot }) },
       })
     )

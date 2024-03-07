@@ -57,7 +57,6 @@ test('it allows minting when the payer owns an NFT from a certain collection', a
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify.publicKey }),
         },
@@ -103,7 +102,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify.publicKey }),
         },
@@ -161,7 +159,6 @@ test('it allows minting when the NFT is not on an associated token account', asy
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({
             mint: nftToVerify.publicKey,
@@ -228,7 +225,6 @@ test('it forbids minting when the payer does not own an NFT from a certain colle
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify }),
         },
@@ -276,7 +272,6 @@ test('it forbids minting when the payer tries to provide an NFT from the wrong c
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify }),
         },
@@ -318,7 +313,6 @@ test('it forbids minting when the payer tries to provide an NFT from an unverifi
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: nftToVerify }),
         },
@@ -354,7 +348,6 @@ test('it charges a bot tax when trying to mint without owning the right NFT', as
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftGate: some({ mint: wrongNft.publicKey }),
         },

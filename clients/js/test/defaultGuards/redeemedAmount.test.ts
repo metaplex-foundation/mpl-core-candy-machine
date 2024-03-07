@@ -39,7 +39,6 @@ test('it allows minting until a threshold of NFTs have been redeemed', async (t)
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -72,7 +71,6 @@ test('it forbids minting once the redeemed threshold has been reached', async (t
         candyMachine,
         asset: mintA,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -87,7 +85,6 @@ test('it forbids minting once the redeemed threshold has been reached', async (t
         candyMachine,
         asset: mintB,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -122,7 +119,6 @@ test('it charges a bot tax when trying to mint once the threshold has been reach
         candyMachine,
         asset: mintA,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -137,7 +133,6 @@ test('it charges a bot tax when trying to mint once the threshold has been reach
         candyMachine,
         asset: mintB,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);

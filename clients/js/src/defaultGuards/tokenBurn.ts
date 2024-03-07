@@ -1,4 +1,4 @@
-import { findAssociatedTokenPda } from '@metaplex-foundation/mpl-toolbox';
+import { findAssociatedTokenPda, getSplTokenProgramId } from '@metaplex-foundation/mpl-toolbox';
 import { getTokenBurnSerializer, TokenBurn, TokenBurnArgs } from '../generated';
 import { GuardManifest, noopParser } from '../guards';
 
@@ -28,6 +28,7 @@ export const tokenBurnGuardManifest: GuardManifest<
       remainingAccounts: [
         { publicKey: tokenAccount, isWritable: true },
         { publicKey: args.mint, isWritable: true },
+        { publicKey: getSplTokenProgramId(context), isWritable: false },
       ],
     };
   },

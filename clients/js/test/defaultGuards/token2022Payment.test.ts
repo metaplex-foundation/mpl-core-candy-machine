@@ -60,7 +60,6 @@ test('it transfers Token2022 tokens from the payer to the destination', async (t
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           token2022Payment: some({ mint: tokenMint.publicKey, destinationAta }),
         },

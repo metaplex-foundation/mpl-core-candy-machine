@@ -6,9 +6,11 @@ import {
 import test from 'ava';
 
 import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
+import { PluginType, authority, removeCollectionPluginAuthority } from '@metaplex-foundation/mpl-core';
 import {
   CandyMachine,
   fetchCandyMachine,
+  findCandyMachineAuthorityPda,
   mintAssetFromCandyMachine,
   setCollectionV2,
 } from '../src';
@@ -100,59 +102,61 @@ test('it cannot update the collection of a candy machine when mint is in progres
   });
 });
 
-// TODO this test probably does not apply anymore because update auth is not required verify collections anymore?
-// test.only('it can set the same collection of a candy machine when mint is in progress', async (t) => {
-//   // Given a Candy Machine associated with Collection A.
-//   const umi = await createUmi();
-//   const collectionUpdateAuthorityA = umi.identity;
-//   const collectionA = await createCollection(umi);
-//   const candyMachine = await createV2(umi, {
-//     collection: collectionA.publicKey,
-//     collectionUpdateAuthority: collectionUpdateAuthorityA,
-//     configLines: [
-//       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
-//       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
-//     ],
-//   });
+test.only('it can set the same collection of a candy machine when mint is in progress', async (t) => {
+  // Given a Candy Machine associated with Collection A.
+  const umi = await createUmi();
+  const collectionUpdateAuthorityA = umi.identity;
+  const collectionA = await createCollection(umi);
+  const candyMachine = await createV2(umi, {
+    collection: collectionA.publicKey,
+    collectionUpdateAuthority: collectionUpdateAuthorityA,
+    configLines: [
+      { name: 'Degen #1', uri: 'https://example.com/degen/1' },
+      { name: 'Degen #2', uri: 'https://example.com/degen/2' },
+    ],
+  });
 
-//   // And we mint an NFT from the candy machine.
-//   const mint = generateSigner(umi);
-//   const owner = generateSigner(umi).publicKey;
-//   await transactionBuilder()
-//     .add(setComputeUnitLimit(umi, { units: 400000 }))
-//     .add(
-//       mintAssetFromCandyMachine(umi, {
-//         candyMachine: publicKey(candyMachine),
-//         mintAuthority: umi.identity,
-//         assetOwner: owner,
-//         asset: mint,
-//         collection: publicKey(collectionA),
-//       })
-//     )
-//     .sendAndConfirm(umi);
+  // And we mint an NFT from the candy machine.
+  const mint = generateSigner(umi);
+  const owner = generateSigner(umi).publicKey;
+  await transactionBuilder()
+    .add(setComputeUnitLimit(umi, { units: 400000 }))
+    .add(
+      mintAssetFromCandyMachine(umi, {
+        candyMachine: publicKey(candyMachine),
+        mintAuthority: umi.identity,
+        assetOwner: owner,
+        asset: mint,
+        collection: publicKey(collectionA),
+      })
+    )
+    .sendAndConfirm(umi);
 
-//   // And we update the collection update authority to Authority B.
-//   const collectionUpdateAuthorityB = generateSigner(umi);
-//   await updateCollection(umi, {
-//     mint: collectionA.publicKey,
-//     newUpdateAuthority: collectionUpdateAuthorityB.publicKey,
-//   }).sendAndConfirm(umi);
+  // And we remove delegate authority from the collection.
 
-//   // When we set the same collection.
-//   await setCollectionV2(umi, {
-//     candyMachine: candyMachine.publicKey,
-//     collection: collectionA.publicKey,
-//     collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,
-//     newCollection: collectionA.publicKey,
-//     newCollectionUpdateAuthority: collectionUpdateAuthorityB,
-//   }).sendAndConfirm(umi);
+  await removeCollectionPluginAuthority(umi, {
+    collection: collectionA.publicKey,
+    authority: collectionUpdateAuthorityA,
+    pluginType: PluginType.UpdateDelegate,
+    authorityToRemove: authority('Pubkey', {address: findCandyMachineAuthorityPda(umi, { candyMachine: candyMachine.publicKey })[0]})
+  }).sendAndConfirm(umi)
+  
 
-//   // Then the transaction suceeds and the Candy Machine collection is still the same.
-//   const candyMachineAccount = await fetchCandyMachine(
-//     umi,
-//     candyMachine.publicKey
-//   );
-//   t.like(candyMachineAccount, <CandyMachine>{
-//     collection: publicKey(collectionA.publicKey),
-//   });
-// });
+  // When we set the same collection.
+  await setCollectionV2(umi, {
+    candyMachine: candyMachine.publicKey,
+    collection: collectionA.publicKey,
+    collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,
+    newCollection: collectionA.publicKey,
+    newCollectionUpdateAuthority: collectionUpdateAuthorityA,
+  }).sendAndConfirm(umi);
+
+  // Then the transaction suceeds and the Candy Machine collection is still the same.
+  const candyMachineAccount = await fetchCandyMachine(
+    umi,
+    candyMachine.publicKey
+  );
+  t.like(candyMachineAccount, <CandyMachine>{
+    collection: publicKey(collectionA.publicKey),
+  });
+});

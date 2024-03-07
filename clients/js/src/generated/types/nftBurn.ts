@@ -23,7 +23,9 @@ import {
  * 2. `[writeable]` Master Edition account of the NFT.
  * 3. `[writeable]` Mint account of the NFT.
  * 4. `[writeable]` Collection metadata account of the NFT.
- * 5. `[writeable]` Token Record of the NFT (pNFT).
+ * 5. `[]` SPL token program.
+ * 6. `[]` Token Metadata program.
+ * 7. `[writeable]` Token Record of the NFT (pNFT).
  */
 
 export type NftBurn = { requiredCollection: PublicKey };

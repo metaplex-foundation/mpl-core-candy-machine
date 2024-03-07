@@ -25,7 +25,6 @@ import {
   findCandyGuardPda,
   findFreezeEscrowPda,
   FreezeEscrow,
-  getMplTokenAuthRulesProgramId,
   mintV2,
   route,
 } from '../../src';
@@ -81,7 +80,6 @@ test('it transfers SOL to an escrow account and freezes the NFT', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { freezeSolPayment: some({ destination }) },
       })
     )
@@ -159,7 +157,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { freezeSolPayment: some({ destination }) },
       })
     )
@@ -168,52 +165,6 @@ test('it allows minting even when the payer is different from the minter', async
   // Then minting was successful.
   await assertSuccessfulMint(t, umi, { mint, owner: minter });
 });
-
-// TODO figure out whether this is a real use case
-// test('it allows minting when the mint and token accounts are created beforehand', async (t) => {
-//   // Given a loaded Candy Machine with a freezeSolPayment guard.
-//   const umi = await createUmi();
-//   const destination = generateSigner(umi).publicKey;
-//   const collection = (await createCollection(umi)).publicKey;
-//   const { publicKey: candyMachine } = await createV2(umi, {
-//     collection,
-//     configLines: [
-//       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
-//       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
-//     ],
-//     guards: {
-//       freezeSolPayment: some({ lamports: sol(1), destination }),
-//     },
-//   });
-
-//   // And given the freezeSolPayment guard is initialized.
-//   await initFreezeEscrow(umi, candyMachine, destination);
-
-//   // When we mint from that candy machine by creating
-//   // the mint and token accounts beforehand.
-//   const mint = generateSigner(umi);
-//   await transactionBuilder()
-//     .add(setComputeUnitLimit(umi, { units: 600_000 }))
-//     .add(
-//       createMintWithAssociatedToken(umi, {
-//         mint,
-//         owner: umi.identity.publicKey,
-//       })
-//     )
-//     .add(
-//       mintV2(umi, {
-//         candyMachine,
-//         asset: mint.publicKey,
-//         collection,
-//         collectionUpdateAuthority: umi.identity.publicKey,
-//         mintArgs: { freezeSolPayment: some({ destination }) },
-//       })
-//     )
-//     .sendAndConfirm(umi);
-
-//   // Then minting was successful.
-//   await assertSuccessfulMint(t, umi, { mint, owner: umi.identity });
-// });
 
 test('it can thaw an NFT once all NFTs are minted', async (t) => {
   // Given a loaded Candy Machine with an initialized
@@ -417,7 +368,6 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
         candyMachine,
         asset: mintD,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         group: some('GROUPD'),
         mintArgs: {
           solPayment: some({ destination: destinationD }),
@@ -550,7 +500,6 @@ test('it fails to mint if the freeze escrow was not initialized', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { freezeSolPayment: some({ destination }) },
       })
     )
@@ -587,7 +536,6 @@ test('it fails to mint if the payer does not have enough funds', async (t) => {
         payer,
         minter: payer,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { freezeSolPayment: some({ destination }) },
       })
     )
@@ -624,7 +572,6 @@ test('it charges a bot tax if something goes wrong', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { freezeSolPayment: some({ destination }) },
       })
     )
@@ -663,14 +610,12 @@ test('it transfers SOL to an escrow account and locks the Programmable NFT', asy
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeSolPayment: some({
             destination,
             nftRuleSet: METAPLEX_DEFAULT_RULESET,
           }),
         },
-        authorizationRulesProgram: getMplTokenAuthRulesProgramId(umi),
       })
     )
     .sendAndConfirm(umi);
@@ -741,14 +686,12 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeSolPayment: some({
             destination,
             nftRuleSet: METAPLEX_DEFAULT_RULESET,
           }),
         },
-        authorizationRulesProgram: getMplTokenAuthRulesProgramId(umi),
       })
     )
     .sendAndConfirm(umi);
@@ -857,7 +800,6 @@ const mintNft = async (
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           freezeSolPayment: some({ destination }),
         },

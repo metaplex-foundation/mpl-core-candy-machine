@@ -1,18 +1,11 @@
 import {
-  getMintSize,
-  getTokenSize,
-} from '@metaplex-foundation/mpl-toolbox';
-import {
-  ACCOUNT_HEADER_SIZE,
   Option,
   OptionOrNullable,
   TransactionBuilder,
-  isSigner,
   none,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { MASTER_EDITION_SIZE, METADATA_SIZE } from './constants';
 import { DefaultGuardSetMintArgs } from './defaultGuards';
 import {
   MintV2InstructionAccounts,
@@ -79,13 +72,13 @@ export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
   ix.instruction.keys.push(...keys);
   ix.signers.push(...signers);
   // TODO fix size calculation
-  ix.bytesCreatedOnChain =
-    METADATA_SIZE + MASTER_EDITION_SIZE + 2 * ACCOUNT_HEADER_SIZE;
+  // ix.bytesCreatedOnChain =
+  //   METADATA_SIZE + MASTER_EDITION_SIZE + 2 * ACCOUNT_HEADER_SIZE;
 
-  if (isSigner(input.asset)) {
-    ix.bytesCreatedOnChain +=
-      getMintSize() + getTokenSize() + 2 * ACCOUNT_HEADER_SIZE;
-  }
+  // if (isSigner(input.asset)) {
+  //   ix.bytesCreatedOnChain +=
+  //     getMintSize() + getTokenSize() + 2 * ACCOUNT_HEADER_SIZE;
+  // }
 
   return transactionBuilder([ix]);
 }

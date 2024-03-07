@@ -37,7 +37,6 @@ test('it allows minting when the third party signer is provided', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           thirdPartySigner: some({ signer: thirdPartySigner }),
         },
@@ -72,7 +71,6 @@ test('it forbids minting when the third party signer is wrong', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           thirdPartySigner: some({ signer: wrongThirdPartySigner }),
         },
@@ -108,7 +106,6 @@ test('it charges a bot tax when trying to mint using the wrong third party signe
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           thirdPartySigner: some({ signer: wrongThirdPartySigner }),
         },

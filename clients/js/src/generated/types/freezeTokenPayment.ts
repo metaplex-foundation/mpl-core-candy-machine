@@ -21,11 +21,10 @@ import {
  *
  * 0. `[writable]` Freeze PDA to receive the funds (seeds `["freeze_escrow",
  * destination_ata pubkey, candy guard pubkey, candy machine pubkey]`).
- * 1. `[]` Associate token account of the NFT (seeds `[payer pubkey, token
- * program pubkey, nft mint pubkey]`).
- * 2. `[writable]` Token account holding the required amount.
- * 3. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA
+ * 1. `[writable]` Token account holding the required amount.
+ * 2. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA
  * pubkey, token program pubkey, nft mint pubkey]`).
+ * 3. `[]` SPL Token program.
  */
 
 export type FreezeTokenPayment = {

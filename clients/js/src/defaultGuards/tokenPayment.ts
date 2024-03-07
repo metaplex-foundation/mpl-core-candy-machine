@@ -1,4 +1,4 @@
-import { findAssociatedTokenPda } from '@metaplex-foundation/mpl-toolbox';
+import { findAssociatedTokenPda, getSplTokenProgramId } from '@metaplex-foundation/mpl-toolbox';
 import {
   getTokenPaymentSerializer,
   TokenPayment,
@@ -32,6 +32,7 @@ export const tokenPaymentGuardManifest: GuardManifest<
       remainingAccounts: [
         { publicKey: sourceAta, isWritable: true },
         { publicKey: args.destinationAta, isWritable: true },
+        { publicKey: getSplTokenProgramId(context), isWritable: false },
       ],
     };
   },

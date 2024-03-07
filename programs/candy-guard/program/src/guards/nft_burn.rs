@@ -18,7 +18,9 @@ use crate::{state::GuardType, utils::assert_keys_equal};
 ///   2. `[writeable]` Master Edition account of the NFT.
 ///   3. `[writeable]` Mint account of the NFT.
 ///   4. `[writeable]` Collection metadata account of the NFT.
-///   5. `[writeable]` Token Record of the NFT (pNFT).
+///   5. `[]` SPL token program.
+///   6. `[]` Token Metadata program.
+///   7. `[writeable]` Token Record of the NFT (pNFT).
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct NftBurn {
     pub required_collection: Pubkey,
@@ -58,18 +60,22 @@ impl Condition for NftBurn {
         let nft_mint_account = try_get_account_info(ctx.accounts.remaining, index + 3)?;
         let _nft_mint_collection_metadata =
             try_get_account_info(ctx.accounts.remaining, index + 4)?;
-        ctx.account_cursor += 3;
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 5)?;
+        let token_metadata_program = try_get_account_info(ctx.accounts.remaining, index + 6)?;
+        ctx.account_cursor += 5;
 
         let metadata: Metadata = Metadata::try_from(nft_metadata)?;
         // validates the account information
         assert_keys_equal(nft_metadata.owner, &mpl_token_metadata::ID)?;
+        assert_keys_equal(spl_token_program.key, &spl_token::ID)?;
+        assert_keys_equal(token_metadata_program.key, &mpl_token_metadata::ID)?;
         assert_keys_equal(&metadata.mint, nft_mint_account.key)?;
 
         if matches!(
             metadata.token_standard,
             Some(TokenStandard::ProgrammableNonFungible)
         ) {
-            let token_record_info = try_get_account_info(ctx.accounts.remaining, index + 5)?;
+            let token_record_info = try_get_account_info(ctx.accounts.remaining, index + 7)?;
             ctx.account_cursor += 1;
 
             let (token_record_key, _) =
@@ -95,10 +101,15 @@ impl Condition for NftBurn {
         let nft_edition = try_get_account_info(ctx.accounts.remaining, index + 2)?;
         let nft_mint_account = try_get_account_info(ctx.accounts.remaining, index + 3)?;
         let nft_mint_collection_metadata = try_get_account_info(ctx.accounts.remaining, index + 4)?;
-
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 5)?;
+        let token_metadata_program = try_get_account_info(ctx.accounts.remaining, index + 6)?;
+        
+        let spl_token_info = spl_token_program.to_account_info();
+        let token_metadata_info = token_metadata_program.to_account_info();
+        
         if matches!(ctx.accounts.candy_machine.version, AccountVersion::V2) {
             let metadata: Metadata = Metadata::try_from(nft_metadata)?;
-            let mut burn_cpi = BurnV1CpiBuilder::new(&ctx.accounts.token_metadata_program);
+            let mut burn_cpi = BurnV1CpiBuilder::new(&token_metadata_info);
             burn_cpi
                 .authority(&ctx.accounts.minter)
                 .metadata(nft_metadata)
@@ -108,27 +119,27 @@ impl Condition for NftBurn {
                 .collection_metadata(Some(nft_mint_collection_metadata))
                 .system_program(&ctx.accounts.system_program)
                 .sysvar_instructions(&ctx.accounts.sysvar_instructions)
-                .spl_token_program(&ctx.accounts.spl_token_program)
+                .spl_token_program(&spl_token_info)
                 .amount(1);
 
             if matches!(
                 metadata.token_standard,
                 Some(TokenStandard::ProgrammableNonFungible)
             ) {
-                let token_record_info = try_get_account_info(ctx.accounts.remaining, index + 5)?;
+                let token_record_info = try_get_account_info(ctx.accounts.remaining, index + 7)?;
                 burn_cpi.token_record(Some(token_record_info));
             }
 
             burn_cpi.invoke()?;
         } else {
-            BurnNftCpiBuilder::new(&ctx.accounts.token_metadata_program)
+            BurnNftCpiBuilder::new(&token_metadata_program.to_account_info())
                 .metadata(nft_metadata)
                 .owner(&ctx.accounts.payer)
                 .mint(nft_mint_account)
                 .token_account(nft_account)
                 .master_edition_account(nft_edition)
                 .collection_metadata(Some(nft_mint_collection_metadata))
-                .spl_token_program(&ctx.accounts.spl_token_program)
+                .spl_token_program(&spl_token_program.to_account_info())
                 .invoke()?;
         }
 

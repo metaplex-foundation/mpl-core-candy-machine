@@ -15,6 +15,7 @@ use crate::{
 ///
 ///   0. `[writable]` Token account holding the required amount.
 ///   1. `[writable]` Address of the ATA to receive the tokens.
+///   2. `[]` SPL token program.
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct TokenPayment {
     pub amount: u64,
@@ -46,9 +47,11 @@ impl Condition for TokenPayment {
         let token_account_info = try_get_account_info(ctx.accounts.remaining, token_account_index)?;
         let destination_ata =
             try_get_account_info(ctx.accounts.remaining, token_account_index + 1)?;
-        ctx.account_cursor += 2;
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, token_account_index + 2)?;
+        ctx.account_cursor += 3;
 
         assert_keys_equal(destination_ata.key, &self.destination_ata)?;
+        assert_keys_equal(spl_token_program.key, &spl_token::ID)?;
         let ata_account: spl_token::state::Account = assert_initialized(destination_ata)?;
         assert_keys_equal(&ata_account.mint, &self.mint)?;
 
@@ -75,13 +78,14 @@ impl Condition for TokenPayment {
         // the accounts have already been validated
         let token_account_info = try_get_account_info(ctx.accounts.remaining, index)?;
         let destination_ata = try_get_account_info(ctx.accounts.remaining, index + 1)?;
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 2)?;
 
         spl_token_transfer(TokenTransferParams {
             source: token_account_info.to_account_info(),
             destination: destination_ata.to_account_info(),
             authority: ctx.accounts.minter.to_account_info(),
             authority_signer_seeds: &[],
-            token_program: ctx.accounts.spl_token_program.to_account_info(),
+            token_program: spl_token_program.to_account_info(),
             amount: self.amount,
         })?;
 

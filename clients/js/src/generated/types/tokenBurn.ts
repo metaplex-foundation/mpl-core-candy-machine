@@ -22,6 +22,7 @@ import {
  *
  * 0. `[writable]` Token account holding the required amount.
  * 1. `[writable]` Token mint account.
+ * 2. `[]` SPL token program.
  */
 
 export type TokenBurn = { amount: bigint; mint: PublicKey };

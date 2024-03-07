@@ -36,7 +36,6 @@ test('it does nothing if all conditions are valid', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -66,7 +65,6 @@ test('it optionally charges a bot tax if the mint instruction is not the last on
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .add(addMemo(umi, { memo: 'I am a post-mint instruction' }))

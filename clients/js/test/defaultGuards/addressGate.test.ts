@@ -38,7 +38,6 @@ test('it allows minting from a specific address only', async (t) => {
         asset: mint,
         minter: allowedAddress,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -70,7 +69,6 @@ test('it forbids minting from anyone else', async (t) => {
         asset: mint,
         minter: unauthorizedMinter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -103,7 +101,6 @@ test('it charges a bot tax when trying to mint using the wrong address', async (
         asset: mint,
         minter: unauthorizedMinter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);

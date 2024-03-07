@@ -1,7 +1,6 @@
 use super::{freeze_sol_payment::freeze_nft, *};
 
 use anchor_lang::AccountsClose;
-use mpl_token_metadata::accounts::Metadata;
 use solana_program::{
     program::{invoke, invoke_signed},
     program_pack::Pack,
@@ -18,7 +17,7 @@ use crate::{
     instructions::Token,
     state::GuardType,
     utils::{
-        assert_initialized, assert_is_ata, assert_is_token_account, assert_keys_equal,
+        assert_initialized, assert_is_ata, assert_keys_equal,
         assert_owned_by, cmp_pubkeys, spl_token_transfer, TokenTransferParams,
     },
 };
@@ -29,11 +28,10 @@ use crate::{
 ///
 ///   0. `[writable]` Freeze PDA to receive the funds (seeds `["freeze_escrow",
 ///           destination_ata pubkey, candy guard pubkey, candy machine pubkey]`).
-///   1. `[]` Associate token account of the NFT (seeds `[payer pubkey, token
-///           program pubkey, nft mint pubkey]`).
-///   2. `[writable]` Token account holding the required amount.
-///   3. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA
+///   1. `[writable]` Token account holding the required amount.
+///   2. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA
 ///                   pubkey, token program pubkey, nft mint pubkey]`).
+///   3. `[]` SPL Token program.
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct FreezeTokenPayment {
     pub amount: u64,
@@ -160,7 +158,7 @@ impl Guard for FreezeTokenPayment {
             //   0. `[writable]` Freeze PDA to receive the funds (seeds `["freeze_escrow",
             //                   destination_ata pubkey, candy guard pubkey, candy machine pubkey]`).
             //   1. `[writable]` Mint account for the Asset.
-            //   2. `[]` Collection address of the Asset.
+            //   2. `[writable]` Collection address of the Asset.
             //   3. `[]` mpl-core program ID.
             //   4. `[]` System program.
             FreezeInstruction::Thaw => {
@@ -223,7 +221,9 @@ impl Condition for FreezeTokenPayment {
         let destination_ata = try_get_account_info(ctx.accounts.remaining, index + 2)?;
         assert_is_ata(destination_ata, &freeze_pda.key(), &self.mint)?;
 
-        ctx.account_cursor += 2;
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 3)?;
+        assert_keys_equal(spl_token_program.key, &spl_token::ID)?;
+        ctx.account_cursor += 3;
 
         let token_account =
             assert_is_ata(token_account_info, &ctx.accounts.minter.key(), &self.mint)?;
@@ -255,15 +255,16 @@ impl Condition for FreezeTokenPayment {
         let index = ctx.indices["freeze_token_payment"];
         // the accounts have already been validated
         let freeze_pda = try_get_account_info(ctx.accounts.remaining, index)?;
-        let token_account_info = try_get_account_info(ctx.accounts.remaining, index + 2)?;
-        let destination_ata = try_get_account_info(ctx.accounts.remaining, index + 3)?;
+        let token_account_info = try_get_account_info(ctx.accounts.remaining, index + 1)?;
+        let destination_ata = try_get_account_info(ctx.accounts.remaining, index + 2)?;
+        let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 3)?;
 
         spl_token_transfer(TokenTransferParams {
             source: token_account_info.to_account_info(),
             destination: destination_ata.to_account_info(),
             authority: ctx.accounts.minter.to_account_info(),
             authority_signer_seeds: &[],
-            token_program: ctx.accounts.spl_token_program.to_account_info(),
+            token_program: spl_token_program.to_account_info(),
             amount: self.amount,
         })?;
 

@@ -53,7 +53,6 @@ test('it burns a specific token to allow minting', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
         },
@@ -110,7 +109,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
         },
@@ -165,7 +163,6 @@ test('it may burn multiple tokens from a specific mint', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
         },
@@ -220,7 +217,6 @@ test('it fails to mint if there are not enough tokens to burn', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
         },
@@ -276,7 +272,6 @@ test('it charges a bot tax when trying to mint without the required amount of to
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenBurn: some({ mint: tokenMint.publicKey }),
         },

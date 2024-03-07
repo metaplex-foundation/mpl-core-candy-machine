@@ -311,7 +311,6 @@ export const assertSuccessfulMint = async (
 
   // Nft.
 
-  // TODO check plugins
   const nft = await fetchAsset(umi, mint)
 
   t.like(nft, <Asset>{

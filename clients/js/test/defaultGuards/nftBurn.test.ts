@@ -53,7 +53,6 @@ test('it burns a specific NFT to allow minting', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -106,7 +105,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -148,7 +146,6 @@ test('it fails if there is not valid NFT to burn', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -189,7 +186,6 @@ test('it charges a bot tax when trying to mint using the wrong NFT', async (t) =
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
             tokenStandard: TokenStandard.NonFungible,
@@ -237,7 +233,6 @@ test('it burns a specific Programmable NFT to allow minting', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           nftBurn: some({
             tokenStandard: TokenStandard.ProgrammableNonFungible,

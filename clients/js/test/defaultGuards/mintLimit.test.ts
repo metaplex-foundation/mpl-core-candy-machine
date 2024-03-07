@@ -44,7 +44,6 @@ test('it allows minting when the mint limit is not reached', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 1 }) },
       })
     )
@@ -90,7 +89,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 1 }) },
       })
     )
@@ -134,7 +132,6 @@ test('it forbids minting when the mint limit is reached', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
     )
@@ -148,7 +145,6 @@ test('it forbids minting when the mint limit is reached', async (t) => {
         candyMachine,
         asset: generateSigner(umi),
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
     )
@@ -184,7 +180,6 @@ test('the mint limit is local to each wallet', async (t) => {
         asset: mintA,
         minter: minterA,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
     )
@@ -202,7 +197,6 @@ test('the mint limit is local to each wallet', async (t) => {
         asset: mintB,
         minter: minterB,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
     )
@@ -237,7 +231,6 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
         candyMachine,
         asset: mintA,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
     )
@@ -252,7 +245,6 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
         candyMachine,
         asset: mintB,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { mintLimit: some({ id: 42 }) },
       })
     )

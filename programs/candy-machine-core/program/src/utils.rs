@@ -334,7 +334,17 @@ pub fn revoke_asset_collection_delegate(
     candy_machine: Pubkey,
     signer_bump: u8,
 ) -> Result<()> {
-    RemoveCollectionPluginAuthorityCpiBuilder::new(&accounts.mpl_core_program)
+    let maybe_update_delegate_plugin = mpl_core::fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate);
+
+    let has_auth = match maybe_update_delegate_plugin {
+        Ok((auths, _, _)) => auths.contains(&Authority::Pubkey {
+            address: accounts.authority_pda.key()
+        }),
+        _ => false,
+    };    
+
+    if has_auth {
+        RemoveCollectionPluginAuthorityCpiBuilder::new(&accounts.mpl_core_program)
         .collection(&accounts.collection)
         .authority(&accounts.authority_pda)
         .plugin_type(PluginType::UpdateDelegate)
@@ -349,6 +359,9 @@ pub fn revoke_asset_collection_delegate(
             &[signer_bump],
         ]])
         .map_err(|error| error.into())
+    } else {
+        Ok(())
+    }
 }
 
 pub fn approve_metadata_delegate(accounts: ApproveMetadataDelegateHelperAccounts) -> Result<()> {

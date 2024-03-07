@@ -53,7 +53,6 @@ test('it allows minting when the payer owns a specific token', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenGate: some({ mint: tokenMint.publicKey }),
         },
@@ -100,7 +99,6 @@ test('it allows minting even when the payer is different from the minter', async
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenGate: some({ mint: tokenMint.publicKey }),
         },
@@ -145,7 +143,6 @@ test('it allows minting when the payer owns multiple tokens from a specific mint
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenGate: some({ mint: tokenMint.publicKey }),
         },
@@ -200,7 +197,6 @@ test('it forbids minting when the owner does not own any required tokens', async
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenGate: some({ mint: tokenMint.publicKey }),
         },
@@ -245,7 +241,6 @@ test('it forbids minting when the owner does not own enough tokens', async (t) =
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenGate: some({ mint: tokenMint.publicKey }),
         },
@@ -291,7 +286,6 @@ test('it charges a bot tax when trying to mint without the right amount of token
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           tokenGate: some({ mint: tokenMint.publicKey }),
         },

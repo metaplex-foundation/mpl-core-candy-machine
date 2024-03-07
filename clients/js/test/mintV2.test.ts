@@ -51,7 +51,6 @@ test('it can mint from a candy guard with no guards', async (t) => {
         minter,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -92,7 +91,6 @@ test('it can mint from a candy guard with guards', async (t) => {
         payer,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: {
           solPayment: { destination },
         },
@@ -142,7 +140,6 @@ test('it can mint from a candy guard with groups', async (t) => {
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: { destination } },
         group: 'GROUP1',
       })
@@ -180,7 +177,6 @@ test('it cannot mint using the default guards if the candy guard has groups', as
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: { destination } },
         group: none(),
       })
@@ -214,7 +210,6 @@ test('it cannot mint from a group if the provided group label does not exist', a
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: { destination } },
         group: 'GROUPX',
       })
@@ -251,7 +246,6 @@ test('it can mint using an explicit payer', async (t) => {
         payer,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { solPayment: { destination } },
       })
     )
@@ -286,7 +280,6 @@ test('it cannot mint from an empty candy machine', async (t) => {
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -317,7 +310,6 @@ test('it cannot mint from a candy machine that is not fully loaded', async (t) =
         asset: mint,
         minter,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -343,7 +335,6 @@ test('it cannot mint from a candy machine that has been fully minted', async (t)
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -357,7 +348,6 @@ test('it cannot mint from a candy machine that has been fully minted', async (t)
         candyMachine,
         asset: generateSigner(umi),
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -393,7 +383,6 @@ test('it can mint from a candy machine using hidden settings', async (t) => {
         minter,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -490,7 +479,6 @@ test('it can mint a programmable NFT', async (t) => {
         minter,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -525,7 +513,6 @@ const drain = async (
           minter,
           asset: mint,
           collection: collectionMint,
-          collectionUpdateAuthority: umi.identity.publicKey,
         })
       )
       .sendAndConfirm(umi);

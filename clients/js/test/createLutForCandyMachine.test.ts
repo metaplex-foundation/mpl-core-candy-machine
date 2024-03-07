@@ -45,7 +45,6 @@ test('it can create a LUT for a candy machine v2', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
       })
     );
 

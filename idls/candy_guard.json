@@ -119,47 +119,14 @@
           ]
         },
         {
-          "name": "collectionUpdateAuthority",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Update authority of the collection NFT.",
-            ""
-          ]
-        },
-        {
-          "name": "tokenMetadataProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Token Metadata program.",
-            ""
-          ]
-        },
-        {
           "name": "mplCoreProgram",
           "isMut": false,
           "isSigner": false,
           "docs": [
             "Token Metadata program.",
+            "",
+            "Token Metadata program.",
             ""
-          ]
-        },
-        {
-          "name": "splTokenProgram",
-          "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "SPL Token program."
-          ]
-        },
-        {
-          "name": "splAtaProgram",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "SPL Associated Token program."
           ]
         },
         {
@@ -167,6 +134,7 @@
           "isMut": false,
           "isSigner": false,
           "docs": [
+            "SPL Token program.",
             "System program."
           ]
         },
@@ -185,26 +153,6 @@
           "isSigner": false,
           "docs": [
             "SlotHashes sysvar cluster data.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRulesProgram",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization Rules program.",
-            ""
-          ]
-        },
-        {
-          "name": "authorizationRules",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "Token Authorization rules account for the collection metadata (if any).",
             ""
           ]
         }
@@ -675,11 +623,10 @@
         "",
         "0. `[writable]` Freeze PDA to receive the funds (seeds `[\"freeze_escrow\",",
         "destination_ata pubkey, candy guard pubkey, candy machine pubkey]`).",
-        "1. `[]` Associate token account of the NFT (seeds `[payer pubkey, token",
-        "program pubkey, nft mint pubkey]`).",
-        "2. `[writable]` Token account holding the required amount.",
-        "3. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA",
-        "pubkey, token program pubkey, nft mint pubkey]`)."
+        "1. `[writable]` Token account holding the required amount.",
+        "2. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA",
+        "pubkey, token program pubkey, nft mint pubkey]`).",
+        "3. `[]` SPL Token program."
       ],
       "type": {
         "kind": "struct",
@@ -790,7 +737,9 @@
         "2. `[writeable]` Master Edition account of the NFT.",
         "3. `[writeable]` Mint account of the NFT.",
         "4. `[writeable]` Collection metadata account of the NFT.",
-        "5. `[writeable]` Token Record of the NFT (pNFT)."
+        "5. `[]` SPL token program.",
+        "6. `[]` Token Metadata program.",
+        "7. `[writeable]` Token Record of the NFT (pNFT)."
       ],
       "type": {
         "kind": "struct",
@@ -891,11 +840,13 @@
         "3. `[]` Account to receive the NFT.",
         "4. `[writeable]` Destination PDA key (seeds [destination pubkey, token program id, nft mint pubkey]).",
         "5. `[]` spl-associate-token program ID.",
-        "6. `[]` Master edition (pNFT)",
-        "7. `[writable]` Owner token record (pNFT)",
-        "8. `[writable]` Destination token record (pNFT)",
-        "9. `[]` Token Authorization Rules program (pNFT)",
-        "10. `[]` Token Authorization Rules account (pNFT)"
+        "6. `[]` SPL token program.",
+        "7. `[]` Token Metadata program.",
+        "8. `[]` Master edition (pNFT)",
+        "9. `[writable]` Owner token record (pNFT)",
+        "10. `[writable]` Destination token record (pNFT)",
+        "11. `[]` Token Authorization Rules program (pNFT)",
+        "12. `[]` Token Authorization Rules account (pNFT)"
       ],
       "type": {
         "kind": "struct",
@@ -1064,7 +1015,8 @@
         "List of accounts required:",
         "",
         "0. `[writable]` Token account holding the required amount.",
-        "1. `[writable]` Token mint account."
+        "1. `[writable]` Token mint account.",
+        "2. `[]` SPL token program."
       ],
       "type": {
         "kind": "struct",
@@ -1111,7 +1063,8 @@
         "List of accounts required:",
         "",
         "0. `[writable]` Token account holding the required amount.",
-        "1. `[writable]` Address of the ATA to receive the tokens."
+        "1. `[writable]` Address of the ATA to receive the tokens.",
+        "2. `[]` SPL token program."
       ],
       "type": {
         "kind": "struct",

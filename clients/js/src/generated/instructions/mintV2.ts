@@ -74,28 +74,18 @@ export type MintV2InstructionAccounts = {
 
   collection: PublicKey | Pda;
   /**
-   * Update authority of the collection NFT.
-   *
-   */
-
-  collectionUpdateAuthority: PublicKey | Pda;
-  /**
    * Token Metadata program.
    *
-   */
-
-  tokenMetadataProgram?: PublicKey | Pda;
-  /**
    * Token Metadata program.
    *
    */
 
   mplCoreProgram?: PublicKey | Pda;
-  /** SPL Token program. */
-  splTokenProgram?: PublicKey | Pda;
-  /** SPL Associated Token program. */
-  splAtaProgram?: PublicKey | Pda;
-  /** System program. */
+  /**
+   * SPL Token program.
+   * System program.
+   */
+
   systemProgram?: PublicKey | Pda;
   /**
    * Instructions sysvar account.
@@ -109,18 +99,6 @@ export type MintV2InstructionAccounts = {
    */
 
   recentSlothashes?: PublicKey | Pda;
-  /**
-   * Token Authorization Rules program.
-   *
-   */
-
-  authorizationRulesProgram?: PublicKey | Pda;
-  /**
-   * Token Authorization rules account for the collection metadata (if any).
-   *
-   */
-
-  authorizationRules?: PublicKey | Pda;
 };
 
 // Data.
@@ -195,55 +173,25 @@ export function mintV2(
     minter: { index: 5, isWritable: true, value: input.minter ?? null },
     asset: { index: 6, isWritable: true, value: input.asset ?? null },
     collection: { index: 7, isWritable: true, value: input.collection ?? null },
-    collectionUpdateAuthority: {
-      index: 8,
-      isWritable: false,
-      value: input.collectionUpdateAuthority ?? null,
-    },
-    tokenMetadataProgram: {
-      index: 9,
-      isWritable: false,
-      value: input.tokenMetadataProgram ?? null,
-    },
     mplCoreProgram: {
-      index: 10,
+      index: 8,
       isWritable: false,
       value: input.mplCoreProgram ?? null,
     },
-    splTokenProgram: {
-      index: 11,
-      isWritable: false,
-      value: input.splTokenProgram ?? null,
-    },
-    splAtaProgram: {
-      index: 12,
-      isWritable: false,
-      value: input.splAtaProgram ?? null,
-    },
     systemProgram: {
-      index: 13,
+      index: 9,
       isWritable: false,
       value: input.systemProgram ?? null,
     },
     sysvarInstructions: {
-      index: 14,
+      index: 10,
       isWritable: false,
       value: input.sysvarInstructions ?? null,
     },
     recentSlothashes: {
-      index: 15,
+      index: 11,
       isWritable: false,
       value: input.recentSlothashes ?? null,
-    },
-    authorizationRulesProgram: {
-      index: 16,
-      isWritable: false,
-      value: input.authorizationRulesProgram ?? null,
-    },
-    authorizationRules: {
-      index: 17,
-      isWritable: false,
-      value: input.authorizationRules ?? null,
     },
   };
 
@@ -275,33 +223,12 @@ export function mintV2(
   if (!resolvedAccounts.minter.value) {
     resolvedAccounts.minter.value = context.identity;
   }
-  if (!resolvedAccounts.tokenMetadataProgram.value) {
-    resolvedAccounts.tokenMetadataProgram.value = context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    );
-    resolvedAccounts.tokenMetadataProgram.isWritable = false;
-  }
   if (!resolvedAccounts.mplCoreProgram.value) {
     resolvedAccounts.mplCoreProgram.value = context.programs.getPublicKey(
       'mplCore',
       'CoREzp6dAdLVRKf3EM5tWrsXM2jQwRFeu5uhzsAyjYXL'
     );
     resolvedAccounts.mplCoreProgram.isWritable = false;
-  }
-  if (!resolvedAccounts.splTokenProgram.value) {
-    resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
-    resolvedAccounts.splTokenProgram.isWritable = false;
-  }
-  if (!resolvedAccounts.splAtaProgram.value) {
-    resolvedAccounts.splAtaProgram.value = context.programs.getPublicKey(
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    );
-    resolvedAccounts.splAtaProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(

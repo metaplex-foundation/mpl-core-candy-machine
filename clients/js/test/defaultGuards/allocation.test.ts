@@ -59,7 +59,6 @@ test('it allows minting when the allocation limit is not reached', async (t) => 
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allocation: some({ id: 1 }) },
       })
     )
@@ -116,7 +115,6 @@ test('it forbids minting when the allocation limit is reached', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allocation: some({ id: 1 }) },
       })
     )
@@ -130,7 +128,6 @@ test('it forbids minting when the allocation limit is reached', async (t) => {
         candyMachine,
         asset: mint,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allocation: some({ id: 1 }) },
       })
     )
@@ -204,7 +201,6 @@ test('the allocation limit is local to each id', async (t) => {
         asset: mintA,
         minter: minterA,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allocation: some({ id: 1 }) },
         group: some('GROUPA'),
       })
@@ -223,7 +219,6 @@ test('the allocation limit is local to each id', async (t) => {
         asset: mintB,
         minter: minterB,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allocation: some({ id: 2 }) },
         group: some('GROUPB'),
       })
@@ -273,7 +268,6 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
         candyMachine,
         asset: mintA,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allocation: some({ id: 1 }) },
       })
     )
@@ -288,7 +282,6 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
         candyMachine,
         asset: mintB,
         collection,
-        collectionUpdateAuthority: umi.identity.publicKey,
         mintArgs: { allocation: some({ id: 1 }) },
       })
     )

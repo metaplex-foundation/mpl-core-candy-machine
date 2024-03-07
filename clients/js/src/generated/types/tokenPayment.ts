@@ -21,6 +21,7 @@ import {
  *
  * 0. `[writable]` Token account holding the required amount.
  * 1. `[writable]` Address of the ATA to receive the tokens.
+ * 2. `[]` SPL token program.
  */
 
 export type TokenPayment = {
