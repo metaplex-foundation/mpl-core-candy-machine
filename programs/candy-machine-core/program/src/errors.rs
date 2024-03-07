@@ -91,4 +91,7 @@ pub enum CandyError {
 
     #[msg("Invalid account version")]
     InvalidAccountVersion,
+
+    #[msg("Invalid plugin authority")]
+    IncorrectPluginAuthority,
 }

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
-use mpl_core::{self, instructions::CreateCpiBuilder};
+use mpl_core::{self, accounts::Collection, fetch_plugin, instructions::CreateCpiBuilder, types::{PluginType, UpdateDelegate}};
 use solana_program::sysvar;
 
 use crate::{
@@ -68,18 +68,12 @@ pub(crate) fn process_mint_asset(
 
     // collection metadata must be owner by mpl core
     if !cmp_pubkeys(accounts.collection.owner, &mpl_core::ID) {
+        return err!(CandyError::IncorrectOwner);
     }
 
-    // TODO check collection stuff
-    // let collection_metadata: Metadata =
-    //     Metadata::try_from(&collection_metadata_info.to_account_info())?;
-    // // check that the update authority matches the collection update authority
-    // if !cmp_pubkeys(
-    //     &collection_metadata.update_authority,
-    //     &accounts.collection_update_authority.key(),
-    // ) {
-    //     return err!(CandyError::IncorrectCollectionAuthority);
-    // }
+    let (auths, _, _) = fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
+
+    assert_plugin_pubkey_authority(&auths, &accounts.authority_pda.key())?;
 
     // (2) selecting an item to mint
 
@@ -228,7 +222,7 @@ fn create_and_mint(
 
     CreateCpiBuilder::new(&accounts.mpl_core_program)
         .payer(&accounts.payer)
-        .asset_address(&accounts.asset)
+        .asset(&accounts.asset)
         .owner(Some(&accounts.asset_owner))
         .name(config_line.name)
         .uri(config_line.uri)

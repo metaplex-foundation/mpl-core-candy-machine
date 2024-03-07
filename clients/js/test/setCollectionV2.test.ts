@@ -31,6 +31,7 @@ test('it can update the collection of a candy machine v2', async (t) => {
   const collectionB = await createCollection(umi, {
     updateAuthority: collectionUpdateAuthorityB.publicKey,
   });
+
   await setCollectionV2(umi, {
     candyMachine: candyMachine.publicKey,
     collection: collectionA.publicKey,

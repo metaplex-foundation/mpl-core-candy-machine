@@ -1,5 +1,4 @@
 import {
-  findAssociatedTokenPda,
   getSplSystemProgramId,
 } from '@metaplex-foundation/mpl-toolbox';
 import { PublicKey, Signer } from '@metaplex-foundation/umi';
@@ -43,19 +42,10 @@ export const freezeSolPaymentGuardManifest: GuardManifest<
       candyGuard: mintContext.candyGuard,
     });
 
-    // TODO actually freeze asset
-    const [nftAta] = findAssociatedTokenPda(context, {
-      mint: mintContext.asset,
-      owner: mintContext.minter.publicKey,
-    });
     return {
       data: new Uint8Array(),
       remainingAccounts: [
         { publicKey: freezeEscrow, isWritable: true },
-        { publicKey: nftAta, isWritable: false },
-        ...(args.nftRuleSet
-          ? [{ publicKey: args.nftRuleSet, isWritable: false }]
-          : []),
       ],
     };
   },
@@ -81,8 +71,6 @@ export type FreezeSolPaymentMintArgs = Omit<
   FreezeSolPaymentArgs,
   'lamports'
 > & {
-  /** The ruleSet of the minted NFT, if any. */
-  nftRuleSet?: PublicKey;
 };
 
 /**
@@ -143,9 +131,8 @@ export type FreezeSolPaymentRouteArgsInitialize = Omit<
  *   routeArgs: {
  *     path: 'thaw',
  *     destination,
- *     nftMint,
- *     nftOwner,
- *     nftTokenStandard: candyMachine.tokenStandard,
+ *     asset,
+ *     collection,
  *   },
  * });
  * ```
@@ -161,7 +148,7 @@ export type FreezeSolPaymentRouteArgsThaw = Omit<
   asset: PublicKey;
 
   /** The owner address of the NFT to thaw. */
-  owner: PublicKey;
+  collection: PublicKey;
 };
 
 /**
@@ -227,7 +214,7 @@ const thawRouteInstruction: RouteParser<FreezeSolPaymentRouteArgsThaw> = (
   const remainingAccounts: GuardRemainingAccount[] = [
     { publicKey: freezeEscrow, isWritable: true },
     { publicKey: args.asset, isWritable: true },
-    { publicKey: args.owner, isWritable: false },
+    { publicKey: args.collection, isWritable: false },
     { publicKey: getMplCoreProgramId(context), isWritable: false },
     { publicKey: getSplSystemProgramId(context), isWritable: false },
   ];

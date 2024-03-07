@@ -1,9 +1,9 @@
 use anchor_lang::{prelude::*, solana_program::sysvar};
 
 use crate::{
-    approve_asset_delegate, cmp_pubkeys,
+    approve_asset_collection_delegate, cmp_pubkeys,
     constants::AUTHORITY_SEED,
-    revoke_asset_delegate,
+    revoke_asset_collection_delegate,
     CandyError, CandyMachine, ApproveAssetDelegateHelperAccounts,
     RevokeAssetDelegateHelperAccounts,
 };
@@ -39,7 +39,7 @@ pub fn set_collection_v2(ctx: Context<SetCollectionV2>) -> Result<()> {
         sysvar_instructions: accounts.sysvar_instructions.to_account_info(),
     };
 
-    revoke_asset_delegate(
+    revoke_asset_collection_delegate(
         revoke_accounts,
         candy_machine.key(),
         *ctx.bumps.get("authority_pda").unwrap(),
@@ -48,14 +48,14 @@ pub fn set_collection_v2(ctx: Context<SetCollectionV2>) -> Result<()> {
     let delegate_accounts = ApproveAssetDelegateHelperAccounts {
         payer: accounts.payer.to_account_info(),
         authority_pda: accounts.authority_pda.to_account_info(),
-        collection: accounts.collection.to_account_info(),
-        collection_update_authority: accounts.collection_update_authority.to_account_info(),
+        collection: accounts.new_collection.to_account_info(),
+        collection_update_authority: accounts.new_collection_update_authority.to_account_info(),
         system_program: accounts.system_program.to_account_info(),
         sysvar_instructions: accounts.sysvar_instructions.to_account_info(),
         mpl_core_program: accounts.mpl_core_program.to_account_info(),
     };
 
-    approve_asset_delegate(delegate_accounts)
+    approve_asset_collection_delegate(delegate_accounts)
 }
 
 /// Sets the collection PDA for the candy machine.

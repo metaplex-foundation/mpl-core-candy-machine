@@ -95,7 +95,7 @@ test('it transfers SOL to an escrow account and freezes the NFT', async (t) => {
   t.is(isFrozen(asset), true, 'NFT is frozen');
 
   // And cannot be thawed since not all NFTs have been minted.
-  const promise = thawNft(umi, candyMachine, destination, mint.publicKey);
+  const promise = thawNft(umi, candyMachine, destination, mint.publicKey, collection);
   await t.throwsAsync(promise, { message: /ThawNotEnabled/ });
 
   // And the treasury escrow received SOLs.
@@ -236,7 +236,7 @@ test('it can thaw an NFT once all NFTs are minted', async (t) => {
   t.is(isFrozen(asset), true, 'NFT is frozen');
 
   // When we thaw the NFT.
-  await thawNft(umi, candyMachine, destination, mint.publicKey);
+  await thawNft(umi, candyMachine, destination, mint.publicKey, collection);
 
   // Then the NFT is thawed.
   asset = await fetchAssetWithPlugins(umi, mint.publicKey);
@@ -259,7 +259,7 @@ test('it can unlock funds once all NFTs have been thawed', async (t) => {
 
   // And given all NFTs have been minted and thawed.
   const mint = await mintNft(umi, candyMachine, destination, collection);
-  await thawNft(umi, candyMachine, destination, mint.publicKey);
+  await thawNft(umi, candyMachine, destination, mint.publicKey, collection);
 
   // When the authority unlocks the funds.
   await transactionBuilder()
@@ -472,15 +472,15 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
     ]);
   };
   await assertFrozenCounts(2, 1);
-  await thawNft(umi, cm, destinationAB, mintD.publicKey, 'GROUPA'); // Not frozen.
+  await thawNft(umi, cm, destinationAB, mintD.publicKey, collection, 'GROUPA'); // Not frozen.
   await assertFrozenCounts(2, 1); // No change.
-  await thawNft(umi, cm, destinationAB, mintA.publicKey, 'GROUPA');
+  await thawNft(umi, cm, destinationAB, mintA.publicKey, collection, 'GROUPA');
   await assertFrozenCounts(1, 1); // AB decreased.
-  await thawNft(umi, cm, destinationAB, mintA.publicKey, 'GROUPA'); // Already thawed.
+  await thawNft(umi, cm, destinationAB, mintA.publicKey, collection, 'GROUPA'); // Already thawed.
   await assertFrozenCounts(1, 1); // No change.
-  await thawNft(umi, cm, destinationAB, mintB.publicKey, 'GROUPB');
+  await thawNft(umi, cm, destinationAB, mintB.publicKey, collection, 'GROUPB');
   await assertFrozenCounts(0, 1); // AB decreased.
-  await thawNft(umi, cm, destinationC, mintC.publicKey, 'GROUPC');
+  await thawNft(umi, cm, destinationC, mintC.publicKey, collection, 'GROUPC');
   await assertFrozenCounts(0, 0); // C decreased.
 
   // And when the authority unlocks the funds of both freeze escrows.
@@ -683,7 +683,7 @@ test('it transfers SOL to an escrow account and locks the Programmable NFT', asy
   t.is(isFrozen(asset), true);
 
   // And cannot be thawed since not all NFTs have been minted.
-  const promise = thawNft(umi, candyMachine, destination, mint.publicKey);
+  const promise = thawNft(umi, candyMachine, destination, mint.publicKey, collection);
   await t.throwsAsync(promise, { message: /ThawNotEnabled/ });
 
   // And the treasury escrow received SOLs.
@@ -765,7 +765,7 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
         routeArgs: {
           path: 'thaw',
           asset: mint.publicKey,
-          owner: umi.identity.publicKey,
+          collection,
           destination,
         },
       })
@@ -874,8 +874,8 @@ const thawNft = async (
   candyMachine: PublicKey,
   destination: PublicKey,
   asset: PublicKey,
+  collection: PublicKey,
   group?: string,
-  nftOwner?: PublicKey
 ) => {
   await route(umi, {
     candyMachine,
@@ -884,7 +884,7 @@ const thawNft = async (
     routeArgs: {
       path: 'thaw',
       asset,
-      owner: nftOwner ?? umi.identity.publicKey,
+      collection,
       destination,
     },
   }).sendAndConfirm(umi);

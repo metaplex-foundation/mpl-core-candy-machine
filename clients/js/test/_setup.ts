@@ -93,7 +93,7 @@ export const createCollection = async (
 ): Promise<Signer> => {
   const mint = generateSigner(umi);
   await baseCreateCollection(umi, {
-    collectionAddress: mint,
+    collection: mint,
     ...defaultAssetData(),
     ...input,
   }).sendAndConfirm(umi);

@@ -2,7 +2,14 @@ use super::*;
 
 use anchor_lang::AccountsClose;
 use mpl_candy_machine_core_asset::CandyMachine;
-use mpl_core::{accounts::Asset, instructions::{AddAuthorityCpiBuilder, AddPluginCpiBuilder, RemoveAuthorityCpiBuilder, UpdatePluginCpiBuilder}, types::{Authority, Freeze, Plugin, PluginType}};
+use mpl_core::{
+    accounts::Asset,
+    instructions::{
+        AddPluginAuthorityCpiBuilder, AddPluginCpiBuilder, RemovePluginAuthorityCpiBuilder,
+        UpdatePluginCpiBuilder,
+    },
+    types::{Authority, Freeze, Plugin, PluginType},
+};
 
 use solana_program::{
     program::{invoke, invoke_signed},
@@ -100,7 +107,7 @@ impl Guard for FreezeSolPayment {
             //   0. `[writable]` Freeze PDA to receive the funds (seeds `["freeze_escrow",
             //                   destination pubkey, candy guard pubkey, candy machine pubkey]`).
             //   1. `[writable]` Mint account for the Asset.
-            //   2. `[]` Address of the owner of the NFT.
+            //   2. `[]` Collection account for the Asset.
             //   3. `[]` MPL Core program ID.
             //   4. `[]` System program.
             FreezeInstruction::Thaw => {
@@ -154,13 +161,6 @@ impl Condition for FreezeSolPayment {
         if freeze_pda.data_is_empty() {
             return err!(CandyGuardError::FreezeNotInitialized);
         }
-
-        // TOOD stop using this value
-        let nft_ata = try_get_account_info(ctx.accounts.remaining, index + 1)?;
-        ctx.account_cursor += 1;
-
-        let candy_machine_info = ctx.accounts.candy_machine.to_account_info();
-        let account_data = candy_machine_info.data.borrow_mut();
 
         ctx.indices.insert("freeze_sol_payment", index);
 
@@ -327,7 +327,7 @@ pub fn freeze_nft(
     ];
     let (_, bump) = Pubkey::find_program_address(&seeds, &crate::ID);
 
-    // TODO maybe remove this
+    // TODO maybe remove
     let signer = [
         FreezeEscrow::PREFIX_SEED,
         destination.as_ref(),
@@ -336,31 +336,40 @@ pub fn freeze_nft(
         &[bump],
     ];
 
-    // TODO remove ata usage
-    let nft_ata = try_get_account_info(ctx.accounts.remaining, account_index + 1)?;
-
     // approves a delegate to lock and transfer the token
-
     AddPluginCpiBuilder::new(&ctx.accounts.mpl_core_program)
-        .asset_address(&ctx.accounts.asset)
+        .asset(&ctx.accounts.asset)
+        .collection(Some(&ctx.accounts.collection))
         .authority(&ctx.accounts.minter)
         .payer(Some(&ctx.accounts.payer))
         .system_program(&ctx.accounts.system_program)
         .plugin(Plugin::Freeze(Freeze { frozen: true }))
         .invoke()?;
 
-    AddAuthorityCpiBuilder::new(&ctx.accounts.mpl_core_program)
+    AddPluginAuthorityCpiBuilder::new(&ctx.accounts.mpl_core_program)
         .authority(&ctx.accounts.minter)
-        .asset_address(&ctx.accounts.asset)
+        .asset(&ctx.accounts.asset)
+        .collection(Some(&ctx.accounts.collection))
         .new_authority(Authority::Pubkey {
-            address: freeze_pda.key()
+            address: freeze_pda.key(),
         })
         .plugin_type(PluginType::Freeze)
         .payer(Some(&ctx.accounts.payer))
         .system_program(&ctx.accounts.system_program)
+        .invoke()?;
+
+    // remove owner from authorities when freezing
+    RemovePluginAuthorityCpiBuilder::new(&ctx.accounts.mpl_core_program)
+        .authority(&ctx.accounts.minter)
+        .asset(&ctx.accounts.asset)
+        .plugin_type(PluginType::Freeze)
+        .authority_to_remove(Authority::Pubkey {
+            address: owner.key(),
+        })
+        .payer(Some(&ctx.accounts.payer))
+        .system_program(&ctx.accounts.system_program)
         .invoke()
         .map_err(|error| error.into())
-        
 }
 
 /// Helper function to initialize the freeze pda.
@@ -485,7 +494,7 @@ pub fn thaw_nft<'info>(
     }
 
     let asset = try_get_account_info(ctx.remaining_accounts, 1)?;
-    let nft_owner = try_get_account_info(ctx.remaining_accounts, 2)?;
+    let collection = try_get_account_info(ctx.remaining_accounts, 2)?;
     let mpl_core_program = try_get_account_info(ctx.remaining_accounts, 3)?;
     let system_program = try_get_account_info(ctx.remaining_accounts, 4)?;
 
@@ -514,7 +523,7 @@ pub fn thaw_nft<'info>(
     ];
 
     let maybe_freeze_plugin = mpl_core::fetch_plugin::<Asset, Freeze>(&asset, PluginType::Freeze);
-    
+
     let is_frozen = match maybe_freeze_plugin {
         Ok((_, freeze_plugin, _)) => freeze_plugin.frozen,
         _ => false,
@@ -523,19 +532,21 @@ pub fn thaw_nft<'info>(
     if is_frozen {
         UpdatePluginCpiBuilder::new(mpl_core_program)
             .authority(freeze_pda)
+            .collection(Some(collection))
             .payer(Some(&ctx.accounts.payer))
-            .asset_address(asset)
+            .asset(asset)
             .plugin(Plugin::Freeze(Freeze { frozen: false }))
             .system_program(system_program)
             .invoke_signed(&[&signer])?;
 
         // TODO remove the plugin if there will be only the owner authority left?
-        RemoveAuthorityCpiBuilder::new(mpl_core_program)
+        RemovePluginAuthorityCpiBuilder::new(mpl_core_program)
             .authority(freeze_pda)
-            .asset_address(asset)
+            .collection(Some(collection))
+            .asset(asset)
             .plugin_type(PluginType::Freeze)
             .authority_to_remove(Authority::Pubkey {
-                address: freeze_pda.key()
+                address: freeze_pda.key(),
             })
             .payer(Some(&ctx.accounts.payer))
             .system_program(system_program)

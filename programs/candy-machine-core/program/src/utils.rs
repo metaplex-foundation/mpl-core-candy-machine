@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
-use mpl_core::{instructions::{AddAuthorityCpiBuilder, AddPluginCpiBuilder, RemoveAuthorityCpiBuilder }, types::{Authority, Plugin, PluginType, UpdateDelegate}};
+use mpl_core::{accounts::Collection, fetch_plugin, instructions::{AddCollectionPluginAuthorityCpiBuilder, AddCollectionPluginCpiBuilder, RemoveCollectionPluginAuthorityCpiBuilder }, types::{Authority, Plugin, PluginType, UpdateDelegate}};
 use mpl_token_metadata::{
     accounts::Metadata,
     instructions::{
@@ -275,41 +275,67 @@ pub fn revoke_collection_authority_helper(
     }
 }
 
-pub fn approve_asset_delegate(accounts: ApproveAssetDelegateHelperAccounts) -> Result<()> {
-    //TODO check whether UpdateDelegate plugin exists
+pub fn assert_plugin_pubkey_authority(
+    auths: &Vec<Authority>,
+    authority: &Pubkey,
+) -> Result<()> {
+    if auths.iter().any(|auth| {
+        match auth {
+            Authority::Pubkey { address } => cmp_pubkeys(address, &authority),
+            _ => false
+        }
+    }) {
+        return Ok(())
+    }
+    err!(CandyError::IncorrectPluginAuthority)
+}
 
-    let add_plugin_res = AddPluginCpiBuilder::new(&accounts.mpl_core_program)
-        .asset_address(&accounts.collection)
-        .authority(&accounts.collection_update_authority)
-        .plugin(Plugin::UpdateDelegate(UpdateDelegate {}))
-        .payer(Some(&accounts.payer))
-        .system_program(&accounts.system_program)
-        .invoke()?;
-        // .map_err(|error| error.into())?;
-        
 
-    // TODO check whether authority exists
+pub fn approve_asset_collection_delegate(accounts: ApproveAssetDelegateHelperAccounts) -> Result<()> {
+    // add UpdateDelegate plugin if it does not exist on the Collection
+    let maybe_update_plugin = fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate);
+    if maybe_update_plugin.is_err() {
+        AddCollectionPluginCpiBuilder::new(&accounts.mpl_core_program)
+            .collection(&accounts.collection)
+            .authority(&accounts.collection_update_authority)
+            .plugin(Plugin::UpdateDelegate(UpdateDelegate {}))
+            .payer(Some(&accounts.payer))
+            .system_program(&accounts.system_program)
+            .invoke()?;
+    }
 
-    AddAuthorityCpiBuilder::new(&accounts.mpl_core_program)
-        .asset_address(&accounts.collection)
+    // add CM authority to collection if it doesn't exist    
+    let (auths, _, _) = fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
+
+    if !auths.iter().any(|auth| {
+        match auth {
+            Authority::Pubkey { address } => cmp_pubkeys(address, &accounts.authority_pda.key()),
+            _ => false
+        }
+    }) {
+        AddCollectionPluginAuthorityCpiBuilder::new(&accounts.mpl_core_program)
+        .collection(&accounts.collection)
         .authority(&accounts.collection_update_authority)
         .plugin_type(PluginType::UpdateDelegate)
-        .system_program(&accounts.system_program)
         .new_authority(Authority::Pubkey {
             address: accounts.authority_pda.key()
-        })
+        })        
+        .system_program(&accounts.system_program)
         .payer(Some(&accounts.payer))
         .invoke()
         .map_err(|error| error.into())
+    } else {
+        Ok(())
+    }
 }
 
-pub fn revoke_asset_delegate(
+pub fn revoke_asset_collection_delegate(
     accounts: RevokeAssetDelegateHelperAccounts,
     candy_machine: Pubkey,
     signer_bump: u8,
 ) -> Result<()> {
-    RemoveAuthorityCpiBuilder::new(&accounts.mpl_core_program)
-        .asset_address(&accounts.collection)
+    RemoveCollectionPluginAuthorityCpiBuilder::new(&accounts.mpl_core_program)
+        .collection(&accounts.collection)
         .authority(&accounts.authority_pda)
         .plugin_type(PluginType::UpdateDelegate)
         .system_program(&accounts.system_program)
@@ -323,8 +349,6 @@ pub fn revoke_asset_delegate(
             &[signer_bump],
         ]])
         .map_err(|error| error.into())
-
-    // TODO remove plugin if empty
 }
 
 pub fn approve_metadata_delegate(accounts: ApproveMetadataDelegateHelperAccounts) -> Result<()> {

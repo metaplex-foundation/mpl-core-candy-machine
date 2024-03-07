@@ -45,11 +45,6 @@ export const freezeTokenPaymentGuardManifest: GuardManifest<
       candyGuard: mintContext.candyGuard,
     });
 
-    // TODO actually freeze asset
-    const [nftAta] = findAssociatedTokenPda(context, {
-      mint: mintContext.asset,
-      owner: mintContext.minter.publicKey,
-    });
     const [tokenAddress] = findAssociatedTokenPda(context, {
       mint: args.mint,
       owner: mintContext.minter.publicKey,
@@ -62,12 +57,8 @@ export const freezeTokenPaymentGuardManifest: GuardManifest<
       data: new Uint8Array(),
       remainingAccounts: [
         { publicKey: freezeEscrow, isWritable: true },
-        { publicKey: nftAta, isWritable: false },
         { publicKey: tokenAddress, isWritable: true },
         { publicKey: freezeAta, isWritable: true },
-        ...(args.nftRuleSet
-          ? [{ publicKey: args.nftRuleSet, isWritable: false }]
-          : []),
       ],
     };
   },
@@ -93,8 +84,6 @@ export type FreezeTokenPaymentMintArgs = Omit<
   FreezeTokenPaymentArgs,
   'amount'
 > & {
-  /** The ruleSet of the minted NFT, if any. */
-  nftRuleSet?: PublicKey;
 };
 
 /**
@@ -157,9 +146,8 @@ export type FreezeTokenPaymentRouteArgsInitialize = Omit<
  *     path: 'thaw',
  *     mint: tokenMint.publicKey,
  *     destinationAta,
- *     nftMint,
- *     nftOwner,
- *     nftTokenStandard: candyMachine.tokenStandard,
+ *     asset,
+ *     collection,
  *   },
  * });
  * ```
@@ -175,7 +163,7 @@ export type FreezeTokenPaymentRouteArgsThaw = Omit<
   asset: PublicKey;
 
   /** The owner address of the NFT to thaw. */
-  owner: PublicKey;
+  collection: PublicKey;
 };
 
 /**
@@ -250,7 +238,7 @@ const thawRouteInstruction: RouteParser<FreezeTokenPaymentRouteArgsThaw> = (
   const remainingAccounts: GuardRemainingAccount[] = [
     { publicKey: freezeEscrow, isWritable: true },
     { publicKey: args.asset, isWritable: true },
-    { publicKey: args.owner, isWritable: false },
+    { publicKey: args.collection, isWritable: false },
     { publicKey: getMplCoreProgramId(context), isWritable: false },
     { publicKey: getSplSystemProgramId(context), isWritable: false },
   ];

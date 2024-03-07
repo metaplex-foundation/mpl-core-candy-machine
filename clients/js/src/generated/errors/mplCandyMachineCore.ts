@@ -480,6 +480,19 @@ export class CmInvalidAccountVersionError extends ProgramError {
 codeToErrorMap.set(0x178d, CmInvalidAccountVersionError);
 nameToErrorMap.set('InvalidAccountVersion', CmInvalidAccountVersionError);
 
+/** IncorrectPluginAuthority: Invalid plugin authority */
+export class CmIncorrectPluginAuthorityError extends ProgramError {
+  readonly name: string = 'IncorrectPluginAuthority';
+
+  readonly code: number = 0x178e; // 6030
+
+  constructor(program: Program, cause?: Error) {
+    super('Invalid plugin authority', program, cause);
+  }
+}
+codeToErrorMap.set(0x178e, CmIncorrectPluginAuthorityError);
+nameToErrorMap.set('IncorrectPluginAuthority', CmIncorrectPluginAuthorityError);
+
 /**
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors

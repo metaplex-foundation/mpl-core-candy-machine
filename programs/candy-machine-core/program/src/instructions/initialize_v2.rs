@@ -2,7 +2,7 @@ use anchor_lang::{prelude::*, solana_program::sysvar, Discriminator};
 use mpl_token_metadata::MAX_SYMBOL_LENGTH;
 
 use crate::{
-    approve_asset_delegate, constants::{
+    approve_asset_collection_delegate, constants::{
         AUTHORITY_SEED, HIDDEN_SECTION,
     }, state::{CandyMachine, CandyMachineData}, utils::fixed_length_string, AccountVersion, ApproveAssetDelegateHelperAccounts, ApproveMetadataDelegateHelperAccounts
 };
@@ -51,7 +51,7 @@ pub fn initialize_v2(
         mpl_core_program: ctx.accounts.mpl_core_program.to_account_info(),
     };
 
-    approve_asset_delegate(delegate_accounts)
+    approve_asset_collection_delegate(delegate_accounts)
 }
 
 /// Initializes a new candy machine.
