@@ -110,6 +110,55 @@ test('it can mint from a candy guard with guards', async (t) => {
   t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 1n });
 });
 
+test('it can mint from a candy guard with guards to different owner', async (t) => {
+  // Given a candy machine with some guards.
+  const umi = await createUmi();
+  const collection = (await createCollection(umi)).publicKey;
+  const owner = generateSigner(umi).publicKey;
+  const destination = generateSigner(umi).publicKey;
+  const candyMachineSigner = await createV2(umi, {
+    collection,
+    configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
+    guards: {
+      botTax: { lamports: sol(0.01), lastInstruction: true },
+      solPayment: { lamports: sol(2), destination },
+    },
+  });
+  const candyMachine = candyMachineSigner.publicKey;
+
+  // When we mint from the candy guard.
+  const mint = generateSigner(umi);
+  const minter = generateSigner(umi);
+  const payer = await generateSignerWithSol(umi, sol(10));
+  await transactionBuilder()
+    .add(setComputeUnitLimit(umi, { units: 600_000 }))
+    .add(
+      mintV2(umi, {
+        candyMachine,
+        asset: mint,
+        payer,
+        minter,
+        owner,
+        collection,
+        mintArgs: {
+          solPayment: { destination },
+        },
+      })
+    )
+    .sendAndConfirm(umi);
+
+  // Then the mint was successful.
+  await assertSuccessfulMint(t, umi, { mint, owner, name: 'Degen #1' });
+
+  // And the payer was charged.
+  const payerBalance = await umi.rpc.getBalance(payer.publicKey);
+  t.true(isEqualToAmount(payerBalance, sol(8), sol(0.1)));
+
+  // And the candy machine was updated.
+  const candyMachineAccount = await fetchCandyMachine(umi, candyMachine);
+  t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 1n });
+});
+
 test('it can mint from a candy guard with groups', async (t) => {
   // Given a candy machine with guard groups.
   const umi = await createUmi();

@@ -98,6 +98,15 @@
           ]
         },
         {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Optionally mint to different owner"
+          ]
+        },
+        {
           "name": "asset",
           "isMut": true,
           "isSigner": false,

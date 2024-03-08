@@ -5,7 +5,7 @@ use mpl_candy_machine_core_asset::CandyMachine;
 use mpl_core::{
     accounts::Asset,
     instructions::{
-        AddPluginAuthorityCpiBuilder, AddPluginCpiBuilder, RemovePluginAuthorityCpiBuilder,
+        ApprovePluginAuthorityCpiBuilder, AddPluginCpiBuilder, RevokePluginAuthorityCpiBuilder,
         UpdatePluginCpiBuilder,
     },
     types::{Authority, Freeze, Plugin, PluginType},
@@ -345,7 +345,7 @@ pub fn freeze_nft(
         .plugin(Plugin::Freeze(Freeze { frozen: true }))
         .invoke()?;
 
-    AddPluginAuthorityCpiBuilder::new(&ctx.accounts.mpl_core_program)
+    ApprovePluginAuthorityCpiBuilder::new(&ctx.accounts.mpl_core_program)
         .authority(&ctx.accounts.minter)
         .asset(&ctx.accounts.asset)
         .collection(Some(&ctx.accounts.collection))
@@ -355,18 +355,9 @@ pub fn freeze_nft(
         .plugin_type(PluginType::Freeze)
         .payer(Some(&ctx.accounts.payer))
         .system_program(&ctx.accounts.system_program)
-        .invoke()?;
-
-    // remove owner from authorities when freezing
-    RemovePluginAuthorityCpiBuilder::new(&ctx.accounts.mpl_core_program)
-        .authority(&ctx.accounts.minter)
-        .asset(&ctx.accounts.asset)
-        .plugin_type(PluginType::Freeze)
-        .authority_to_remove(Authority::Owner)
-        .payer(Some(&ctx.accounts.payer))
-        .system_program(&ctx.accounts.system_program)
         .invoke()
         .map_err(|error| error.into())
+
 }
 
 /// Helper function to initialize the freeze pda.
@@ -536,14 +527,11 @@ pub fn thaw_nft<'info>(
             .system_program(system_program)
             .invoke_signed(&[&signer])?;
 
-        RemovePluginAuthorityCpiBuilder::new(mpl_core_program)
+        RevokePluginAuthorityCpiBuilder::new(mpl_core_program)
             .authority(freeze_pda)
             .collection(Some(collection))
             .asset(asset)
             .plugin_type(PluginType::Freeze)
-            .authority_to_remove(Authority::Pubkey {
-                address: freeze_pda.key(),
-            })
             .payer(Some(&ctx.accounts.payer))
             .system_program(system_program)
             .invoke_signed(&[&signer])?;

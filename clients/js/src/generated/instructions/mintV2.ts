@@ -58,6 +58,8 @@ export type MintV2InstructionAccounts = {
   payer?: Signer;
   /** Minter account for validation and non-SOL fees. */
   minter?: Signer;
+  /** Optionally mint to different owner */
+  owner?: PublicKey | Pda;
   /**
    * Mint account of the NFT. The account will be initialized if necessary.
    *
@@ -171,25 +173,26 @@ export function mintV2(
     },
     payer: { index: 4, isWritable: true, value: input.payer ?? null },
     minter: { index: 5, isWritable: true, value: input.minter ?? null },
-    asset: { index: 6, isWritable: true, value: input.asset ?? null },
-    collection: { index: 7, isWritable: true, value: input.collection ?? null },
+    owner: { index: 6, isWritable: false, value: input.owner ?? null },
+    asset: { index: 7, isWritable: true, value: input.asset ?? null },
+    collection: { index: 8, isWritable: true, value: input.collection ?? null },
     mplCoreProgram: {
-      index: 8,
+      index: 9,
       isWritable: false,
       value: input.mplCoreProgram ?? null,
     },
     systemProgram: {
-      index: 9,
+      index: 10,
       isWritable: false,
       value: input.systemProgram ?? null,
     },
     sysvarInstructions: {
-      index: 10,
+      index: 11,
       isWritable: false,
       value: input.sysvarInstructions ?? null,
     },
     recentSlothashes: {
-      index: 11,
+      index: 12,
       isWritable: false,
       value: input.recentSlothashes ?? null,
     },

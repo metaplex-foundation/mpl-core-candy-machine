@@ -6,11 +6,10 @@ import {
 import test from 'ava';
 
 import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
-import { PluginType, authority, removeCollectionPluginAuthority } from '@metaplex-foundation/mpl-core';
+import { PluginType, revokeCollectionPluginAuthority } from '@metaplex-foundation/mpl-core';
 import {
   CandyMachine,
   fetchCandyMachine,
-  findCandyMachineAuthorityPda,
   mintAssetFromCandyMachine,
   setCollectionV2,
 } from '../src';
@@ -134,11 +133,10 @@ test.only('it can set the same collection of a candy machine when mint is in pro
 
   // And we remove delegate authority from the collection.
 
-  await removeCollectionPluginAuthority(umi, {
+  await revokeCollectionPluginAuthority(umi, {
     collection: collectionA.publicKey,
     authority: collectionUpdateAuthorityA,
     pluginType: PluginType.UpdateDelegate,
-    authorityToRemove: authority('Pubkey', {address: findCandyMachineAuthorityPda(umi, { candyMachine: candyMachine.publicKey })[0]})
   }).sendAndConfirm(umi)
   
 

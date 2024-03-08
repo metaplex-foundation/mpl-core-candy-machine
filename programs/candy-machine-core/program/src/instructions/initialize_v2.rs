@@ -11,9 +11,6 @@ pub fn initialize_v2(
     ctx: Context<InitializeV2>,
     data: CandyMachineData,
 ) -> Result<()> {
-    let required_length = data.get_space_for_candy()?;
-
-
     let candy_machine_account = &mut ctx.accounts.candy_machine;
 
     let mut candy_machine = CandyMachine {

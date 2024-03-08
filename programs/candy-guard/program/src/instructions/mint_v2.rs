@@ -10,13 +10,19 @@ use crate::{
     utils::cmp_pubkeys,
 };
 
-use super::{MintAccounts, Token};
+use super::{MintAccounts};
 
 pub fn mint_v2<'info>(
     ctx: Context<'_, '_, '_, 'info, MintV2<'info>>,
     mint_args: Vec<u8>,
     label: Option<String>,
 ) -> Result<()> {
+    let owner_info = if let Some(owner) = ctx.accounts.owner.as_ref() {
+        owner.to_account_info()
+    } else {
+        ctx.accounts.minter.to_account_info()
+    };
+
     let accounts = MintAccounts {
         candy_guard: &ctx.accounts.candy_guard,
         candy_machine: &ctx.accounts.candy_machine,
@@ -26,6 +32,7 @@ pub fn mint_v2<'info>(
         asset: ctx.accounts.asset.to_account_info(),
         payer: ctx.accounts.payer.to_account_info(),
         minter: ctx.accounts.minter.to_account_info(),
+        owner: owner_info,
         recent_slothashes: ctx.accounts.recent_slothashes.to_account_info(),
         system_program: ctx.accounts.system_program.to_account_info(),
         sysvar_instructions: ctx.accounts.sysvar_instructions.to_account_info(),
@@ -130,7 +137,7 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
         authority_pda: ctx.accounts.candy_machine_authority_pda.clone(),
         mint_authority: candy_guard.to_account_info(),
         payer: ctx.accounts.payer.clone(),
-        asset_owner: ctx.accounts.minter.clone(),
+        asset_owner: ctx.accounts.owner.clone(),
         asset: ctx.accounts.asset.clone(),
         collection: ctx.accounts.collection.clone(),
         mpl_core_program: ctx.accounts.mpl_core_program.clone(),
@@ -193,6 +200,9 @@ pub struct MintV2<'info> {
     /// Minter account for validation and non-SOL fees.
     #[account(mut)]
     minter: Signer<'info>,
+
+    /// Optionally mint to different owner
+    owner: Option<UncheckedAccount<'info>>,
 
     /// Mint account of the NFT. The account will be initialized if necessary.
     ///

@@ -71,9 +71,9 @@ pub(crate) fn process_mint_asset(
         return err!(CandyError::IncorrectOwner);
     }
 
-    let (auths, _, _) = fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
+    let (auth, _, _) = fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
 
-    assert_plugin_pubkey_authority(&auths, &accounts.authority_pda.key())?;
+    assert_plugin_pubkey_authority(&auth, &accounts.authority_pda.key())?;
 
     // (2) selecting an item to mint
 
@@ -212,13 +212,6 @@ fn create_and_mint(
         .sysvar_instructions
         .as_ref()
         .ok_or(CandyError::MissingInstructionsSysvar)?;
-
-    msg!("authority_pda {:?}", accounts.authority_pda);
-
-    let pda = Pubkey::find_program_address(&[
-        AUTHORITY_SEED.as_bytes(),
-        candy_machine_key.as_ref(),], &crate::ID);
-    msg!("generated_pda {:?}", pda);
 
     CreateCpiBuilder::new(&accounts.mpl_core_program)
         .payer(&accounts.payer)
