@@ -13,7 +13,7 @@ module.exports = {
     programs: [
       {
         label: "MPL Core",
-        programId: "CoREzp6dAdLVRKf3EM5tWrsXM2jQwRFeu5uhzsAyjYXL",
+        programId: "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d",
         deployPath: getProgram("mpl_core_program.so"),
       },
       {
