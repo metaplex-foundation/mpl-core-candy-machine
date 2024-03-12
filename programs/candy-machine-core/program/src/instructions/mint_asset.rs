@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
-use mpl_core::{self, accounts::Collection, fetch_plugin, instructions::CreateCpiBuilder, types::{PluginType, UpdateDelegate}};
+use mpl_core::{self, accounts::BaseCollection, fetch_plugin, instructions::CreateCpiBuilder, types::{PluginType, UpdateDelegate}};
 use solana_program::sysvar;
 
 use crate::{
@@ -71,7 +71,7 @@ pub(crate) fn process_mint_asset(
         return err!(CandyError::IncorrectOwner);
     }
 
-    let (auth, _, _) = fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
+    let (auth, _, _) = fetch_plugin::<BaseCollection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
 
     assert_plugin_pubkey_authority(&auth, &accounts.authority_pda.key())?;
 

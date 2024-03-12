@@ -18,7 +18,7 @@ import {
   Umi,
 } from '@metaplex-foundation/umi';
 import test, { Assertions } from 'ava';
-import { AssetWithPlugins, fetchAssetWithPlugins } from '@metaplex-foundation/mpl-core';
+import { Asset, fetchAsset } from '@metaplex-foundation/mpl-core';
 import {
   addConfigLines,
   fetchFreezeEscrow,
@@ -106,7 +106,7 @@ test('it transfers tokens to an escrow account and freezes the NFT', async (t) =
   // Then minting was successful.
   await assertSuccessfulMint(t, umi, { mint, owner: umi.identity });
 
-  const asset = await fetchAssetWithPlugins(umi, mint.publicKey);
+  const asset = await fetchAsset(umi, mint.publicKey);
   t.is(isFrozen(asset), true);
 
   // And cannot be thawed since not all NFTs have been minted.
@@ -227,14 +227,14 @@ test('it can thaw an NFT once all NFTs are minted', async (t) => {
     destinationAta,
     collection
   );
-  let asset = await fetchAssetWithPlugins(umi, mint.publicKey);
+  let asset = await fetchAsset(umi, mint.publicKey);
   t.is(isFrozen(asset), true);
 
   // When we thaw the NFT.
   await thawNft(umi, candyMachine, tokenMint, destinationAta, mint.publicKey, collection);
 
   // Then the NFT is thawed.
-  asset = await fetchAssetWithPlugins(umi, mint.publicKey);
+  asset = await fetchAsset(umi, mint.publicKey);
   t.is(isFrozen(asset), false);
 });
 
@@ -493,8 +493,8 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
   // Then all NFTs except for group D have been frozen.
   const [tokenA, tokenB, tokenC, tokenD] = await Promise.all(
     [nftA, nftB, nftC, nftD].map(
-      ({ publicKey: mint }): Promise<AssetWithPlugins> =>
-        fetchAssetWithPlugins(umi, mint)
+      ({ publicKey: mint }): Promise<Asset> =>
+        fetchAsset(umi, mint)
     )
   );
   
@@ -791,7 +791,7 @@ test('it transfers tokens to an escrow account and locks the Programmable NFT', 
   // Then minting was successful.
   await assertSuccessfulMint(t, umi, { mint, owner: umi.identity });
 
-  const asset = await fetchAssetWithPlugins(umi, mint.publicKey);
+  const asset = await fetchAsset(umi, mint.publicKey);
   t.is(isFrozen(asset), true);
 
   // And cannot be thawed since not all NFTs have been minted.
@@ -874,7 +874,7 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
     )
     .sendAndConfirm(umi);
 
-  let asset = await fetchAssetWithPlugins(umi, mint.publicKey);
+  let asset = await fetchAsset(umi, mint.publicKey);
   t.is(isFrozen(asset), true);
 
   // When we thaw the locked PNFT.
@@ -894,7 +894,7 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
     )
     .sendAndConfirm(umi);
 
-  asset = await fetchAssetWithPlugins(umi, mint.publicKey);
+  asset = await fetchAsset(umi, mint.publicKey);
   t.is(isFrozen(asset), false);
 
   // And the freeze escrow ATA account is closed.

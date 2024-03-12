@@ -3,7 +3,7 @@ use super::*;
 use anchor_lang::AccountsClose;
 use mpl_candy_machine_core_asset::CandyMachine;
 use mpl_core::{
-    accounts::Asset,
+    accounts::BaseAsset,
     instructions::{
         ApprovePluginAuthorityCpiBuilder, AddPluginCpiBuilder, RevokePluginAuthorityCpiBuilder,
         UpdatePluginCpiBuilder,
@@ -510,7 +510,7 @@ pub fn thaw_nft<'info>(
         &[bump],
     ];
 
-    let maybe_freeze_plugin = mpl_core::fetch_plugin::<Asset, Freeze>(&asset, PluginType::Freeze);
+    let maybe_freeze_plugin = mpl_core::fetch_plugin::<BaseAsset, Freeze>(&asset, PluginType::Freeze);
 
     let is_frozen = match maybe_freeze_plugin {
         Ok((_, freeze_plugin, _)) => freeze_plugin.frozen,

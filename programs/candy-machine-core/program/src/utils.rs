@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
-use mpl_core::{accounts::Collection, fetch_plugin, instructions::{ApproveCollectionPluginAuthorityCpiBuilder, AddCollectionPluginCpiBuilder, RevokeCollectionPluginAuthorityCpiBuilder }, types::{Authority, Plugin, PluginType, UpdateDelegate}};
+use mpl_core::{accounts::BaseCollection, fetch_plugin, instructions::{ApproveCollectionPluginAuthorityCpiBuilder, AddCollectionPluginCpiBuilder, RevokeCollectionPluginAuthorityCpiBuilder }, types::{Authority, Plugin, PluginType, UpdateDelegate}};
 use mpl_token_metadata::{
     accounts::Metadata,
     instructions::{
@@ -289,7 +289,7 @@ pub fn assert_plugin_pubkey_authority(
 
 pub fn approve_asset_collection_delegate(accounts: ApproveAssetDelegateHelperAccounts) -> Result<()> {
     // add UpdateDelegate plugin if it does not exist on the Collection
-    let maybe_update_plugin = fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate);
+    let maybe_update_plugin = fetch_plugin::<BaseCollection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate);
     if maybe_update_plugin.is_err() {
         AddCollectionPluginCpiBuilder::new(&accounts.mpl_core_program)
             .collection(&accounts.collection)
@@ -301,7 +301,7 @@ pub fn approve_asset_collection_delegate(accounts: ApproveAssetDelegateHelperAcc
     }
 
     // add CM authority to collection if it doesn't exist    
-    let (auth, _, _) = fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
+    let (auth, _, _) = fetch_plugin::<BaseCollection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
     let auth_to_add = Authority::Pubkey {
         address: accounts.authority_pda.key()
     };
@@ -327,7 +327,7 @@ pub fn revoke_asset_collection_delegate(
     candy_machine: Pubkey,
     signer_bump: u8,
 ) -> Result<()> {
-    let maybe_update_delegate_plugin = mpl_core::fetch_plugin::<Collection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate);
+    let maybe_update_delegate_plugin = mpl_core::fetch_plugin::<BaseCollection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate);
 
     let has_auth = match maybe_update_delegate_plugin {
         Ok((auth, _, _)) => auth == Authority::Pubkey {
