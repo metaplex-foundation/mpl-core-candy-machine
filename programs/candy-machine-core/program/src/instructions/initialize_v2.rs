@@ -4,7 +4,7 @@ use mpl_token_metadata::MAX_SYMBOL_LENGTH;
 use crate::{
     approve_asset_collection_delegate, constants::{
         AUTHORITY_SEED, HIDDEN_SECTION,
-    }, state::{CandyMachine, CandyMachineData}, utils::fixed_length_string, AccountVersion, ApproveAssetDelegateHelperAccounts, ApproveMetadataDelegateHelperAccounts
+    }, state::{CandyMachine, CandyMachineData}, utils::fixed_length_string, AccountVersion, ApproveAssetDelegateHelperAccounts
 };
 
 pub fn initialize_v2(

@@ -1,6 +1,13 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
-use mpl_core::{accounts::BaseCollection, fetch_plugin, instructions::{ApproveCollectionPluginAuthorityCpiBuilder, AddCollectionPluginCpiBuilder, RevokeCollectionPluginAuthorityCpiBuilder }, types::{Authority, Plugin, PluginType, UpdateDelegate}};
+use mpl_core::{
+    fetch_plugin,
+    accounts::BaseCollectionV1,
+    instructions::{
+        AddCollectionPluginV1CpiBuilder, ApproveCollectionPluginAuthorityV1CpiBuilder,
+        RevokeCollectionPluginAuthorityV1CpiBuilder,
+    }, types::{Plugin, PluginAuthority, PluginType, UpdateDelegate}
+};
 use mpl_token_metadata::{
     accounts::Metadata,
     instructions::{
@@ -275,48 +282,57 @@ pub fn revoke_collection_authority_helper(
     }
 }
 
-pub fn assert_plugin_pubkey_authority(
-    auth: &Authority,
-    authority: &Pubkey,
-) -> Result<()> {
-    if(*auth == Authority::Pubkey { address: *authority }) {
+pub fn assert_plugin_pubkey_authority(auth: &PluginAuthority, authority: &Pubkey) -> Result<()> {
+    if (*auth
+        == PluginAuthority::Pubkey {
+            address: *authority,
+        })
+    {
         Ok(())
     } else {
         err!(CandyError::IncorrectPluginAuthority)
     }
 }
 
-
-pub fn approve_asset_collection_delegate(accounts: ApproveAssetDelegateHelperAccounts) -> Result<()> {
+pub fn approve_asset_collection_delegate(
+    accounts: ApproveAssetDelegateHelperAccounts,
+) -> Result<()> {
     // add UpdateDelegate plugin if it does not exist on the Collection
-    let maybe_update_plugin = fetch_plugin::<BaseCollection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate);
+    let maybe_update_plugin = fetch_plugin::<BaseCollectionV1, UpdateDelegate>(
+        &accounts.collection,
+        PluginType::UpdateDelegate,
+    );
     if maybe_update_plugin.is_err() {
-        AddCollectionPluginCpiBuilder::new(&accounts.mpl_core_program)
+        AddCollectionPluginV1CpiBuilder::new(&accounts.mpl_core_program)
             .collection(&accounts.collection)
-            .authority(&accounts.collection_update_authority)
+            .authority(Some(&accounts.collection_update_authority))
             .plugin(Plugin::UpdateDelegate(UpdateDelegate {}))
-            .payer(Some(&accounts.payer))
+            // .init_authority(PluginAuthority::Pubkey {
+            //     address: accounts.authority_pda.key(),
+            // })
+            .payer(&accounts.payer)
             .system_program(&accounts.system_program)
             .invoke()?;
     }
 
-    // add CM authority to collection if it doesn't exist    
-    let (auth, _, _) = fetch_plugin::<BaseCollection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate)?;
-    let auth_to_add = Authority::Pubkey {
-        address: accounts.authority_pda.key()
+    // add CM authority to collection if it doesn't exist
+    let (auth, _, _) = fetch_plugin::<BaseCollectionV1, UpdateDelegate>(
+        &accounts.collection,
+        PluginType::UpdateDelegate,
+    )?;
+    let auth_to_add = PluginAuthority::Pubkey {
+        address: accounts.authority_pda.key(),
     };
     if auth_to_add != auth {
-        ApproveCollectionPluginAuthorityCpiBuilder::new(&accounts.mpl_core_program)
-        .collection(&accounts.collection)
-        .authority(&accounts.collection_update_authority)
-        .plugin_type(PluginType::UpdateDelegate)
-        .new_authority(Authority::Pubkey {
-            address: accounts.authority_pda.key()
-        })        
-        .system_program(&accounts.system_program)
-        .payer(Some(&accounts.payer))
-        .invoke()
-        .map_err(|error| error.into())
+        ApproveCollectionPluginAuthorityV1CpiBuilder::new(&accounts.mpl_core_program)
+            .collection(&accounts.collection)
+            .authority(Some(&accounts.collection_update_authority))
+            .plugin_type(PluginType::UpdateDelegate)
+            .new_authority(auth_to_add)
+            .system_program(&accounts.system_program)
+            .payer(&accounts.payer)
+            .invoke()
+            .map_err(|error| error.into())
     } else {
         Ok(())
     }
@@ -327,28 +343,33 @@ pub fn revoke_asset_collection_delegate(
     candy_machine: Pubkey,
     signer_bump: u8,
 ) -> Result<()> {
-    let maybe_update_delegate_plugin = mpl_core::fetch_plugin::<BaseCollection, UpdateDelegate>(&accounts.collection, PluginType::UpdateDelegate);
+    let maybe_update_delegate_plugin = fetch_plugin::<BaseCollectionV1, UpdateDelegate>(
+        &accounts.collection,
+        PluginType::UpdateDelegate,
+    );
 
     let has_auth = match maybe_update_delegate_plugin {
-        Ok((auth, _, _)) => auth == Authority::Pubkey {
-            address: accounts.authority_pda.key()
-        },
+        Ok((auth, _, _)) => {
+            auth == PluginAuthority::Pubkey {
+                address: accounts.authority_pda.key(),
+            }
+        }
         _ => false,
-    };    
+    };
 
     if has_auth {
-        RevokeCollectionPluginAuthorityCpiBuilder::new(&accounts.mpl_core_program)
-        .collection(&accounts.collection)
-        .authority(&accounts.authority_pda)
-        .plugin_type(PluginType::UpdateDelegate)
-        .system_program(&accounts.system_program)
-        .payer(Some(&accounts.payer))
-        .invoke_signed(&[&[
-            AUTHORITY_SEED.as_bytes(),
-            candy_machine.as_ref(),
-            &[signer_bump],
-        ]])
-        .map_err(|error| error.into())
+        RevokeCollectionPluginAuthorityV1CpiBuilder::new(&accounts.mpl_core_program)
+            .collection(&accounts.collection)
+            .authority(Some(&accounts.authority_pda))
+            .plugin_type(PluginType::UpdateDelegate)
+            .system_program(&accounts.system_program)
+            .payer(&accounts.payer)
+            .invoke_signed(&[&[
+                AUTHORITY_SEED.as_bytes(),
+                candy_machine.as_ref(),
+                &[signer_bump],
+            ]])
+            .map_err(|error| error.into())
     } else {
         Ok(())
     }

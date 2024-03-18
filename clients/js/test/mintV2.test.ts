@@ -13,7 +13,7 @@ import {
 } from '@metaplex-foundation/umi';
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import test from 'ava';
-import { fetchAsset } from '@metaplex-foundation/mpl-core';
+import { fetchAssetV1 } from '@metaplex-foundation/mpl-core';
 import {
   CandyMachine,
   fetchCandyMachine,
@@ -566,7 +566,7 @@ const drain = async (
       )
       .sendAndConfirm(umi);
 
-    const asset = await fetchAsset(umi, mint.publicKey);
+    const asset = await fetchAssetV1(umi, mint.publicKey);
     indices.push(parseInt(asset.name, 10));
   }
 

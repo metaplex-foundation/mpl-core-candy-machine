@@ -8,9 +8,9 @@ import {
   verifyCollectionV1,
 } from '@metaplex-foundation/mpl-token-metadata';
 import { 
-  Asset,
-  fetchAsset,
-  createCollection as baseCreateCollection,
+  AssetV1,
+  fetchAssetV1,
+  createCollectionV1 as baseCreateCollection,
 } from '@metaplex-foundation/mpl-core'
 import {
   createAssociatedToken,
@@ -310,9 +310,9 @@ export const assertSuccessfulMint = async (
 
   // Nft.
 
-  const nft = await fetchAsset(umi, mint)
+  const nft = await fetchAssetV1(umi, mint)
 
-  t.like(nft, <Asset>{
+  t.like(nft, <AssetV1>{
     publicKey: publicKey(mint),
     owner
   });
@@ -372,4 +372,4 @@ export const yesterday = (): DateTime => now() - 3600n * 24n;
 export const tomorrow = (): DateTime => now() + 3600n * 24n;
 
 // TODO move to mpl-core
-export const isFrozen = (asset: Asset): boolean => asset.freeze?.frozen || false;
+export const isFrozen = (asset: AssetV1): boolean => asset.freezeDelegate?.frozen || false;

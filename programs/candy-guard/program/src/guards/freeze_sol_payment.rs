@@ -3,12 +3,12 @@ use super::*;
 use anchor_lang::AccountsClose;
 use mpl_candy_machine_core_asset::CandyMachine;
 use mpl_core::{
-    accounts::BaseAsset,
+    accounts::BaseAssetV1,
     instructions::{
-        ApprovePluginAuthorityCpiBuilder, AddPluginCpiBuilder, RevokePluginAuthorityCpiBuilder,
-        UpdatePluginCpiBuilder,
+        ApprovePluginAuthorityV1CpiBuilder, AddPluginV1CpiBuilder, RevokePluginAuthorityV1CpiBuilder,
+        UpdatePluginV1CpiBuilder,
     },
-    types::{Authority, Freeze, Plugin, PluginType},
+    types::{PluginAuthority, FreezeDelegate, Plugin, PluginType},
 };
 
 use solana_program::{
@@ -336,28 +336,18 @@ pub fn freeze_nft(
     ];
 
     // approves a delegate to lock and transfer the token
-    AddPluginCpiBuilder::new(&ctx.accounts.mpl_core_program)
+    AddPluginV1CpiBuilder::new(&ctx.accounts.mpl_core_program)
         .asset(&ctx.accounts.asset)
         .collection(Some(&ctx.accounts.collection))
-        .authority(&ctx.accounts.minter)
-        .payer(Some(&ctx.accounts.payer))
+        .authority(Some(&ctx.accounts.minter))
+        .payer(&ctx.accounts.payer)
         .system_program(&ctx.accounts.system_program)
-        .plugin(Plugin::Freeze(Freeze { frozen: true }))
-        .invoke()?;
-
-    ApprovePluginAuthorityCpiBuilder::new(&ctx.accounts.mpl_core_program)
-        .authority(&ctx.accounts.minter)
-        .asset(&ctx.accounts.asset)
-        .collection(Some(&ctx.accounts.collection))
-        .new_authority(Authority::Pubkey {
+        .plugin(Plugin::FreezeDelegate(FreezeDelegate { frozen: true }))
+        .init_authority(PluginAuthority::Pubkey {
             address: freeze_pda.key(),
         })
-        .plugin_type(PluginType::Freeze)
-        .payer(Some(&ctx.accounts.payer))
-        .system_program(&ctx.accounts.system_program)
         .invoke()
         .map_err(|error| error.into())
-
 }
 
 /// Helper function to initialize the freeze pda.
@@ -510,7 +500,7 @@ pub fn thaw_nft<'info>(
         &[bump],
     ];
 
-    let maybe_freeze_plugin = mpl_core::fetch_plugin::<BaseAsset, Freeze>(&asset, PluginType::Freeze);
+    let maybe_freeze_plugin = mpl_core::fetch_plugin::<BaseAssetV1, FreezeDelegate>(&asset, PluginType::FreezeDelegate);
 
     let is_frozen = match maybe_freeze_plugin {
         Ok((_, freeze_plugin, _)) => freeze_plugin.frozen,
@@ -518,21 +508,21 @@ pub fn thaw_nft<'info>(
     };
 
     if is_frozen {
-        UpdatePluginCpiBuilder::new(mpl_core_program)
-            .authority(freeze_pda)
+        UpdatePluginV1CpiBuilder::new(mpl_core_program)
+            .authority(Some(freeze_pda))
             .collection(Some(collection))
-            .payer(Some(&ctx.accounts.payer))
+            .payer(&ctx.accounts.payer)
             .asset(asset)
-            .plugin(Plugin::Freeze(Freeze { frozen: false }))
+            .plugin(Plugin::FreezeDelegate(FreezeDelegate { frozen: false }))
             .system_program(system_program)
             .invoke_signed(&[&signer])?;
 
-        RevokePluginAuthorityCpiBuilder::new(mpl_core_program)
-            .authority(freeze_pda)
+        RevokePluginAuthorityV1CpiBuilder::new(mpl_core_program)
+            .authority(Some(freeze_pda))
             .collection(Some(collection))
             .asset(asset)
-            .plugin_type(PluginType::Freeze)
-            .payer(Some(&ctx.accounts.payer))
+            .plugin_type(PluginType::FreezeDelegate)
+            .payer(&ctx.accounts.payer)
             .system_program(system_program)
             .invoke_signed(&[&signer])?;
 
