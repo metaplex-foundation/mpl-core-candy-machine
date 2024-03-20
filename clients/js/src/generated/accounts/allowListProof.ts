@@ -113,7 +113,7 @@ export function getAllowListProofGpaBuilder(
   context: Pick<Context, 'rpc' | 'programs'>
 ) {
   const programId = context.programs.getPublicKey(
-    'mplCandyGuard',
+    'mplCandyGuardAsset',
     'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ'
   );
   return gpaBuilder(context, programId)
@@ -142,7 +142,7 @@ export function findAllowListProofPda(
   }
 ): Pda {
   const programId = context.programs.getPublicKey(
-    'mplCandyGuard',
+    'mplCandyGuardAsset',
     'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ'
   );
   return context.eddsa.findPda(programId, [

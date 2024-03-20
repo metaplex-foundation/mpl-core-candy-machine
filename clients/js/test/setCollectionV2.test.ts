@@ -6,7 +6,7 @@ import {
 import test from 'ava';
 
 import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
-import { PluginType, revokeCollectionPluginAuthorityV1 } from '@metaplex-foundation/mpl-core';
+import { PluginType, revokeCollectionPluginAuthorityV1 } from 'core-preview';
 import {
   CandyMachine,
   fetchCandyMachine,
@@ -47,7 +47,7 @@ test('it can update the collection of a candy machine v2', async (t) => {
     candyMachine.publicKey
   );
   t.like(candyMachineAccount, <CandyMachine>{
-    collection: publicKey(collectionB.publicKey),
+    collectionMint: publicKey(collectionB.publicKey),
   });
 });
 
@@ -155,6 +155,6 @@ test.only('it can set the same collection of a candy machine when mint is in pro
     candyMachine.publicKey
   );
   t.like(candyMachineAccount, <CandyMachine>{
-    collection: publicKey(collectionA.publicKey),
+    collectionMint: publicKey(collectionA.publicKey),
   });
 });

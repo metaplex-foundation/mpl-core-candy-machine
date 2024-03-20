@@ -19,7 +19,7 @@ pub fn initialize_v2(
         features: [0u8; 6],
         authority: ctx.accounts.authority.key(),
         mint_authority: ctx.accounts.authority.key(),
-        collection: ctx.accounts.collection.key(),
+        collection_mint: ctx.accounts.collection.key(),
         items_redeemed: 0,
     };
 

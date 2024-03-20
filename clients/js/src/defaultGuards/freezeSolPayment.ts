@@ -3,7 +3,7 @@ import {
 } from '@metaplex-foundation/mpl-toolbox';
 import { PublicKey, Signer } from '@metaplex-foundation/umi';
 import { tuple, u64 } from '@metaplex-foundation/umi/serializers';
-import { getMplCoreProgramId } from '@metaplex-foundation/mpl-core';
+import { getMplCoreProgramId } from 'core-preview';
 import { UnrecognizePathForRouteInstructionError } from '../errors';
 import {
   FreezeInstruction,

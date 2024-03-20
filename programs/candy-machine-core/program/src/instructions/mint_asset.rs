@@ -62,7 +62,7 @@ pub(crate) fn process_mint_asset(
     }
 
     // check that we got the correct collection mint
-    if !cmp_pubkeys(&accounts.collection.key(), &candy_machine.collection) {
+    if !cmp_pubkeys(&accounts.collection.key(), &candy_machine.collection_mint) {
         return err!(CandyError::CollectionKeyMismatch);
     }
 

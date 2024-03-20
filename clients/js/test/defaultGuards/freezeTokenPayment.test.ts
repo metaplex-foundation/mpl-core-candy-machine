@@ -18,7 +18,7 @@ import {
   Umi,
 } from '@metaplex-foundation/umi';
 import test, { Assertions } from 'ava';
-import { AssetV1, fetchAssetV1 } from '@metaplex-foundation/mpl-core';
+import { AssetV1, fetchAssetV1 } from 'core-preview';
 import {
   addConfigLines,
   fetchFreezeEscrow,

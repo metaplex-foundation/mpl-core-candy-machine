@@ -735,7 +735,7 @@ nameToErrorMap.set('InvalidAccountVersion', CgInvalidAccountVersionError);
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors
  */
-export function getMplCandyGuardErrorFromCode(
+export function getMplCandyGuardAssetErrorFromCode(
   code: number,
   program: Program,
   cause?: Error
@@ -748,7 +748,7 @@ export function getMplCandyGuardErrorFromCode(
  * Attempts to resolve a custom program error from the provided error name, i.e. 'Unauthorized'.
  * @category Errors
  */
-export function getMplCandyGuardErrorFromName(
+export function getMplCandyGuardAssetErrorFromName(
   name: string,
   program: Program,
   cause?: Error

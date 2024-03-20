@@ -593,7 +593,7 @@
             "type": "publicKey"
           },
           {
-            "name": "collection",
+            "name": "collectionMint",
             "docs": [
               "The collection mint for the candy machine."
             ],

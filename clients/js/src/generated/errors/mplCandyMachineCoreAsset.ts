@@ -497,7 +497,7 @@ nameToErrorMap.set('IncorrectPluginAuthority', CmIncorrectPluginAuthorityError);
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors
  */
-export function getMplCandyMachineCoreErrorFromCode(
+export function getMplCandyMachineCoreAssetErrorFromCode(
   code: number,
   program: Program,
   cause?: Error
@@ -510,7 +510,7 @@ export function getMplCandyMachineCoreErrorFromCode(
  * Attempts to resolve a custom program error from the provided error name, i.e. 'Unauthorized'.
  * @category Errors
  */
-export function getMplCandyMachineCoreErrorFromName(
+export function getMplCandyMachineCoreAssetErrorFromName(
   name: string,
   program: Program,
   cause?: Error

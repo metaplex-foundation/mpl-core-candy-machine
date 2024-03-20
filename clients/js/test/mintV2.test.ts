@@ -13,7 +13,7 @@ import {
 } from '@metaplex-foundation/umi';
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import test from 'ava';
-import { fetchAssetV1 } from '@metaplex-foundation/mpl-core';
+import { fetchAssetV1 } from 'core-preview';
 import {
   CandyMachine,
   fetchCandyMachine,

@@ -13,22 +13,22 @@ import {
   PublicKey,
 } from '@metaplex-foundation/umi';
 import {
-  getMplCandyGuardErrorFromCode,
-  getMplCandyGuardErrorFromName,
+  getMplCandyGuardAssetErrorFromCode,
+  getMplCandyGuardAssetErrorFromName,
 } from '../errors';
 
-export const MPL_CANDY_GUARD_PROGRAM_ID =
+export const MPL_CANDY_GUARD_ASSET_PROGRAM_ID =
   'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ' as PublicKey<'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ'>;
 
-export function createMplCandyGuardProgram(): Program {
+export function createMplCandyGuardAssetProgram(): Program {
   return {
-    name: 'mplCandyGuard',
-    publicKey: MPL_CANDY_GUARD_PROGRAM_ID,
+    name: 'mplCandyGuardAsset',
+    publicKey: MPL_CANDY_GUARD_ASSET_PROGRAM_ID,
     getErrorFromCode(code: number, cause?: Error) {
-      return getMplCandyGuardErrorFromCode(code, this, cause);
+      return getMplCandyGuardAssetErrorFromCode(code, this, cause);
     },
     getErrorFromName(name: string, cause?: Error) {
-      return getMplCandyGuardErrorFromName(name, this, cause);
+      return getMplCandyGuardAssetErrorFromName(name, this, cause);
     },
     isOnCluster() {
       return true;
@@ -36,20 +36,20 @@ export function createMplCandyGuardProgram(): Program {
   };
 }
 
-export function getMplCandyGuardProgram<T extends Program = Program>(
+export function getMplCandyGuardAssetProgram<T extends Program = Program>(
   context: Pick<Context, 'programs'>,
   clusterFilter?: ClusterFilter
 ): T {
-  return context.programs.get<T>('mplCandyGuard', clusterFilter);
+  return context.programs.get<T>('mplCandyGuardAsset', clusterFilter);
 }
 
-export function getMplCandyGuardProgramId(
+export function getMplCandyGuardAssetProgramId(
   context: Pick<Context, 'programs'>,
   clusterFilter?: ClusterFilter
 ): PublicKey {
   return context.programs.getPublicKey(
-    'mplCandyGuard',
-    MPL_CANDY_GUARD_PROGRAM_ID,
+    'mplCandyGuardAsset',
+    MPL_CANDY_GUARD_ASSET_PROGRAM_ID,
     clusterFilter
   );
 }

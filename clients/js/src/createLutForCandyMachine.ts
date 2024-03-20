@@ -15,10 +15,10 @@ import {
   TransactionBuilder,
   uniquePublicKeys,
 } from '@metaplex-foundation/umi';
-import { getMplCoreProgramId } from '@metaplex-foundation/mpl-core';
+import { getMplCoreProgramId } from 'core-preview';
 import {
   fetchCandyMachine,
-  getMplCandyMachineCoreProgramId,
+  getMplCandyMachineCoreAssetProgramId,
 } from './generated';
 import { findCandyMachineAuthorityPda } from './hooked';
 
@@ -48,13 +48,13 @@ export const getLutAddressesForCandyMachine = async (
   collectionUpdateAuthority?: PublicKey
 ): Promise<PublicKey[]> => {
   const candyMachineAccount = await fetchCandyMachine(context, candyMachine);
-  const { mintAuthority, collection } = candyMachineAccount;
+  const { mintAuthority, collectionMint } = candyMachineAccount;
   collectionUpdateAuthority ??= context.identity.publicKey;
 
   return uniquePublicKeys([
     candyMachine,
     mintAuthority,
-    collection,
+    collectionMint,
     collectionUpdateAuthority,
     findCandyMachineAuthorityPda(context, { candyMachine })[0],
     getSysvar('instructions'),
@@ -63,6 +63,6 @@ export const getLutAddressesForCandyMachine = async (
     getSplTokenProgramId(context),
     getSplAssociatedTokenProgramId(context),
     getMplTokenMetadataProgramId(context),
-    getMplCandyMachineCoreProgramId(context),
+    getMplCandyMachineCoreAssetProgramId(context),
   ]);
 };

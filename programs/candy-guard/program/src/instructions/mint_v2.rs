@@ -115,7 +115,7 @@ fn process_error(ctx: &EvaluationContext, guard_set: &GuardSet, error: Error) ->
 fn validate(ctx: &EvaluationContext) -> Result<()> {
     if !cmp_pubkeys(
         &ctx.accounts.collection.key(),
-        &ctx.accounts.candy_machine.collection,
+        &ctx.accounts.candy_machine.collection_mint,
     ) {
         return err!(CandyGuardError::CollectionKeyMismatch);
     }

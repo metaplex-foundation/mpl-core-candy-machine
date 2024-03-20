@@ -1,6 +1,6 @@
 {
-  "name": "@metaplex-foundation/mpl-candy-machine-asset",
-  "version": "0.0.1",
+  "name": "cma-preview",
+  "version": "0.0.3",
   "description": "Client library for Candy Machine related programs",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -25,10 +25,10 @@
   "author": "Metaplex Maintainers <contact@metaplex.com>",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@metaplex-foundation/umi": ">= 0.8.2 < 1"
+    "@metaplex-foundation/umi": ">= 0.8.2 < 1",
+    "core-preview": "^0.1.1"
   },
   "dependencies": {
-    "@metaplex-foundation/mpl-core": "^0.1.0",
     "@metaplex-foundation/mpl-token-metadata": "3.0.0-alpha.27",
     "@metaplex-foundation/mpl-toolbox": "^0.9.0",
     "@noble/hashes": "^1.2.0",

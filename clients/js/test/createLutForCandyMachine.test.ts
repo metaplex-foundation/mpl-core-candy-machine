@@ -10,12 +10,12 @@ import {
 } from '@metaplex-foundation/mpl-toolbox';
 import { generateSigner, transactionBuilder } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { getMplCoreProgramId } from '@metaplex-foundation/mpl-core';
+import { getMplCoreProgramId } from 'core-preview';
 import {
   createLutForCandyMachine,
   findCandyGuardPda,
   findCandyMachineAuthorityPda,
-  getMplCandyMachineCoreProgramId,
+  getMplCandyMachineCoreAssetProgramId,
   mintV2,
   setMintAuthority,
 } from '../src';
@@ -75,7 +75,7 @@ test('it can create a LUT for a candy machine v2', async (t) => {
       getSplTokenProgramId(umi),
       getSplAssociatedTokenProgramId(umi),
       getMplTokenMetadataProgramId(umi),
-      getMplCandyMachineCoreProgramId(umi),
+      getMplCandyMachineCoreAssetProgramId(umi),
     ].sort()
   );
 

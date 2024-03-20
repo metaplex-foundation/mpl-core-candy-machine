@@ -13,22 +13,22 @@ import {
   PublicKey,
 } from '@metaplex-foundation/umi';
 import {
-  getMplCandyMachineCoreErrorFromCode,
-  getMplCandyMachineCoreErrorFromName,
+  getMplCandyMachineCoreAssetErrorFromCode,
+  getMplCandyMachineCoreAssetErrorFromName,
 } from '../errors';
 
-export const MPL_CANDY_MACHINE_CORE_PROGRAM_ID =
+export const MPL_CANDY_MACHINE_CORE_ASSET_PROGRAM_ID =
   'CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J' as PublicKey<'CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J'>;
 
-export function createMplCandyMachineCoreProgram(): Program {
+export function createMplCandyMachineCoreAssetProgram(): Program {
   return {
-    name: 'mplCandyMachineCore',
-    publicKey: MPL_CANDY_MACHINE_CORE_PROGRAM_ID,
+    name: 'mplCandyMachineCoreAsset',
+    publicKey: MPL_CANDY_MACHINE_CORE_ASSET_PROGRAM_ID,
     getErrorFromCode(code: number, cause?: Error) {
-      return getMplCandyMachineCoreErrorFromCode(code, this, cause);
+      return getMplCandyMachineCoreAssetErrorFromCode(code, this, cause);
     },
     getErrorFromName(name: string, cause?: Error) {
-      return getMplCandyMachineCoreErrorFromName(name, this, cause);
+      return getMplCandyMachineCoreAssetErrorFromName(name, this, cause);
     },
     isOnCluster() {
       return true;
@@ -36,20 +36,20 @@ export function createMplCandyMachineCoreProgram(): Program {
   };
 }
 
-export function getMplCandyMachineCoreProgram<T extends Program = Program>(
+export function getMplCandyMachineCoreAssetProgram<T extends Program = Program>(
   context: Pick<Context, 'programs'>,
   clusterFilter?: ClusterFilter
 ): T {
-  return context.programs.get<T>('mplCandyMachineCore', clusterFilter);
+  return context.programs.get<T>('mplCandyMachineCoreAsset', clusterFilter);
 }
 
-export function getMplCandyMachineCoreProgramId(
+export function getMplCandyMachineCoreAssetProgramId(
   context: Pick<Context, 'programs'>,
   clusterFilter?: ClusterFilter
 ): PublicKey {
   return context.programs.getPublicKey(
-    'mplCandyMachineCore',
-    MPL_CANDY_MACHINE_CORE_PROGRAM_ID,
+    'mplCandyMachineCoreAsset',
+    MPL_CANDY_MACHINE_CORE_ASSET_PROGRAM_ID,
     clusterFilter
   );
 }

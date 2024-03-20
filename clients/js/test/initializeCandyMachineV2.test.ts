@@ -31,7 +31,7 @@ test('it can initialize a new candy machine account', async (t) => {
       createAccountWithRent(umi, {
         newAccount: candyMachine,
         space: 5000,
-        programId: umi.programs.get('mplCandyMachineCore').publicKey,
+        programId: umi.programs.get('mplCandyMachineCoreAsset').publicKey,
       })
     )
     .sendAndConfirm(umi);
@@ -72,7 +72,7 @@ test('it can initialize a new candy machine account', async (t) => {
     publicKey: publicKey(candyMachine),
     authority: publicKey(umi.identity),
     mintAuthority: publicKey(umi.identity),
-    collection: publicKey(collection),
+    collectionMint: publicKey(collection),
     version: AccountVersion.V2,
     itemsRedeemed: 0n,
     data: {

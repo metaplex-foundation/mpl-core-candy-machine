@@ -17,12 +17,12 @@ module.exports = {
         deployPath: getProgram("mpl_core_program.so"),
       },
       {
-        label: "Candy Machine Core",
+        label: "Candy Machine Core Asset",
         programId: "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
         deployPath: getProgram("mpl_candy_machine_core_asset.so"),
       },
       {
-        label: "Candy Guard",
+        label: "Candy Guard Asset",
         programId: "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
         deployPath: getProgram("mpl_candy_guard_asset.so"),
       },

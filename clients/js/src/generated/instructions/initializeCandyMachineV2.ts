@@ -192,7 +192,7 @@ export function initializeCandyMachineV2(
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'mplCandyMachineCore',
+    'mplCandyMachineCoreAsset',
     'CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J'
   );
 

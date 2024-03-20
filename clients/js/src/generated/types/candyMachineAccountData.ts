@@ -37,7 +37,7 @@ export type CandyMachineAccountData = {
   /** Authority address allowed to mint from the candy machine. */
   mintAuthority: PublicKey;
   /** The collection mint for the candy machine. */
-  collection: PublicKey;
+  collectionMint: PublicKey;
   /** Number of assets redeemed. */
   itemsRedeemed: bigint;
   /** Candy machine configuration data. */
@@ -54,7 +54,7 @@ export type CandyMachineAccountDataArgs = {
   /** Authority address allowed to mint from the candy machine. */
   mintAuthority: PublicKey;
   /** The collection mint for the candy machine. */
-  collection: PublicKey;
+  collectionMint: PublicKey;
   /** Number of assets redeemed. */
   itemsRedeemed: number | bigint;
   /** Candy machine configuration data. */
@@ -77,7 +77,7 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
         ['features', array(u8(), { size: 6 })],
         ['authority', publicKeySerializer()],
         ['mintAuthority', publicKeySerializer()],
-        ['collection', publicKeySerializer()],
+        ['collectionMint', publicKeySerializer()],
         ['itemsRedeemed', u64()],
         ['data', getCandyMachineDataSerializer()],
       ],

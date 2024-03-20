@@ -46,7 +46,7 @@ export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
   const { mintArgs = {}, group = none(), ...rest } = input;
 
   // Parsing mint data.
-  const program = context.programs.get<CandyGuardProgram>('mplCandyGuard');
+  const program = context.programs.get<CandyGuardProgram>('mplCandyGuardAsset');
   const candyMachine = publicKey(input.candyMachine, false);
   const mintContext: MintContext = {
     minter: input.minter ?? context.identity,

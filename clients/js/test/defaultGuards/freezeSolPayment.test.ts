@@ -19,7 +19,7 @@ import {
 } from '@metaplex-foundation/umi';
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import test, { Assertions } from 'ava';
-import { AssetV1, fetchAssetV1 } from '@metaplex-foundation/mpl-core';
+import { AssetV1, fetchAssetV1 } from 'core-preview';
 import {
   fetchFreezeEscrow,
   findCandyGuardPda,
