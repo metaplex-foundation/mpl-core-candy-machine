@@ -284,7 +284,7 @@ pub fn revoke_collection_authority_helper(
 
 pub fn assert_plugin_pubkey_authority(auth: &PluginAuthority, authority: &Pubkey) -> Result<()> {
     if (*auth
-        == PluginAuthority::Pubkey {
+        == PluginAuthority::Address {
             address: *authority,
         })
     {
@@ -320,7 +320,7 @@ pub fn approve_asset_collection_delegate(
         &accounts.collection,
         PluginType::UpdateDelegate,
     )?;
-    let auth_to_add = PluginAuthority::Pubkey {
+    let auth_to_add = PluginAuthority::Address {
         address: accounts.authority_pda.key(),
     };
     if auth_to_add != auth {
@@ -350,7 +350,7 @@ pub fn revoke_asset_collection_delegate(
 
     let has_auth = match maybe_update_delegate_plugin {
         Ok((auth, _, _)) => {
-            auth == PluginAuthority::Pubkey {
+            auth == PluginAuthority::Address {
                 address: accounts.authority_pda.key(),
             }
         }

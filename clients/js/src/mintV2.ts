@@ -36,7 +36,7 @@ export type MintV2InstructionDataArgs<MA extends GuardSetMintArgs> = {
 
 export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
   context: Parameters<typeof baseMintV2>[0] & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   input: MintV2InstructionAccounts &
     MintV2InstructionDataArgs<

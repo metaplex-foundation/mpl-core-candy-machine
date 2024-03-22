@@ -57,8 +57,8 @@ export const mplCandyMachine = (): UmiPlugin => ({
     umi.programs.add(createMplTokenAuthRulesProgram(), false);
 
     // Default Guards.
-    umi.guards = new DefaultGuardRepository();
-    umi.guards.add(
+    umi.coreGuards = new DefaultGuardRepository();
+    umi.coreGuards.add(
       botTaxGuardManifest,
       solPaymentGuardManifest,
       tokenPaymentGuardManifest,
@@ -88,6 +88,6 @@ export const mplCandyMachine = (): UmiPlugin => ({
 
 declare module '@metaplex-foundation/umi' {
   interface Umi {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   }
 }

@@ -46,10 +46,10 @@ export function getGuardSetSerializer<
   DA extends GuardSetArgs,
   D extends DA & GuardSet
 >(
-  context: { guards: GuardRepository },
+  context: { coreGuards: GuardRepository },
   program: CandyGuardProgram
 ): Serializer<Partial<DA>, D> {
-  const manifests = context.guards.forProgram(program);
+  const manifests = context.coreGuards.forProgram(program);
   const featuresSerializer = reverseSerializer(bitArray(8, true));
   return {
     description: 'guardSet',
@@ -92,13 +92,13 @@ export function getGuardSetSerializer<
 
 export function parseMintArgs<MA extends GuardSetMintArgs>(
   context: Pick<Context, 'eddsa' | 'programs'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   program: CandyGuardProgram,
   mintContext: MintContext,
   mintArgs: Partial<MA>
 ): GuardInstructionExtras {
-  const manifests = context.guards.forProgram(program);
+  const manifests = context.coreGuards.forProgram(program);
   return manifests.reduce(
     (acc, manifest) => {
       const args = mintArgs[manifest.name] ?? none();
@@ -123,14 +123,14 @@ export function parseRouteArgs<
   RA extends GuardSetRouteArgs
 >(
   context: Pick<Context, 'eddsa' | 'programs'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   program: CandyGuardProgram,
   routeContext: RouteContext,
   guard: G,
   routeArgs: RA[G]
 ): GuardInstructionExtras & { guardIndex: number } {
-  const manifests = context.guards.forProgram(program);
+  const manifests = context.coreGuards.forProgram(program);
   const guardIndex = manifests.findIndex((m) => m.name === guard);
   if (guardIndex < 0) {
     throw new UnregisteredCandyGuardError(guard);

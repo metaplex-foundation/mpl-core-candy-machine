@@ -59,7 +59,7 @@ export function getCandyGuardAccountDataSerializer<
   D extends DA & GuardSet
 >(
   context: Pick<Context, 'programs'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   program?: CandyGuardProgram
 ): Serializer<CandyGuardAccountDataArgs<DA>, CandyGuardAccountData<D>> {
@@ -82,7 +82,7 @@ export function getCandyGuardAccountDataSerializer<
 
 export function deserializeCandyGuard<D extends GuardSet = DefaultGuardSet>(
   context: Pick<Context, 'programs'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   rawAccount: RpcAccount,
   program?: CandyGuardProgram
@@ -95,7 +95,7 @@ export function deserializeCandyGuard<D extends GuardSet = DefaultGuardSet>(
 
 export async function fetchCandyGuard<D extends GuardSet = DefaultGuardSet>(
   context: Pick<Context, 'programs' | 'rpc'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
@@ -111,7 +111,7 @@ export async function fetchCandyGuard<D extends GuardSet = DefaultGuardSet>(
 
 export async function safeFetchCandyGuard<D extends GuardSet = DefaultGuardSet>(
   context: Pick<Context, 'programs' | 'rpc'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
@@ -128,7 +128,7 @@ export async function safeFetchCandyGuard<D extends GuardSet = DefaultGuardSet>(
 
 export async function fetchAllCandyGuard<D extends GuardSet = DefaultGuardSet>(
   context: Pick<Context, 'programs' | 'rpc'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   publicKeys: (PublicKey | Pda)[],
   options?: RpcGetAccountsOptions,
@@ -148,7 +148,7 @@ export async function safeFetchAllCandyGuard<
   D extends GuardSet = DefaultGuardSet
 >(
   context: Pick<Context, 'programs' | 'rpc'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   publicKeys: (PublicKey | Pda)[],
   options?: RpcGetAccountsOptions,
@@ -167,7 +167,7 @@ export async function safeFetchAllCandyGuard<
 
 export function getCandyGuardGpaBuilder<D extends GuardSet = DefaultGuardSet>(
   context: Pick<Context, 'programs' | 'rpc'> & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   program?: CandyGuardProgram
 ) {

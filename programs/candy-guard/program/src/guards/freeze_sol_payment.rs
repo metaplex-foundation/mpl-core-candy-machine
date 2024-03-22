@@ -343,7 +343,7 @@ pub fn freeze_nft(
         .payer(&ctx.accounts.payer)
         .system_program(&ctx.accounts.system_program)
         .plugin(Plugin::FreezeDelegate(FreezeDelegate { frozen: true }))
-        .init_authority(PluginAuthority::Pubkey {
+        .init_authority(PluginAuthority::Address {
             address: freeze_pda.key(),
         })
         .invoke()

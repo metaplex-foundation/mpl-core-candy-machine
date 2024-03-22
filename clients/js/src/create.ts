@@ -18,7 +18,7 @@ export type CreateInput<DA extends GuardSetArgs = DefaultGuardSetArgs> =
 
 export const create = async <DA extends GuardSetArgs = DefaultGuardSetArgs>(
   context: Parameters<typeof createCandyMachineV2>[0] & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   input: CreateInput<DA extends undefined ? DefaultGuardSetArgs : DA>
 ): Promise<TransactionBuilder> => {

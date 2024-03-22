@@ -32,7 +32,7 @@ export type CreateCandyGuardInstructionDataArgs<DA extends GuardSetArgs> =
 
 export function createCandyGuard<DA extends GuardSetArgs = DefaultGuardSetArgs>(
   context: Parameters<typeof baseCreateCandyGuard>[0] & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   input: CreateCandyGuardInstructionAccounts &
     CreateCandyGuardInstructionDataArgs<

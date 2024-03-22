@@ -27,7 +27,7 @@ export type UpdateCandyGuardInstructionDataArgs<DA extends GuardSetArgs> =
 
 export function updateCandyGuard<DA extends GuardSetArgs = DefaultGuardSetArgs>(
   context: Parameters<typeof baseUpdateCandyGuard>[0] & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   input: UpdateCandyGuardInstructionAccounts &
     UpdateCandyGuardInstructionDataArgs<

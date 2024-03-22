@@ -47,7 +47,7 @@ export function route<
   RA extends GuardSetRouteArgs = DefaultGuardSetRouteArgs
 >(
   context: Parameters<typeof baseRoute>[0] & {
-    guards: GuardRepository;
+    coreGuards: GuardRepository;
   },
   input: RouteInstructionAccounts &
     RouteInstructionDataArgs<

@@ -28,7 +28,7 @@ export function getCandyGuardDataSerializer<
   DA extends GuardSetArgs,
   D extends DA & GuardSet
 >(
-  context: { guards: GuardRepository },
+  context: { coreGuards: GuardRepository },
   program: CandyGuardProgram
 ): Serializer<CandyGuardDataArgs<DA>, CandyGuardData<D>> {
   return struct<CandyGuardDataArgs<DA>, CandyGuardData<D>>(
