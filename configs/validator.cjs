@@ -19,7 +19,7 @@ module.exports = {
       {
         label: "Candy Machine Core Asset",
         programId: "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
-        deployPath: getProgram("mpl_candy_machine_core_asset.so"),
+        deployPath: getProgram("mpl_core_candy_machine_core.so"),
       },
       {
         label: "Candy Guard Asset",

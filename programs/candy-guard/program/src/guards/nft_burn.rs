@@ -1,6 +1,6 @@
 use super::*;
 
-use mpl_candy_machine_core_asset::AccountVersion;
+use mpl_core_candy_machine_core::AccountVersion;
 use mpl_token_metadata::{
     accounts::{Metadata, TokenRecord},
     instructions::{BurnNftCpiBuilder, BurnV1CpiBuilder},

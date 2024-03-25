@@ -1,5 +1,5 @@
 [package]
-name = "mpl-candy-guard-asset"
+name = "mpl-core-candy-guard"
 version = "0.0.1"
 description = "Metaplex Candy Guard: programmatic access control for Candy Machine."
 authors = ["Metaplex Developers <dev@metaplex.com>"]
@@ -21,10 +21,9 @@ default = []
 anchor-lang = "0.28.0"
 arrayref = "0.3.6"
 mpl-candy-guard-derive = { path = "../macro", version = "0.2.0" }
-mpl-candy-machine-core-asset = { path = "../../candy-machine-core/program", version = "0.0.1", features = ["cpi"] }
+mpl-core-candy-machine-core = { path = "../../candy-machine-core/program", version = "0.1.0", features = ["cpi"] }
 mpl-token-metadata = "3.2.1"
-# TODO fix this
-mpl-core = { path = "../../../../mpl-core/clients/rust", version = "0.1.0" }
+mpl-core = { version = "0.1.0" }
 solana-program = "~1.16.5"
 spl-associated-token-account = { version = ">= 1.1.3, < 3.0", features = ["no-entrypoint"] }
 spl-token = { version = ">= 3.5.0, < 5.0", features = ["no-entrypoint"] }

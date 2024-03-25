@@ -11,7 +11,7 @@ import {
   AssetV1,
   fetchAssetV1,
   createCollectionV1 as baseCreateCollection,
-} from 'core-preview'
+} from '@metaplex-foundation/mpl-core'
 import {
   createAssociatedToken,
   createMint,

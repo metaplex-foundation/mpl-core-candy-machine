@@ -11,7 +11,7 @@ A Umi-compatible JavaScript library for candy machines.
    ```
 2. Finally, register the library with your Umi instance like so.
    ```ts
-   import { mplCandyMachine } from '@metaplex-foundation/mpl-candy-machine';
+   import { mplCandyMachine } from '@metaplex-foundation/mpl-core-candy-machine';
    umi.use(mplCandyMachine());
    ```
 

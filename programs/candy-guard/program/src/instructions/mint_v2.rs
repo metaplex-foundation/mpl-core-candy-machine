@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use anchor_lang::{prelude::*, solana_program::sysvar, Discriminator};
-use mpl_candy_machine_core_asset::CandyMachine;
+use mpl_core_candy_machine_core::CandyMachine;
 use solana_program::{instruction::Instruction, program::invoke_signed};
 
 use crate::{
@@ -132,7 +132,7 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
     let candy_guard = &ctx.accounts.candy_guard;
 
     // candy machine mint instruction accounts
-    let mint_accounts = Box::new(mpl_candy_machine_core_asset::cpi::accounts::MintAsset {
+    let mint_accounts = Box::new(mpl_core_candy_machine_core::cpi::accounts::MintAsset {
         candy_machine: ctx.accounts.candy_machine.to_account_info(),
         authority_pda: ctx.accounts.candy_machine_authority_pda.clone(),
         mint_authority: candy_guard.to_account_info(),
@@ -156,9 +156,9 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
     });
 
     let mint_ix = Instruction {
-        program_id: mpl_candy_machine_core_asset::ID,
+        program_id: mpl_core_candy_machine_core::ID,
         accounts: mint_metas,
-        data: mpl_candy_machine_core_asset::instruction::MintAsset::DISCRIMINATOR.to_vec(),
+        data: mpl_core_candy_machine_core::instruction::MintAsset::DISCRIMINATOR.to_vec(),
     };
 
     // PDA signer for the transaction
@@ -180,7 +180,7 @@ pub struct MintV2<'info> {
     /// Candy Machine program account.
     ///
     /// CHECK: account constraints checked in account trait
-    #[account(address = mpl_candy_machine_core_asset::id())]
+    #[account(address = mpl_core_candy_machine_core::id())]
     candy_machine_program: AccountInfo<'info>,
 
     /// Candy machine account.

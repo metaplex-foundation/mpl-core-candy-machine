@@ -6,7 +6,7 @@ import {
 import test from 'ava';
 
 import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
-import { PluginType, revokeCollectionPluginAuthorityV1 } from 'core-preview';
+import { PluginType, revokeCollectionPluginAuthorityV1 } from '@metaplex-foundation/mpl-core';
 import {
   CandyMachine,
   fetchCandyMachine,

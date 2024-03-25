@@ -1232,14 +1232,36 @@ dependencies = [
 ]
 
 [[package]]
-name = "mpl-candy-guard-asset"
+name = "mpl-candy-guard-derive"
+version = "0.2.0"
+dependencies = [
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "mpl-core"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2aa89feb937353e5744ca7d30132a07e7380127ad42278e92b90796c60c4b11"
+dependencies = [
+ "base64 0.22.0",
+ "borsh 0.10.3",
+ "num-derive 0.3.3",
+ "num-traits",
+ "solana-program",
+ "thiserror",
+]
+
+[[package]]
+name = "mpl-core-candy-guard"
 version = "0.0.1"
 dependencies = [
  "anchor-lang",
  "arrayref",
  "mpl-candy-guard-derive",
- "mpl-candy-machine-core-asset",
  "mpl-core",
+ "mpl-core-candy-machine-core",
  "mpl-token-metadata",
  "solana-gateway",
  "solana-program",
@@ -1249,16 +1271,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "mpl-candy-guard-derive"
-version = "0.2.0"
-dependencies = [
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "mpl-candy-machine-core-asset"
-version = "0.0.1"
+name = "mpl-core-candy-machine-core"
+version = "0.1.0"
 dependencies = [
  "anchor-lang",
  "arrayref",
@@ -1268,18 +1282,6 @@ dependencies = [
  "solana-program",
  "spl-associated-token-account",
  "spl-token",
-]
-
-[[package]]
-name = "mpl-core"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.0",
- "borsh 0.10.3",
- "num-derive 0.3.3",
- "num-traits",
- "solana-program",
- "thiserror",
 ]
 
 [[package]]

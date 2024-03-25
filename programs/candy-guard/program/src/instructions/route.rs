@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use mpl_candy_machine_core_asset::CandyMachine;
+use mpl_core_candy_machine_core::CandyMachine;
 
 use crate::state::{CandyGuard, CandyGuardData, GuardSet, GuardType, DATA_OFFSET};
 

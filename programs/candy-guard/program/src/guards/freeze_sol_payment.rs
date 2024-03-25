@@ -1,11 +1,11 @@
 use super::*;
 
 use anchor_lang::AccountsClose;
-use mpl_candy_machine_core_asset::CandyMachine;
+use mpl_core_candy_machine_core::CandyMachine;
 use mpl_core::{
     accounts::BaseAssetV1,
     instructions::{
-        ApprovePluginAuthorityV1CpiBuilder, AddPluginV1CpiBuilder, RevokePluginAuthorityV1CpiBuilder,
+        AddPluginV1CpiBuilder, RevokePluginAuthorityV1CpiBuilder,
         UpdatePluginV1CpiBuilder,
     },
     types::{PluginAuthority, FreezeDelegate, Plugin, PluginType},

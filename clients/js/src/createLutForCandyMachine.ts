@@ -15,7 +15,7 @@ import {
   TransactionBuilder,
   uniquePublicKeys,
 } from '@metaplex-foundation/umi';
-import { getMplCoreProgramId } from 'core-preview';
+import { getMplCoreProgramId } from '@metaplex-foundation/mpl-core';
 import {
   fetchCandyMachine,
   getMplCandyMachineCoreAssetProgramId,
