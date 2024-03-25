@@ -14,8 +14,8 @@ const kinobi = k.createFromIdls([
 // Update programs.
 kinobi.update(
   new k.UpdateProgramsVisitor({
-    candyGuard: { name: "mplCandyGuardAsset", prefix: "Cg" },
-    candyMachineCore: { name: "mplCandyMachineCoreAsset", prefix: "Cm" },
+    candyGuard: { name: "mplCoreCandyGuard", prefix: "Cg" },
+    candyMachineCore: { name: "mplCoreCandyMachineCore", prefix: "Cm" },
   })
 );
 
@@ -341,7 +341,7 @@ kinobi.update(
 // Update instructions.
 kinobi.update(
   new k.UpdateInstructionsVisitor({
-    "mplCandyGuardAsset.initialize": {
+    "mplCoreCandyGuard.initialize": {
       name: "createCandyGuard",
       internal: true,
       accounts: {
@@ -350,10 +350,10 @@ kinobi.update(
         },
       },
     },
-    "mplCandyMachineCoreAsset.initializeV2": {
+    "mplCoreCandyMachineCore.initializeV2": {
       name: "initializeCandyMachineV2",
     },
-    "mplCandyMachineCoreAsset.mintAsset": {
+    "mplCoreCandyMachineCore.mintAsset": {
       name: "mintAssetFromCandyMachine",
       accounts: {
         asset: { isSigner: "either" },
@@ -367,17 +367,17 @@ kinobi.update(
         },
       },
     },
-    "mplCandyGuardAsset.wrap": {
+    "mplCoreCandyGuard.wrap": {
       accounts: {
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       }
     },
-    "mplCandyGuardAsset.unwrap": {
+    "mplCoreCandyGuard.unwrap": {
       accounts: {
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       }
     },
-    "mplCandyGuardAsset.mintV2": {
+    "mplCoreCandyGuard.mintV2": {
       internal: true,
       args: {
         label: { name: "group" },
@@ -391,7 +391,7 @@ kinobi.update(
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
-    "mplCandyGuardAsset.route": {
+    "mplCoreCandyGuard.route": {
       internal: true,
       args: {
         label: { name: "group" },
@@ -401,7 +401,7 @@ kinobi.update(
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
-    "mplCandyMachineCoreAsset.setCollectionV2": {
+    "mplCoreCandyMachineCore.setCollectionV2": {
       accounts: {
         newCollectionDelegateRecord: {
           defaultsTo: defaultsToMetadataDelegateRecordPda(
@@ -413,12 +413,12 @@ kinobi.update(
         },
       },
     },
-    "mplCandyMachineCoreAsset.SetAuthority": { name: "SetCandyMachineAuthority" },
-    "mplCandyGuardAsset.SetAuthority": { name: "SetCandyGuardAuthority" },
-    "mplCandyMachineCoreAsset.update": { name: "updateCandyMachine" },
-    "mplCandyGuardAsset.update": { name: "updateCandyGuard", internal: true },
-    "mplCandyMachineCoreAsset.withdraw": { name: "deleteCandyMachine" },
-    "mplCandyGuardAsset.withdraw": { name: "deleteCandyGuard" },
+    "mplCoreCandyMachineCore.SetAuthority": { name: "SetCandyMachineAuthority" },
+    "mplCoreCandyGuard.SetAuthority": { name: "SetCandyGuardAuthority" },
+    "mplCoreCandyMachineCore.update": { name: "updateCandyMachine" },
+    "mplCoreCandyGuard.update": { name: "updateCandyGuard", internal: true },
+    "mplCoreCandyMachineCore.withdraw": { name: "deleteCandyMachine" },
+    "mplCoreCandyGuard.withdraw": { name: "deleteCandyGuard" },
   })
 );
 

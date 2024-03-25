@@ -72,7 +72,7 @@ export function deleteCandyMachine(
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'mplCandyMachineCoreAsset',
+    'mplCoreCandyMachineCore',
     'CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J'
   );
 

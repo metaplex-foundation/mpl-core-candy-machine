@@ -18,7 +18,7 @@ import {
 import { getMplCoreProgramId } from '@metaplex-foundation/mpl-core';
 import {
   fetchCandyMachine,
-  getMplCandyMachineCoreAssetProgramId,
+  getMplCoreCandyMachineCoreProgramId,
 } from './generated';
 import { findCandyMachineAuthorityPda } from './hooked';
 
@@ -63,6 +63,6 @@ export const getLutAddressesForCandyMachine = async (
     getSplTokenProgramId(context),
     getSplAssociatedTokenProgramId(context),
     getMplTokenMetadataProgramId(context),
-    getMplCandyMachineCoreAssetProgramId(context),
+    getMplCoreCandyMachineCoreProgramId(context),
   ]);
 };

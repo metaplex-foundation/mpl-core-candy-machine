@@ -63,7 +63,7 @@ export function getCandyGuardAccountDataSerializer<
   },
   program?: CandyGuardProgram
 ): Serializer<CandyGuardAccountDataArgs<DA>, CandyGuardAccountData<D>> {
-  program ??= context.programs.get<CandyGuardProgram>('mplCandyGuardAsset');
+  program ??= context.programs.get<CandyGuardProgram>('mplCoreCandyGuard');
   return mapSerializer(
     struct<any>(
       [
@@ -172,7 +172,7 @@ export function getCandyGuardGpaBuilder<D extends GuardSet = DefaultGuardSet>(
   program?: CandyGuardProgram
 ) {
   const programId = context.programs.getPublicKey(
-    'mplCandyGuardAsset',
+    'mplCoreCandyGuard',
     'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ'
   );
   return gpaBuilder(context, programId)

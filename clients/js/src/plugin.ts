@@ -27,8 +27,8 @@ import {
   nftMintLimitGuardManifest,
 } from './defaultGuards';
 import {
-  createMplCandyGuardAssetProgram,
-  createMplCandyMachineCoreAssetProgram,
+  createMplCoreCandyGuardProgram,
+  createMplCoreCandyMachineCoreProgram,
 } from './generated';
 import {
   CandyGuardProgram,
@@ -45,10 +45,10 @@ export const mplCandyMachine = (): UmiPlugin => ({
     umi.use(mplTokenMetadata());
 
     // Programs.
-    umi.programs.add(createMplCandyMachineCoreAssetProgram(), false);
+    umi.programs.add(createMplCoreCandyMachineCoreProgram(), false);
     umi.programs.add(
       {
-        ...createMplCandyGuardAssetProgram(),
+        ...createMplCoreCandyGuardProgram(),
         availableGuards: defaultCandyGuardNames,
       } as CandyGuardProgram,
       false

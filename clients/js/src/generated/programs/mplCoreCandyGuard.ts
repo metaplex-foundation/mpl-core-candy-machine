@@ -13,22 +13,22 @@ import {
   PublicKey,
 } from '@metaplex-foundation/umi';
 import {
-  getMplCandyGuardAssetErrorFromCode,
-  getMplCandyGuardAssetErrorFromName,
+  getMplCoreCandyGuardErrorFromCode,
+  getMplCoreCandyGuardErrorFromName,
 } from '../errors';
 
-export const MPL_CANDY_GUARD_ASSET_PROGRAM_ID =
+export const MPL_CORE_CANDY_GUARD_PROGRAM_ID =
   'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ' as PublicKey<'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ'>;
 
-export function createMplCandyGuardAssetProgram(): Program {
+export function createMplCoreCandyGuardProgram(): Program {
   return {
-    name: 'mplCandyGuardAsset',
-    publicKey: MPL_CANDY_GUARD_ASSET_PROGRAM_ID,
+    name: 'mplCoreCandyGuard',
+    publicKey: MPL_CORE_CANDY_GUARD_PROGRAM_ID,
     getErrorFromCode(code: number, cause?: Error) {
-      return getMplCandyGuardAssetErrorFromCode(code, this, cause);
+      return getMplCoreCandyGuardErrorFromCode(code, this, cause);
     },
     getErrorFromName(name: string, cause?: Error) {
-      return getMplCandyGuardAssetErrorFromName(name, this, cause);
+      return getMplCoreCandyGuardErrorFromName(name, this, cause);
     },
     isOnCluster() {
       return true;
@@ -36,20 +36,20 @@ export function createMplCandyGuardAssetProgram(): Program {
   };
 }
 
-export function getMplCandyGuardAssetProgram<T extends Program = Program>(
+export function getMplCoreCandyGuardProgram<T extends Program = Program>(
   context: Pick<Context, 'programs'>,
   clusterFilter?: ClusterFilter
 ): T {
-  return context.programs.get<T>('mplCandyGuardAsset', clusterFilter);
+  return context.programs.get<T>('mplCoreCandyGuard', clusterFilter);
 }
 
-export function getMplCandyGuardAssetProgramId(
+export function getMplCoreCandyGuardProgramId(
   context: Pick<Context, 'programs'>,
   clusterFilter?: ClusterFilter
 ): PublicKey {
   return context.programs.getPublicKey(
-    'mplCandyGuardAsset',
-    MPL_CANDY_GUARD_ASSET_PROGRAM_ID,
+    'mplCoreCandyGuard',
+    MPL_CORE_CANDY_GUARD_PROGRAM_ID,
     clusterFilter
   );
 }

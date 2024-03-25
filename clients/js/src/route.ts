@@ -56,7 +56,7 @@ export function route<
     >
 ): TransactionBuilder {
   const { routeArgs = {}, group = none(), ...rest } = input;
-  const program = context.programs.get<CandyGuardProgram>('mplCandyGuardAsset');
+  const program = context.programs.get<CandyGuardProgram>('mplCoreCandyGuard');
   const candyMachine = publicKey(input.candyMachine, false);
   const routeContext: RouteContext = {
     payer: input.payer ?? context.payer,

@@ -35,7 +35,7 @@ export function updateCandyGuard<DA extends GuardSetArgs = DefaultGuardSetArgs>(
     >
 ): TransactionBuilder {
   const { guards, groups, ...rest } = input;
-  const program = context.programs.get<CandyGuardProgram>('mplCandyGuardAsset');
+  const program = context.programs.get<CandyGuardProgram>('mplCoreCandyGuard');
   const serializer = getCandyGuardDataSerializer<
     DA extends undefined ? DefaultGuardSetArgs : DA,
     any

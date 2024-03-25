@@ -68,7 +68,7 @@ export function deleteCandyGuard(
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'mplCandyGuardAsset',
+    'mplCoreCandyGuard',
     'CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ'
   );
 

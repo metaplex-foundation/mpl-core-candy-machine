@@ -15,7 +15,7 @@ import {
   createLutForCandyMachine,
   findCandyGuardPda,
   findCandyMachineAuthorityPda,
-  getMplCandyMachineCoreAssetProgramId,
+  getMplCoreCandyMachineCoreProgramId,
   mintV2,
   setMintAuthority,
 } from '../src';
@@ -75,7 +75,7 @@ test('it can create a LUT for a candy machine v2', async (t) => {
       getSplTokenProgramId(umi),
       getSplAssociatedTokenProgramId(umi),
       getMplTokenMetadataProgramId(umi),
-      getMplCandyMachineCoreAssetProgramId(umi),
+      getMplCoreCandyMachineCoreProgramId(umi),
     ].sort()
   );
 
