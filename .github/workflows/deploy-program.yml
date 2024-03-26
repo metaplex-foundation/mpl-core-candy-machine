@@ -96,13 +96,13 @@ jobs:
       - name: Identify Program
         run: |
           if [ "${{ inputs.program }}" == "candy-guard" ]; then
-            echo ${{ secrets.CANDY_GUARD_ASSET_DEPLOY_KEY }} > ./deploy-key.json 
-            echo ${{ secrets.CANDY_GUARD_ASSET_ID }} > ./program-id.json
-            echo PROGRAM_NAME="mpl_candy_guard" >> $GITHUB_ENV
+            echo ${{ secrets.CORE_CANDY_GUARD_DEPLOY_KEY }} > ./deploy-key.json 
+            echo ${{ secrets.CORE_CANDY_GUARD_ID }} > ./program-id.json
+            echo PROGRAM_NAME="mpl_core_candy_guard" >> $GITHUB_ENV
           else
-            echo ${{ secrets.CANDY_MACHINE_CORE_ASSET_DEPLOY_KEY }} > ./deploy-key.json
-            echo ${{ secrets.CANDY_MACHINE_CORE_ASSET_ID }} > ./program-id.json
-            echo PROGRAM_NAME="mpl_candy_machine_core" >> $GITHUB_ENV
+            echo ${{ secrets.CORE_CANDY_MACHINE_CORE_DEPLOY_KEY }} > ./deploy-key.json
+            echo ${{ secrets.CORE_CANDY_MACHINE_CORE_ID }} > ./program-id.json
+            echo PROGRAM_NAME="mpl_core_candy_machine_core" >> $GITHUB_ENV
           fi
 
       - name: Bump Program Version
