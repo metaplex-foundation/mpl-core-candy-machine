@@ -1,4 +1,7 @@
-import { findAssociatedTokenPda, getSplTokenProgramId } from '@metaplex-foundation/mpl-toolbox';
+import {
+  findAssociatedTokenPda,
+  getSplTokenProgramId,
+} from '@metaplex-foundation/mpl-toolbox';
 import {
   findMasterEditionPda,
   findMetadataPda,

@@ -6,7 +6,10 @@ import {
 import test from 'ava';
 
 import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
-import { PluginType, revokeCollectionPluginAuthorityV1 } from '@metaplex-foundation/mpl-core';
+import {
+  PluginType,
+  revokeCollectionPluginAuthorityV1,
+} from '@metaplex-foundation/mpl-core';
 import {
   CandyMachine,
   fetchCandyMachine,
@@ -50,7 +53,6 @@ test('it can update the collection of a candy machine v2', async (t) => {
     collectionMint: publicKey(collectionB.publicKey),
   });
 });
-
 
 test('it cannot update the collection of a candy machine when mint is in progress', async (t) => {
   // Given a Candy Machine associated with Collection A.
@@ -137,8 +139,7 @@ test.only('it can set the same collection of a candy machine when mint is in pro
     collection: collectionA.publicKey,
     authority: collectionUpdateAuthorityA,
     pluginType: PluginType.UpdateDelegate,
-  }).sendAndConfirm(umi)
-  
+  }).sendAndConfirm(umi);
 
   // When we set the same collection.
   await setCollectionV2(umi, {

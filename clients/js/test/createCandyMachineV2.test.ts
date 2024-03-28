@@ -14,11 +14,7 @@ import {
   Creator,
   fetchCandyMachine,
 } from '../src';
-import {
-  createCollection,
-  createUmi,
-  defaultCandyMachineData,
-} from './_setup';
+import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
 
 test('it can create a candy machine using config line settings', async (t) => {
   // Given an existing collection NFT.
@@ -230,4 +226,3 @@ test("it can create a candy machine that's bigger than 10Kb", async (t) => {
     data: { itemsAvailable: 20000n },
   });
 });
-

@@ -111,7 +111,14 @@ test('it transfers tokens to an escrow account and freezes the NFT', async (t) =
 
   // And cannot be thawed since not all NFTs have been minted.
   const cm = candyMachine;
-  const promise = thawNft(umi, cm, tokenMint, destinationAta, mint.publicKey, collection);
+  const promise = thawNft(
+    umi,
+    cm,
+    tokenMint,
+    destinationAta,
+    mint.publicKey,
+    collection
+  );
   await t.throwsAsync(promise, { message: /ThawNotEnabled/ });
 
   // And the treasury escrow received tokens.
@@ -231,7 +238,14 @@ test('it can thaw an NFT once all NFTs are minted', async (t) => {
   t.is(isFrozen(asset), true);
 
   // When we thaw the NFT.
-  await thawNft(umi, candyMachine, tokenMint, destinationAta, mint.publicKey, collection);
+  await thawNft(
+    umi,
+    candyMachine,
+    tokenMint,
+    destinationAta,
+    mint.publicKey,
+    collection
+  );
 
   // Then the NFT is thawed.
   asset = await fetchAssetV1(umi, mint.publicKey);
@@ -272,7 +286,14 @@ test('it can unlock funds once all NFTs have been thawed', async (t) => {
     destinationAta,
     collection
   );
-  await thawNft(umi, candyMachine, tokenMint, destinationAta, mint.publicKey, collection);
+  await thawNft(
+    umi,
+    candyMachine,
+    tokenMint,
+    destinationAta,
+    mint.publicKey,
+    collection
+  );
 
   // When the authority unlocks the funds.
   await transactionBuilder()
@@ -493,11 +514,10 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
   // Then all NFTs except for group D have been frozen.
   const [tokenA, tokenB, tokenC, tokenD] = await Promise.all(
     [nftA, nftB, nftC, nftD].map(
-      ({ publicKey: mint }): Promise<AssetV1> =>
-        fetchAssetV1(umi, mint)
+      ({ publicKey: mint }): Promise<AssetV1> => fetchAssetV1(umi, mint)
     )
   );
-  
+
   t.is(isFrozen(tokenA), true, 'NFT A is frozen');
   t.is(isFrozen(tokenB), true, 'NFT B is frozen');
   t.is(isFrozen(tokenC), true, 'NFT C is frozen');
@@ -527,15 +547,55 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
     ]);
   };
   await assertFrozenCounts(2, 1);
-  await thawNft(umi, cm, mintAB, destinationAtaAB, nftD.publicKey, collection, 'GROUPA'); // Not frozen.
+  await thawNft(
+    umi,
+    cm,
+    mintAB,
+    destinationAtaAB,
+    nftD.publicKey,
+    collection,
+    'GROUPA'
+  ); // Not frozen.
   await assertFrozenCounts(2, 1); // No change.
-  await thawNft(umi, cm, mintAB, destinationAtaAB, nftA.publicKey, collection, 'GROUPA');
+  await thawNft(
+    umi,
+    cm,
+    mintAB,
+    destinationAtaAB,
+    nftA.publicKey,
+    collection,
+    'GROUPA'
+  );
   await assertFrozenCounts(1, 1); // AB decreased.
-  await thawNft(umi, cm, mintAB, destinationAtaAB, nftA.publicKey, collection, 'GROUPA'); // Already thawed.
+  await thawNft(
+    umi,
+    cm,
+    mintAB,
+    destinationAtaAB,
+    nftA.publicKey,
+    collection,
+    'GROUPA'
+  ); // Already thawed.
   await assertFrozenCounts(1, 1); // No change.
-  await thawNft(umi, cm, mintAB, destinationAtaAB, nftB.publicKey, collection, 'GROUPB');
+  await thawNft(
+    umi,
+    cm,
+    mintAB,
+    destinationAtaAB,
+    nftB.publicKey,
+    collection,
+    'GROUPB'
+  );
   await assertFrozenCounts(0, 1); // AB decreased.
-  await thawNft(umi, cm, mintC, destinationAtaC, nftC.publicKey, collection, 'GROUPC');
+  await thawNft(
+    umi,
+    cm,
+    mintC,
+    destinationAtaC,
+    nftC.publicKey,
+    collection,
+    'GROUPC'
+  );
   await assertFrozenCounts(0, 0); // C decreased.
 
   // And when the authority unlocks the funds of both freeze escrows.
@@ -1019,21 +1079,25 @@ const thawNft = async (
   destinationAta: PublicKey,
   asset: PublicKey,
   collection: PublicKey,
-  group?: string,
-) => {
-  await route(umi, {
-    candyMachine,
-    guard: 'freezeTokenPayment',
-    group: group ? some(group) : none(),
-    routeArgs: {
-      path: 'thaw',
-      asset,
-      collection,
-      mint: publicKey(tokenMint),
-      destinationAta,
-    },
-  }).sendAndConfirm(umi);
-};
+  group?: string
+) =>
+  transactionBuilder()
+    .add(setComputeUnitLimit(umi, { units: 600_000 }))
+    .add(
+      await route(umi, {
+        candyMachine,
+        guard: 'freezeTokenPayment',
+        group: group ? some(group) : none(),
+        routeArgs: {
+          path: 'thaw',
+          asset,
+          collection,
+          mint: publicKey(tokenMint),
+          destinationAta,
+        },
+      })
+    )
+    .sendAndConfirm(umi);
 
 const unlockFunds = async (
   umi: Umi,

@@ -181,4 +181,3 @@ test('it must not provide a group label if the candy guard does not have groups'
   // Then we expect a program error.
   await t.throwsAsync(promise, { message: /GroupNotFound/ });
 });
-

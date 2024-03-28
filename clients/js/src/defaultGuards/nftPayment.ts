@@ -67,7 +67,7 @@ export const nftPaymentGuardManifest: GuardManifest<
       {
         publicKey: getMplTokenMetadataProgramId(context),
         isWritable: false,
-      }
+      },
     ];
 
     if (isProgrammable(args.tokenStandard)) {

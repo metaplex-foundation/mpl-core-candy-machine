@@ -17,8 +17,8 @@ use crate::{
     instructions::Token,
     state::GuardType,
     utils::{
-        assert_initialized, assert_is_ata, assert_keys_equal,
-        assert_owned_by, cmp_pubkeys, spl_token_transfer, TokenTransferParams,
+        assert_initialized, assert_is_ata, assert_keys_equal, assert_owned_by, cmp_pubkeys,
+        spl_token_transfer, TokenTransferParams,
     },
 };
 

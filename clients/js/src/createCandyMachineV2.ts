@@ -23,7 +23,7 @@ export const createCandyMachineV2 = async (
 ): Promise<TransactionBuilder> => {
   const space = getCandyMachineSize(
     input.itemsAvailable,
-    input.configLineSettings ?? none(),
+    input.configLineSettings ?? none()
   );
   const lamports = await context.rpc.getRent(space);
   return transactionBuilder()

@@ -10,7 +10,7 @@ use crate::{
     utils::cmp_pubkeys,
 };
 
-use super::{MintAccounts};
+use super::MintAccounts;
 
 pub fn mint_v2<'info>(
     ctx: Context<'_, '_, '_, 'info, MintV2<'info>>,

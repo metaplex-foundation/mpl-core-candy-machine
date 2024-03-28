@@ -97,8 +97,7 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
           ['itemsLeftToMint', array(u32(), { size: itemsAvailable })],
         ]);
 
-      const [hiddenSection] =
-        hiddenSectionSerializer.deserialize(slice);
+      const [hiddenSection] = hiddenSectionSerializer.deserialize(slice);
 
       const itemsLeftToMint = hiddenSection.itemsLeftToMint.slice(
         0,

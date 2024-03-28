@@ -7,11 +7,11 @@ import {
   findMetadataPda,
   verifyCollectionV1,
 } from '@metaplex-foundation/mpl-token-metadata';
-import { 
+import {
   AssetV1,
   fetchAssetV1,
   createCollectionV1 as baseCreateCollection,
-} from '@metaplex-foundation/mpl-core'
+} from '@metaplex-foundation/mpl-core';
 import {
   createAssociatedToken,
   createMint,
@@ -98,7 +98,7 @@ export const createCollection = async (
   }).sendAndConfirm(umi);
 
   return mint;
-}
+};
 
 export const createCollectionNft = async (
   umi: Umi,
@@ -246,7 +246,7 @@ export const defaultAssetData = () => ({
   name: 'My Asset',
   sellerFeeBasisPoints: percentAmount(10, 2),
   uri: 'https://example.com/my-asset.json',
-  plugins: []
+  plugins: [],
 });
 
 export const defaultCandyMachineData = (
@@ -303,20 +303,16 @@ export const assertSuccessfulMint = async (
 ) => {
   const mint = publicKey(input.mint);
   const owner = publicKey(input.owner);
-  const {
-    name,
-    uri,
-  } = input;
+  const { name, uri } = input;
 
   // Nft.
 
-  const nft = await fetchAssetV1(umi, mint)
+  const nft = await fetchAssetV1(umi, mint);
 
   t.like(nft, <AssetV1>{
     publicKey: publicKey(mint),
-    owner
+    owner,
   });
-
 
   // Name.
   if (typeof name === 'string') t.is(nft.name, name);
@@ -372,4 +368,5 @@ export const yesterday = (): DateTime => now() - 3600n * 24n;
 export const tomorrow = (): DateTime => now() + 3600n * 24n;
 
 // TODO move to mpl-core
-export const isFrozen = (asset: AssetV1): boolean => asset.freezeDelegate?.frozen || false;
+export const isFrozen = (asset: AssetV1): boolean =>
+  asset.freezeDelegate?.frozen || false;

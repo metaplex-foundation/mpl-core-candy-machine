@@ -1,7 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import {
-  setComputeUnitLimit,
-} from '@metaplex-foundation/mpl-toolbox';
+import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
 import {
   PublicKey,
   Umi,
@@ -14,11 +12,7 @@ import {
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import test from 'ava';
 import { fetchAssetV1 } from '@metaplex-foundation/mpl-core';
-import {
-  CandyMachine,
-  fetchCandyMachine,
-  mintV2,
-} from '../src';
+import { CandyMachine, fetchCandyMachine, mintV2 } from '../src';
 import {
   assertSuccessfulMint,
   createCollection,

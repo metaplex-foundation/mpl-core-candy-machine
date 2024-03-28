@@ -1,15 +1,14 @@
 use super::*;
 
 use anchor_lang::AccountsClose;
-use mpl_core_candy_machine_core::CandyMachine;
 use mpl_core::{
     accounts::BaseAssetV1,
     instructions::{
-        AddPluginV1CpiBuilder, RevokePluginAuthorityV1CpiBuilder,
-        UpdatePluginV1CpiBuilder,
+        AddPluginV1CpiBuilder, RevokePluginAuthorityV1CpiBuilder, UpdatePluginV1CpiBuilder,
     },
-    types::{PluginAuthority, FreezeDelegate, Plugin, PluginType},
+    types::{FreezeDelegate, Plugin, PluginAuthority, PluginType},
 };
+use mpl_core_candy_machine_core::CandyMachine;
 
 use solana_program::{
     program::{invoke, invoke_signed},
@@ -500,7 +499,8 @@ pub fn thaw_nft<'info>(
         &[bump],
     ];
 
-    let maybe_freeze_plugin = mpl_core::fetch_plugin::<BaseAssetV1, FreezeDelegate>(&asset, PluginType::FreezeDelegate);
+    let maybe_freeze_plugin =
+        mpl_core::fetch_plugin::<BaseAssetV1, FreezeDelegate>(&asset, PluginType::FreezeDelegate);
 
     let is_frozen = match maybe_freeze_plugin {
         Ok((_, freeze_plugin, _)) => freeze_plugin.frozen,

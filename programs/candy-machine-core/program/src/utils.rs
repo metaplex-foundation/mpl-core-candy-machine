@@ -1,12 +1,13 @@
 use anchor_lang::prelude::*;
 use arrayref::array_ref;
 use mpl_core::{
-    fetch_plugin,
     accounts::BaseCollectionV1,
+    fetch_plugin,
     instructions::{
         AddCollectionPluginV1CpiBuilder, ApproveCollectionPluginAuthorityV1CpiBuilder,
         RevokeCollectionPluginAuthorityV1CpiBuilder,
-    }, types::{Plugin, PluginAuthority, PluginType, UpdateDelegate}
+    },
+    types::{Plugin, PluginAuthority, PluginType, UpdateDelegate},
 };
 use mpl_token_metadata::{
     accounts::Metadata,
@@ -306,10 +307,9 @@ pub fn approve_asset_collection_delegate(
         AddCollectionPluginV1CpiBuilder::new(&accounts.mpl_core_program)
             .collection(&accounts.collection)
             .authority(Some(&accounts.collection_update_authority))
-            .plugin(Plugin::UpdateDelegate(UpdateDelegate {}))
-            // .init_authority(PluginAuthority::Pubkey {
-            //     address: accounts.authority_pda.key(),
-            // })
+            .plugin(Plugin::UpdateDelegate(UpdateDelegate {
+                additional_delegates: vec![],
+            }))
             .payer(&accounts.payer)
             .system_program(&accounts.system_program)
             .invoke()?;

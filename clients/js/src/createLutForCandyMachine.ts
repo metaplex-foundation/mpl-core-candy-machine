@@ -1,6 +1,4 @@
-import {
-  getMplTokenMetadataProgramId,
-} from '@metaplex-foundation/mpl-token-metadata';
+import { getMplTokenMetadataProgramId } from '@metaplex-foundation/mpl-token-metadata';
 import {
   createLut,
   getSysvar,

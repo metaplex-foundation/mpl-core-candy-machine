@@ -7,7 +7,7 @@ import test from 'ava';
 import {
   CandyMachine,
   fetchCandyMachine,
-  mintAssetFromCandyMachine
+  mintAssetFromCandyMachine,
 } from '../src';
 import {
   assertSuccessfulMint,
@@ -58,7 +58,7 @@ test('it cannot mint directly from a candy machine if we are not the mint author
   const umi = await createUmi();
   const mintAuthorityA = generateSigner(umi);
   const collection = await createCollection(umi, {
-    updateAuthority: mintAuthorityA.publicKey
+    updateAuthority: mintAuthorityA.publicKey,
   });
   const candyMachineSigner = await createV2(umi, {
     authority: mintAuthorityA.publicKey,
@@ -97,4 +97,3 @@ test('it cannot mint directly from a candy machine if we are not the mint author
   const candyMachineAccount = await fetchCandyMachine(umi, candyMachine);
   t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 0n });
 });
-

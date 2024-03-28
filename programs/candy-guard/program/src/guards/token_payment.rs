@@ -47,7 +47,8 @@ impl Condition for TokenPayment {
         let token_account_info = try_get_account_info(ctx.accounts.remaining, token_account_index)?;
         let destination_ata =
             try_get_account_info(ctx.accounts.remaining, token_account_index + 1)?;
-        let spl_token_program = try_get_account_info(ctx.accounts.remaining, token_account_index + 2)?;
+        let spl_token_program =
+            try_get_account_info(ctx.accounts.remaining, token_account_index + 2)?;
         ctx.account_cursor += 3;
 
         assert_keys_equal(destination_ata.key, &self.destination_ata)?;

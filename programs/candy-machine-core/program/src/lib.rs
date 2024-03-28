@@ -51,10 +51,7 @@ pub mod candy_machine_core {
     ///   11. `[]` Instructions sysvar account
     ///   12. `[optional]` Token Authorization Rules program
     ///   13. `[optional]` Token authorization rules account
-    pub fn initialize_v2(
-        ctx: Context<InitializeV2>,
-        data: CandyMachineData,
-    ) -> Result<()> {
+    pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData) -> Result<()> {
         instructions::initialize_v2(ctx, data)
     }
 

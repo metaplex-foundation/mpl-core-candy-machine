@@ -93,7 +93,13 @@ test('it transfers SOL to an escrow account and freezes the NFT', async (t) => {
   t.is(isFrozen(asset), true, 'NFT is frozen');
 
   // And cannot be thawed since not all NFTs have been minted.
-  const promise = thawNft(umi, candyMachine, destination, mint.publicKey, collection);
+  const promise = thawNft(
+    umi,
+    candyMachine,
+    destination,
+    mint.publicKey,
+    collection
+  );
   await t.throwsAsync(promise, { message: /ThawNotEnabled/ });
 
   // And the treasury escrow received SOLs.
@@ -379,10 +385,9 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
   // Then all NFTs except for group D have been frozen.
   const [tokenA, tokenB, tokenC, tokenD] = await Promise.all(
     [mintA, mintB, mintC, mintD].map(
-      ({ publicKey: mint }): Promise<AssetV1> => 
-        fetchAssetV1(umi, mint)
+      ({ publicKey: mint }): Promise<AssetV1> => fetchAssetV1(umi, mint)
     )
-  );  
+  );
 
   t.is(isFrozen(tokenA), true, 'NFT A is frozen');
   t.is(isFrozen(tokenB), true, 'NFT B is frozen');
@@ -628,7 +633,13 @@ test('it transfers SOL to an escrow account and locks the Programmable NFT', asy
   t.is(isFrozen(asset), true);
 
   // And cannot be thawed since not all NFTs have been minted.
-  const promise = thawNft(umi, candyMachine, destination, mint.publicKey, collection);
+  const promise = thawNft(
+    umi,
+    candyMachine,
+    destination,
+    mint.publicKey,
+    collection
+  );
   await t.throwsAsync(promise, { message: /ThawNotEnabled/ });
 
   // And the treasury escrow received SOLs.
@@ -817,20 +828,24 @@ const thawNft = async (
   destination: PublicKey,
   asset: PublicKey,
   collection: PublicKey,
-  group?: string,
-) => {
-  await route(umi, {
-    candyMachine,
-    guard: 'freezeSolPayment',
-    group: group ? some(group) : none(),
-    routeArgs: {
-      path: 'thaw',
-      asset,
-      collection,
-      destination,
-    },
-  }).sendAndConfirm(umi);
-};
+  group?: string
+) =>
+  transactionBuilder()
+    .add(setComputeUnitLimit(umi, { units: 600_000 }))
+    .add(
+      route(umi, {
+        candyMachine,
+        guard: 'freezeSolPayment',
+        group: group ? some(group) : none(),
+        routeArgs: {
+          path: 'thaw',
+          asset,
+          collection,
+          destination,
+        },
+      })
+    )
+    .sendAndConfirm(umi);
 
 const unlockFunds = async (
   umi: Umi,

@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@metaplex-foundation/mpl-core':
+    specifier: ^0.3.0
+    version: 0.3.0(@metaplex-foundation/mpl-toolbox@0.9.0)(@metaplex-foundation/umi@0.8.2)(@noble/hashes@1.2.0)
   '@metaplex-foundation/mpl-token-metadata':
     specifier: 3.0.0-alpha.27
     version: 3.0.0-alpha.27(@metaplex-foundation/umi@0.8.2)
@@ -10,9 +13,6 @@ dependencies:
   '@noble/hashes':
     specifier: ^1.2.0
     version: 1.2.0
-  core-preview:
-    specifier: ^0.1.1
-    version: 0.1.1(@metaplex-foundation/mpl-toolbox@0.9.0)(@metaplex-foundation/umi@0.8.2)(@noble/hashes@1.2.0)
   merkletreejs:
     specifier: ^0.3.9
     version: 0.3.9
@@ -1944,6 +1944,18 @@ packages:
     resolution: {integrity: sha512-S9RulC2fFCFOQraz61bij+5YCHhSO9llJegK8c8Y6731fSi6snUSQJdCUqYS8AIgR0TKbQvdvgSyIIdbDFZbBA==}
     dev: true
 
+  /@metaplex-foundation/mpl-core@0.3.0(@metaplex-foundation/mpl-toolbox@0.9.0)(@metaplex-foundation/umi@0.8.2)(@noble/hashes@1.2.0):
+    resolution: {integrity: sha512-ZGK4sVSlRWLkZQpYzctEF978lCOXKTy73Jr7IKIFXK3C2xGLEg4GRuN/SBtByQA5u/vxqkAp04ZiVXhoVWtJSQ==}
+    peerDependencies:
+      '@metaplex-foundation/mpl-toolbox': ^0.8.0
+      '@metaplex-foundation/umi': ^0.8.2
+      '@noble/hashes': ^1.3.1
+    dependencies:
+      '@metaplex-foundation/mpl-toolbox': 0.9.0(@metaplex-foundation/umi@0.8.2)
+      '@metaplex-foundation/umi': 0.8.2
+      '@noble/hashes': 1.2.0
+    dev: false
+
   /@metaplex-foundation/mpl-token-auth-rules@1.2.0:
     resolution: {integrity: sha512-UkfBkYEdenefIKxE2L15j9ZHUJYYRQoDqNqDawh5DxdemmVV3GLnIlbMilr/HLXyXb2eMAOUdl5XgZFwKYN5EA==}
     dependencies:
@@ -3852,18 +3864,6 @@ packages:
     dependencies:
       browserslist: 4.21.9
     dev: true
-
-  /core-preview@0.1.1(@metaplex-foundation/mpl-toolbox@0.9.0)(@metaplex-foundation/umi@0.8.2)(@noble/hashes@1.2.0):
-    resolution: {integrity: sha512-f/l7q6GQioQ561WukRNBmBPFXPfOxLvM9Ri7wXfFqxBMH8EgnB18pMURT3NxImpRYdlVB5Qxo6ic42d4w2vLuA==}
-    peerDependencies:
-      '@metaplex-foundation/mpl-toolbox': ^0.8.0
-      '@metaplex-foundation/umi': ^0.8.2
-      '@noble/hashes': ^1.3.1
-    dependencies:
-      '@metaplex-foundation/mpl-toolbox': 0.9.0(@metaplex-foundation/umi@0.8.2)
-      '@metaplex-foundation/umi': 0.8.2
-      '@noble/hashes': 1.2.0
-    dev: false
 
   /core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}

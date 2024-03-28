@@ -2,15 +2,14 @@ use anchor_lang::{prelude::*, solana_program::sysvar, Discriminator};
 use mpl_token_metadata::MAX_SYMBOL_LENGTH;
 
 use crate::{
-    approve_asset_collection_delegate, constants::{
-        AUTHORITY_SEED, HIDDEN_SECTION,
-    }, state::{CandyMachine, CandyMachineData}, utils::fixed_length_string, AccountVersion, ApproveAssetDelegateHelperAccounts
+    approve_asset_collection_delegate,
+    constants::{AUTHORITY_SEED, HIDDEN_SECTION},
+    state::{CandyMachine, CandyMachineData},
+    utils::fixed_length_string,
+    AccountVersion, ApproveAssetDelegateHelperAccounts,
 };
 
-pub fn initialize_v2(
-    ctx: Context<InitializeV2>,
-    data: CandyMachineData,
-) -> Result<()> {
+pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData) -> Result<()> {
     let candy_machine_account = &mut ctx.accounts.candy_machine;
 
     let mut candy_machine = CandyMachine {
@@ -110,5 +109,4 @@ pub struct InitializeV2<'info> {
     /// CHECK: account constraint checked in account trait
     #[account(address = sysvar::instructions::id())]
     sysvar_instructions: UncheckedAccount<'info>,
-
 }

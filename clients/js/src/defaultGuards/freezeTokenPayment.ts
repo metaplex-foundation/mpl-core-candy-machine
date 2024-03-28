@@ -59,7 +59,7 @@ export const freezeTokenPaymentGuardManifest: GuardManifest<
         { publicKey: freezeEscrow, isWritable: true },
         { publicKey: tokenAddress, isWritable: true },
         { publicKey: freezeAta, isWritable: true },
-        { publicKey: getSplTokenProgramId(context), isWritable: false}
+        { publicKey: getSplTokenProgramId(context), isWritable: false },
       ],
     };
   },
@@ -84,8 +84,7 @@ export const freezeTokenPaymentGuardManifest: GuardManifest<
 export type FreezeTokenPaymentMintArgs = Omit<
   FreezeTokenPaymentArgs,
   'amount'
-> & {
-};
+> & {};
 
 /**
  * The settings for the freezeTokenPayment guard that should be provided

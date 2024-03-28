@@ -81,7 +81,7 @@ export const mplCandyMachine = (): UmiPlugin => ({
       allocationGuardManifest,
       token2022PaymentGuardManifest,
       solFixedFeeGuardManifest,
-      nftMintLimitGuardManifest,
+      nftMintLimitGuardManifest
     );
   },
 });

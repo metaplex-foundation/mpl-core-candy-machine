@@ -1,7 +1,5 @@
 /* eslint-disable no-promise-executor-return */
-import {
-  getMplTokenMetadataProgramId,
-} from '@metaplex-foundation/mpl-token-metadata';
+import { getMplTokenMetadataProgramId } from '@metaplex-foundation/mpl-token-metadata';
 import {
   getSplAssociatedTokenProgramId,
   getSplTokenProgramId,
@@ -81,7 +79,7 @@ test('it can create a LUT for a candy machine v2', async (t) => {
 
   // And we expect the mint builder to be smaller with the LUT.
   const builderWithLut = builderWithoutLut.setAddressLookupTables([lut]);
-  
+
   // TODO actually compare real tx size
   // const transactionSizeDifference =
   //   builderWithoutLut.getTransactionSize(umi) -

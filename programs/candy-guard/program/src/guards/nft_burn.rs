@@ -103,10 +103,10 @@ impl Condition for NftBurn {
         let nft_mint_collection_metadata = try_get_account_info(ctx.accounts.remaining, index + 4)?;
         let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 5)?;
         let token_metadata_program = try_get_account_info(ctx.accounts.remaining, index + 6)?;
-        
+
         let spl_token_info = spl_token_program.to_account_info();
         let token_metadata_info = token_metadata_program.to_account_info();
-        
+
         if matches!(ctx.accounts.candy_machine.version, AccountVersion::V2) {
             let metadata: Metadata = Metadata::try_from(nft_metadata)?;
             let mut burn_cpi = BurnV1CpiBuilder::new(&token_metadata_info);

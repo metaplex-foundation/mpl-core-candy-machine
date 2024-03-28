@@ -17,11 +17,7 @@ import {
   GuardGroup,
   GuardSet,
 } from '../src';
-import {
-  createCollection,
-  createUmi,
-  defaultCandyMachineData,
-} from './_setup';
+import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
 
 test('it can create a candy machine with an associated candy guard', async (t) => {
   // Given an existing collection NFT.

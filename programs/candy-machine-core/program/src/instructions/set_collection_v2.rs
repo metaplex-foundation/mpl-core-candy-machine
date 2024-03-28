@@ -1,10 +1,8 @@
 use anchor_lang::{prelude::*, solana_program::sysvar};
 
 use crate::{
-    approve_asset_collection_delegate, cmp_pubkeys,
-    constants::AUTHORITY_SEED,
-    revoke_asset_collection_delegate,
-    CandyError, CandyMachine, ApproveAssetDelegateHelperAccounts,
+    approve_asset_collection_delegate, cmp_pubkeys, constants::AUTHORITY_SEED,
+    revoke_asset_collection_delegate, ApproveAssetDelegateHelperAccounts, CandyError, CandyMachine,
     RevokeAssetDelegateHelperAccounts,
 };
 
@@ -15,10 +13,7 @@ pub fn set_collection_v2(ctx: Context<SetCollectionV2>) -> Result<()> {
     // check whether the new collection mint is the same as the current collection; when they
     // are the same, we are just using this instruction to update the collection delegate so
     // we don't enforce the "mint in progress" constraint
-    if !cmp_pubkeys(
-        accounts.new_collection.key,
-        &candy_machine.collection_mint,
-    ) {
+    if !cmp_pubkeys(accounts.new_collection.key, &candy_machine.collection_mint) {
         if candy_machine.items_redeemed > 0 {
             return err!(CandyError::NoChangingCollectionDuringMint);
         } else if !cmp_pubkeys(accounts.collection.key, &candy_machine.collection_mint) {

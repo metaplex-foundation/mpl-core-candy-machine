@@ -111,7 +111,8 @@ impl Condition for NftPayment {
             let (owner_token_record_key, _) = TokenRecord::find_pda(nft_mint.key, nft_account.key);
             assert_keys_equal(&owner_token_record_key, owner_token_record.key)?;
 
-            let destination_token_record = try_get_account_info(ctx.accounts.remaining, index + 10)?;
+            let destination_token_record =
+                try_get_account_info(ctx.accounts.remaining, index + 10)?;
             let (destination_token_record_key, _) =
                 TokenRecord::find_pda(nft_mint.key, destination_ata.key);
             assert_keys_equal(&destination_token_record_key, destination_token_record.key)?;
@@ -152,7 +153,7 @@ impl Condition for NftPayment {
         let spl_ata_program = try_get_account_info(ctx.accounts.remaining, index + 5)?;
         let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 6)?;
         let token_metadata_program = try_get_account_info(ctx.accounts.remaining, index + 7)?;
-        
+
         let spl_token_info = spl_token_program.to_account_info();
         let token_metadata_info = spl_token_program.to_account_info();
 

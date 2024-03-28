@@ -1,6 +1,4 @@
-import {
-  getSplSystemProgramId,
-} from '@metaplex-foundation/mpl-toolbox';
+import { getSplSystemProgramId } from '@metaplex-foundation/mpl-toolbox';
 import { PublicKey, Signer } from '@metaplex-foundation/umi';
 import { tuple, u64 } from '@metaplex-foundation/umi/serializers';
 import { getMplCoreProgramId } from '@metaplex-foundation/mpl-core';
@@ -44,9 +42,7 @@ export const freezeSolPaymentGuardManifest: GuardManifest<
 
     return {
       data: new Uint8Array(),
-      remainingAccounts: [
-        { publicKey: freezeEscrow, isWritable: true },
-      ],
+      remainingAccounts: [{ publicKey: freezeEscrow, isWritable: true }],
     };
   },
   routeParser: (context, routeContext, args) => {
@@ -70,8 +66,7 @@ export const freezeSolPaymentGuardManifest: GuardManifest<
 export type FreezeSolPaymentMintArgs = Omit<
   FreezeSolPaymentArgs,
   'lamports'
-> & {
-};
+> & {};
 
 /**
  * The settings for the freezeSolPayment guard that should be provided
