@@ -1,7 +1,6 @@
 import {
   generateSigner,
   none,
-  percentAmount,
   publicKey,
   some,
   transactionBuilder,
@@ -11,8 +10,8 @@ import {
   AccountVersion,
   CandyMachine,
   createCandyMachineV2,
-  Creator,
   fetchCandyMachine,
+  MintType,
 } from '../src';
 import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
 
@@ -23,18 +22,14 @@ test('it can create a candy machine using config line settings', async (t) => {
 
   // When we create a new candy machine with config line settings.
   const candyMachine = generateSigner(umi);
-  const creator = generateSigner(umi);
   await transactionBuilder()
     .add(
       await createCandyMachineV2(umi, {
         candyMachine,
+        mintType: MintType.Core,
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
-        sellerFeeBasisPoints: percentAmount(1.23),
-        creators: [
-          { address: creator.publicKey, verified: false, percentageShare: 100 },
-        ],
         configLineSettings: some({
           prefixName: 'My NFT #',
           nameLength: 8,
@@ -58,19 +53,11 @@ test('it can create a candy machine using config line settings', async (t) => {
     collectionMint: publicKey(collection),
     version: AccountVersion.V2,
     itemsRedeemed: 0n,
+    mintType: MintType.Core,
     data: {
       itemsAvailable: 100n,
-      symbol: '',
-      sellerFeeBasisPoints: percentAmount(1.23),
       maxEditionSupply: 0n,
       isMutable: true,
-      creators: [
-        {
-          address: publicKey(creator),
-          verified: false,
-          percentageShare: 100,
-        },
-      ] as Creator[],
       configLineSettings: some({
         prefixName: 'My NFT #',
         nameLength: 8,
@@ -90,18 +77,14 @@ test('it can create a candy machine using hidden settings', async (t) => {
 
   // When we create a new candy machine with hidden settings.
   const candyMachine = generateSigner(umi);
-  const creator = generateSigner(umi);
   await transactionBuilder()
     .add(
       await createCandyMachineV2(umi, {
         candyMachine,
+        mintType: MintType.CoreEdition,
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
-        sellerFeeBasisPoints: percentAmount(1.23),
-        creators: [
-          { address: creator.publicKey, verified: false, percentageShare: 100 },
-        ],
         hiddenSettings: some({
           name: 'My NFT #$ID+1$',
           uri: 'https://example.com/$ID+1$.json',
@@ -122,20 +105,12 @@ test('it can create a candy machine using hidden settings', async (t) => {
     mintAuthority: publicKey(umi.identity),
     collectionMint: publicKey(collection),
     version: AccountVersion.V2,
+    mintType: MintType.CoreEdition,
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
-      symbol: '',
-      sellerFeeBasisPoints: percentAmount(1.23),
       maxEditionSupply: 0n,
       isMutable: true,
-      creators: [
-        {
-          address: publicKey(creator),
-          verified: false,
-          percentageShare: 100,
-        },
-      ] as Creator[],
       configLineSettings: none(),
       hiddenSettings: some({
         name: 'My NFT #$ID+1$',
@@ -157,6 +132,7 @@ test('it cannot create a candy machine without hidden or config line settings', 
     .add(
       await createCandyMachineV2(umi, {
         ...defaultCandyMachineData(umi),
+        mintType: MintType.Core,
         collection,
         candyMachine,
         configLineSettings: none(),
@@ -180,6 +156,7 @@ test('it can create a candy machine of Programmable NFTs', async (t) => {
     .add(
       await createCandyMachineV2(umi, {
         ...defaultCandyMachineData(umi),
+        mintType: MintType.Core,
         candyMachine,
         collection,
       })
@@ -208,6 +185,7 @@ test("it can create a candy machine that's bigger than 10Kb", async (t) => {
     .add(
       await createCandyMachineV2(umi, {
         ...defaultCandyMachineData(umi),
+        mintType: MintType.Core,
         candyMachine,
         itemsAvailable: 20000,
         collection: collection.publicKey,

@@ -5,14 +5,14 @@ use mpl_core::{
     accounts::BaseCollectionV1,
     fetch_plugin,
     instructions::CreateV1CpiBuilder,
-    types::{PluginType, UpdateDelegate},
+    types::{Edition, Plugin, PluginAuthorityPair, PluginType, UpdateDelegate},
 };
 use solana_program::sysvar;
 
 use crate::{
     constants::{AUTHORITY_SEED, EMPTY_STR, HIDDEN_SECTION, NULL_STRING},
     utils::*,
-    CandyError, CandyMachine, ConfigLine,
+    CandyError, CandyMachine, ConfigLine, MintType,
 };
 
 /// Accounts to mint an NFT.
@@ -222,6 +222,17 @@ fn create_and_mint(
         .as_ref()
         .ok_or(CandyError::MissingInstructionsSysvar)?;
 
+    let plugins = if candy_machine.mint_type == MintType::CoreEdition {
+        vec![PluginAuthorityPair {
+            plugin: Plugin::Edition(Edition {
+                number: candy_machine.items_redeemed,
+            }),
+            authority: None,
+        }]
+    } else {
+        vec![]
+    };
+
     CreateV1CpiBuilder::new(&accounts.mpl_core_program)
         .payer(&accounts.payer)
         .asset(&accounts.asset)
@@ -229,7 +240,7 @@ fn create_and_mint(
         .name(config_line.name)
         .uri(config_line.uri)
         .collection(Some(&accounts.collection))
-        .plugins([].to_vec())
+        .plugins(plugins)
         .data_state(mpl_core::types::DataState::AccountState)
         .authority(Some(&accounts.authority_pda))
         .system_program(&accounts.system_program)

@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "name": "candy_machine_core",
   "instructions": [
     {
@@ -154,6 +154,12 @@
           "name": "data",
           "type": {
             "defined": "CandyMachineData"
+          }
+        },
+        {
+          "name": "mintType",
+          "type": {
+            "defined": "MintType"
           }
         }
       ]
@@ -567,15 +573,12 @@
             }
           },
           {
-            "name": "features",
+            "name": "mintType",
             "docs": [
-              "Features flags."
+              "Type of asset to mint"
             ],
             "type": {
-              "array": [
-                "u8",
-                6
-              ]
+              "defined": "MintType"
             }
           },
           {
@@ -636,20 +639,6 @@
             "type": "u64"
           },
           {
-            "name": "symbol",
-            "docs": [
-              "Symbol for the asset"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "sellerFeeBasisPoints",
-            "docs": [
-              "Secondary sales royalty basis points (0-10000)"
-            ],
-            "type": "u16"
-          },
-          {
             "name": "maxSupply",
             "docs": [
               "Max supply of each individual asset (default 0)"
@@ -662,17 +651,6 @@
               "Indicates if the asset is mutable or not (default yes)"
             ],
             "type": "bool"
-          },
-          {
-            "name": "creators",
-            "docs": [
-              "List of creators"
-            ],
-            "type": {
-              "vec": {
-                "defined": "Creator"
-              }
-            }
           },
           {
             "name": "configLineSettings",
@@ -695,32 +673,6 @@
                 "defined": "HiddenSettings"
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Creator",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "address",
-            "docs": [
-              "Pubkey address"
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "verified",
-            "docs": [
-              "Whether the creator is verified or not"
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "percentageShare",
-            "type": "u8"
           }
         ]
       }
@@ -829,6 +781,20 @@
               "URI to JSON metadata."
             ],
             "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Core"
+          },
+          {
+            "name": "CoreEdition"
           }
         ]
       }

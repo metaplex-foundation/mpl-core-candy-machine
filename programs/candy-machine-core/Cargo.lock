@@ -1234,8 +1234,6 @@ dependencies = [
 [[package]]
 name = "mpl-core"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a12ab13d9c75156048c3e6d57717ec3ece59fdcae195124bf1cec82aef5295fa"
 dependencies = [
  "base64 0.22.0",
  "borsh 0.10.3",
@@ -1247,7 +1245,7 @@ dependencies = [
 
 [[package]]
 name = "mpl-core-candy-machine-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anchor-lang",
  "arrayref",

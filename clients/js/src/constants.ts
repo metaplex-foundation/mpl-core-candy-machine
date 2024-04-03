@@ -7,19 +7,16 @@ export const CONFIG_LINE_SIZE = 4 + MAX_NAME_LENGTH + 4 + MAX_URI_LENGTH;
 
 export const CANDY_MACHINE_HIDDEN_SECTION =
   8 + // discriminator
-  8 + // features
+  1 + // version
+  1 + // mint type
+  6 + // alignment
   32 + // authority
   32 + // mint authority
   32 + // collection mint
   8 + // items redeemed
   8 + // items available (config data)
-  4 +
-  MAX_SYMBOL_LENGTH + // u32 + max symbol length
-  2 + // seller fee basis points
   8 + // max supply
   1 + // is mutable
-  4 +
-  MAX_CREATOR_LIMIT * MAX_CREATOR_LEN + // u32 + creators vec
   1 + // option (config lines settings)
   4 +
   MAX_NAME_LENGTH + // u32 + max name length

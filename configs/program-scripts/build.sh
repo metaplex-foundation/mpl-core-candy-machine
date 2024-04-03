@@ -3,8 +3,9 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OUTPUT="./programs/.bin"
 # saves external programs binaries to the output directory
-source ${SCRIPT_DIR}/dump.sh ${OUTPUT}
 
+# source ${SCRIPT_DIR}/dump.sh ${OUTPUT}
+cp ../mpl-core/programs/.bin/mpl_core_program.so ./programs/.bin/mpl_core_program.so
 # go to parent folder
 cd $( dirname $( dirname ${SCRIPT_DIR} ) )
 

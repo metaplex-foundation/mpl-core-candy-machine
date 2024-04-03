@@ -7,7 +7,6 @@
  */
 
 import {
-  Amount,
   Context,
   Option,
   OptionOrNullable,
@@ -15,7 +14,6 @@ import {
   PublicKey,
   Signer,
   TransactionBuilder,
-  mapAmountSerializer,
   none,
   publicKey,
   transactionBuilder,
@@ -26,9 +24,7 @@ import {
   bool,
   mapSerializer,
   option,
-  string,
   struct,
-  u16,
   u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
@@ -42,13 +38,13 @@ import {
 import {
   ConfigLineSettings,
   ConfigLineSettingsArgs,
-  Creator,
-  CreatorArgs,
   HiddenSettings,
   HiddenSettingsArgs,
+  MintType,
+  MintTypeArgs,
   getConfigLineSettingsSerializer,
-  getCreatorSerializer,
   getHiddenSettingsSerializer,
+  getMintTypeSerializer,
 } from '../types';
 
 // Accounts.
@@ -107,39 +103,29 @@ export type InitializeCandyMachineV2InstructionData = {
   discriminator: Array<number>;
   /** Number of assets available */
   itemsAvailable: bigint;
-  /** Symbol for the asset */
-  symbol: string;
-  /** Secondary sales royalty basis points (0-10000) */
-  sellerFeeBasisPoints: Amount<'%', 2>;
   /** Max supply of each individual asset (default 0) */
   maxEditionSupply: bigint;
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable: boolean;
-  /** List of creators */
-  creators: Array<Creator>;
   /** Config line settings */
   configLineSettings: Option<ConfigLineSettings>;
   /** Hidden setttings */
   hiddenSettings: Option<HiddenSettings>;
+  mintType: MintType;
 };
 
 export type InitializeCandyMachineV2InstructionDataArgs = {
   /** Number of assets available */
   itemsAvailable: number | bigint;
-  /** Symbol for the asset */
-  symbol?: string;
-  /** Secondary sales royalty basis points (0-10000) */
-  sellerFeeBasisPoints: Amount<'%', 2>;
   /** Max supply of each individual asset (default 0) */
   maxEditionSupply?: number | bigint;
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable?: boolean;
-  /** List of creators */
-  creators: Array<CreatorArgs>;
   /** Config line settings */
   configLineSettings?: OptionOrNullable<ConfigLineSettingsArgs>;
   /** Hidden setttings */
   hiddenSettings?: OptionOrNullable<HiddenSettingsArgs>;
+  mintType: MintTypeArgs;
 };
 
 export function getInitializeCandyMachineV2InstructionDataSerializer(): Serializer<
@@ -155,20 +141,17 @@ export function getInitializeCandyMachineV2InstructionDataSerializer(): Serializ
       [
         ['discriminator', array(u8(), { size: 8 })],
         ['itemsAvailable', u64()],
-        ['symbol', string()],
-        ['sellerFeeBasisPoints', mapAmountSerializer(u16(), '%', 2)],
         ['maxEditionSupply', u64()],
         ['isMutable', bool()],
-        ['creators', array(getCreatorSerializer())],
         ['configLineSettings', option(getConfigLineSettingsSerializer())],
         ['hiddenSettings', option(getHiddenSettingsSerializer())],
+        ['mintType', getMintTypeSerializer()],
       ],
       { description: 'InitializeCandyMachineV2InstructionData' }
     ),
     (value) => ({
       ...value,
       discriminator: [67, 153, 175, 39, 218, 16, 38, 32],
-      symbol: value.symbol ?? '',
       maxEditionSupply: value.maxEditionSupply ?? 0,
       isMutable: value.isMutable ?? true,
       configLineSettings: value.configLineSettings ?? none(),

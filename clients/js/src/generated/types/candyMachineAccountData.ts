@@ -21,8 +21,11 @@ import {
   AccountVersionArgs,
   CandyMachineData,
   CandyMachineDataArgs,
+  MintType,
+  MintTypeArgs,
   getAccountVersionSerializer,
   getCandyMachineDataSerializer,
+  getMintTypeSerializer,
 } from '.';
 
 /** Candy machine state and config data. */
@@ -30,8 +33,8 @@ export type CandyMachineAccountData = {
   discriminator: Array<number>;
   /** Version of the account. */
   version: AccountVersion;
-  /** Features flags. */
-  features: Array<number>;
+  /** Type of asset to mint */
+  mintType: MintType;
   /** Authority address. */
   authority: PublicKey;
   /** Authority address allowed to mint from the candy machine. */
@@ -47,8 +50,8 @@ export type CandyMachineAccountData = {
 export type CandyMachineAccountDataArgs = {
   /** Version of the account. */
   version: AccountVersionArgs;
-  /** Features flags. */
-  features: Array<number>;
+  /** Type of asset to mint */
+  mintType: MintTypeArgs;
   /** Authority address. */
   authority: PublicKey;
   /** Authority address allowed to mint from the candy machine. */
@@ -74,7 +77,7 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
       [
         ['discriminator', array(u8(), { size: 8 })],
         ['version', getAccountVersionSerializer()],
-        ['features', array(u8(), { size: 6 })],
+        ['mintType', getMintTypeSerializer()],
         ['authority', publicKeySerializer()],
         ['mintAuthority', publicKeySerializer()],
         ['collectionMint', publicKeySerializer()],

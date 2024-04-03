@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {
-  TokenStandard,
   createNft as baseCreateNft,
   createProgrammableNft as baseCreateProgrammableNft,
   findMasterEditionPda,
@@ -43,6 +42,7 @@ import {
   CreateCandyGuardInstructionDataArgs,
   DefaultGuardSetArgs,
   GuardSetArgs,
+  MintType,
   addConfigLines,
   createCandyGuard as baseCreateCandyGuard,
   createCandyMachineV2 as baseCreateCandyMachineV2,
@@ -218,6 +218,7 @@ export const createV2 = async <DA extends GuardSetArgs = DefaultGuardSetArgs>(
     itemsAvailable: input.itemsAvailable ?? input.configLines?.length ?? 100,
     candyMachine,
     collection,
+    mintType: input.mintType || MintType.Core
   });
 
   if (input.configLines !== undefined) {
@@ -252,17 +253,8 @@ export const defaultAssetData = () => ({
 export const defaultCandyMachineData = (
   context: Pick<Context, 'identity'>
 ) => ({
-  tokenStandard: TokenStandard.NonFungible,
   collectionUpdateAuthority: context.identity,
   itemsAvailable: 100,
-  sellerFeeBasisPoints: percentAmount(10, 2),
-  creators: [
-    {
-      address: context.identity.publicKey,
-      verified: true,
-      percentageShare: 100,
-    },
-  ],
   configLineSettings: some({
     prefixName: '',
     nameLength: 32,
