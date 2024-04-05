@@ -6,7 +6,7 @@ url = "https://anchor.projectserum.com"
 
 [provider]
 cluster = "devnet"
-wallet = "~/.solana/CMADP5F3EPYDZC2KBBBC1GmGi1arFEyfozpA8B3rwLWW.json"
+wallet = "~/wallet.json"
 
 [workspace]
 members = [

@@ -31,6 +31,8 @@ export type CandyMachineData = {
   maxEditionSupply: bigint;
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable: boolean;
+  /** Edition number to start minting at (none is 0) */
+  editionStartingNumber: Option<bigint>;
   /** Config line settings */
   configLineSettings: Option<ConfigLineSettings>;
   /** Hidden setttings */
@@ -44,6 +46,8 @@ export type CandyMachineDataArgs = {
   maxEditionSupply: number | bigint;
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable: boolean;
+  /** Edition number to start minting at (none is 0) */
+  editionStartingNumber: OptionOrNullable<number | bigint>;
   /** Config line settings */
   configLineSettings: OptionOrNullable<ConfigLineSettingsArgs>;
   /** Hidden setttings */
@@ -59,6 +63,7 @@ export function getCandyMachineDataSerializer(): Serializer<
       ['itemsAvailable', u64()],
       ['maxEditionSupply', u64()],
       ['isMutable', bool()],
+      ['editionStartingNumber', option(u64())],
       ['configLineSettings', option(getConfigLineSettingsSerializer())],
       ['hiddenSettings', option(getHiddenSettingsSerializer())],
     ],

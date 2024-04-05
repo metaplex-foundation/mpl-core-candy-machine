@@ -7,47 +7,36 @@ use mpl_core_candy_machine_core::{
 use crate::state::{CandyGuard, SEED};
 
 pub fn wrap(ctx: Context<Wrap>) -> Result<()> {
-    msg!("candy_guard");
-
     let candy_guard = &ctx.accounts.candy_guard;
     // PDA signer for the transaction
-    // let seeds = [SEED, &candy_guard.base.to_bytes(), &[candy_guard.bump]];
-    // let signer = [&seeds[..]];
+    let seeds = [SEED, &candy_guard.base.to_bytes(), &[candy_guard.bump]];
+    let signer = [&seeds[..]];
 
-    msg!("candy_machine_program");
     let candy_machine_program = ctx.accounts.candy_machine_program.to_account_info();
-    msg!("update_ix");
     let update_ix = SetMintAuthority {
         candy_machine: ctx.accounts.candy_machine.to_account_info(),
         authority: ctx.accounts.candy_machine_authority.to_account_info(),
         mint_authority: candy_guard.to_account_info(),
     };
-    msg!("cpi_ctx" );
-    // let cpi_ctx = CpiContext::new_with_signer(candy_machine_program, update_ix, &signer);
+    let cpi_ctx = CpiContext::new_with_signer(candy_machine_program, update_ix, &signer);
     // candy machine set_mint_authority CPI
-    // set_mint_authority(cpi_ctx)?;
+    set_mint_authority(cpi_ctx)?;
 
     Ok(())
 }
 
 #[derive(Accounts)]
 pub struct Wrap<'info> {
-    // #[account(has_one = authority)]
-    // pub candy_guard: Account<'info, CandyGuard>,
-    /// CHECK: test
-    pub candy_guard: UncheckedAccount<'info>,
+    #[account(has_one = authority)]
+    pub candy_guard: Account<'info, CandyGuard>,
     // candy guard authority
     pub authority: Signer<'info>,
-    // #[account(
-    //     mut,
-    //     constraint = candy_machine.authority == candy_machine_authority.key(),
-    //     owner = mpl_core_candy_machine_core::id()
-    // )]
-    // pub candy_machine: Account<'info, CandyMachine>,
-
-    /// CHECK: test
-    #[account(mut, owner = mpl_core_candy_machine_core::id())]
-    pub candy_machine: UncheckedAccount<'info>,
+    #[account(
+        mut,
+        constraint = candy_machine.authority == candy_machine_authority.key(),
+        owner = mpl_core_candy_machine_core::id()
+    )]
+    pub candy_machine: Account<'info, CandyMachine>,
     /// CHECK: account constraints checked in account trait
     #[account(address = mpl_core_candy_machine_core::id())]
     pub candy_machine_program: AccountInfo<'info>,

@@ -653,6 +653,15 @@
             "type": "bool"
           },
           {
+            "name": "editionStartingNumber",
+            "docs": [
+              "Edition number to start minting at (none is 0)"
+            ],
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
             "name": "configLineSettings",
             "docs": [
               "Config line settings"

@@ -29,10 +29,6 @@ pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData, mint_ty
     
     let mut account_data = candy_machine_account.data.borrow_mut();
     account_data[0..struct_data.len()].copy_from_slice(&struct_data);
-    msg!("struct length: {:?} /  {:?}", struct_data.len(), account_data.len());
-    msg!("candy_machine_account.data: {:?}", account_data);
-    msg!("struct_data: {:?}", struct_data);
-    msg!("candy_machine: {:?}", candy_machine);
 
     if candy_machine.data.hidden_settings.is_none() {
         // set the initial number of config lines

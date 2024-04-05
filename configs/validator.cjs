@@ -24,7 +24,7 @@ module.exports = {
       {
         label: "Candy Guard Asset",
         programId: "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
-        deployPath: getProgram("mpl_candy_guard_asset.so"),
+        deployPath: getProgram("mpl_core_candy_guard.so"),
       },
       {
         label: "Token Metadata",

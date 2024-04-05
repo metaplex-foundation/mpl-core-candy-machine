@@ -433,11 +433,11 @@ kinobi.update(new k.FlattenInstructionArgsStructVisitor());
 
 // Set struct default values.
 const defaultInitialCandyMachineData = {
-  symbol: k.vScalar(""),
   maxEditionSupply: k.vScalar(0),
   isMutable: k.vScalar(true),
   configLineSettings: k.vNone(),
   hiddenSettings: k.vNone(),
+  editionStartingNumber: k.vNone()
 };
 kinobi.update(
   new k.SetStructDefaultValuesVisitor({

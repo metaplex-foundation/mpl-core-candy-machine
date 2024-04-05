@@ -225,7 +225,7 @@ fn create_and_mint(
     let plugins = if candy_machine.mint_type == MintType::CoreEdition {
         vec![PluginAuthorityPair {
             plugin: Plugin::Edition(Edition {
-                number: candy_machine.items_redeemed,
+                number: candy_machine.items_redeemed + candy_machine.data.edition_starting_number.unwrap_or(0),
             }),
             authority: None,
         }]
