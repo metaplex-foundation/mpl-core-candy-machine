@@ -7,7 +7,11 @@ use crate::{
     AccountVersion, ApproveAssetDelegateHelperAccounts, MintType,
 };
 
-pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData, mint_type: MintType) -> Result<()> {
+pub fn initialize_v2(
+    ctx: Context<InitializeV2>,
+    data: CandyMachineData,
+    mint_type: MintType,
+) -> Result<()> {
     let candy_machine_account = &mut ctx.accounts.candy_machine;
 
     let candy_machine = CandyMachine {
@@ -20,13 +24,12 @@ pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData, mint_ty
         items_redeemed: 0,
     };
 
-    
     // validates the config lines settings
     candy_machine.data.validate()?;
-    
+
     let mut struct_data = CandyMachine::discriminator().try_to_vec().unwrap();
     struct_data.append(&mut candy_machine.try_to_vec().unwrap());
-    
+
     let mut account_data = candy_machine_account.data.borrow_mut();
     account_data[0..struct_data.len()].copy_from_slice(&struct_data);
 

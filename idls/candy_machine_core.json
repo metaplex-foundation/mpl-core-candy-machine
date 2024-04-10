@@ -658,7 +658,7 @@
               "Edition number to start minting at (none is 0)"
             ],
             "type": {
-              "option": "u64"
+              "option": "u32"
             }
           },
           {

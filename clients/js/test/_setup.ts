@@ -291,7 +291,7 @@ export const assertSuccessfulMint = async (
     owner: PublicKey | Signer;
     name?: string | RegExp;
     uri?: string | RegExp;
-    edition?: number | bigint;
+    edition?: number;
   }
 ) => {
   const mint = publicKey(input.mint);
@@ -308,7 +308,7 @@ export const assertSuccessfulMint = async (
   });
 
   if (input.edition !== undefined) {
-    t.is(nft.edition?.number, BigInt(input.edition))
+    t.is(nft.edition?.number, input.edition)
   }
 
   // Name.

@@ -244,3 +244,41 @@ test('it can mint edition from a candy machine using hidden settings', async (t)
     });
   }
 });
+
+test('it overflows when trying to mint editions out of bounds', async (t) => {
+  // Given a candy machine with hidden settings.
+  const umi = await createUmi();
+  const collection = (await createCollection(umi)).publicKey;
+  const { publicKey: candyMachine } = await createV2(umi, {
+    collection,
+    itemsAvailable: 100,
+    configLineSettings: none(),
+    mintType: MintType.CoreEdition,
+    hiddenSettings: {
+      name: 'Degen #$ID+1$',
+      uri: 'https://example.com/degen/$ID+1$',
+      hash: new Uint8Array(32),
+    },
+    guards: {},
+    editionStartingNumber: some(2**32 - 1)
+  });
+
+  // When we try to mint out of bounds.
+  const mint = generateSigner(umi);
+  const minter = generateSigner(umi);
+  const res = transactionBuilder()
+    .add(setComputeUnitLimit(umi, { units: 600_000 }))
+    .add(
+      mintV2(umi, {
+        candyMachine,
+        minter,
+        asset: mint,
+        collection,
+      })
+    )
+    .sendAndConfirm(umi);
+
+  // Then the mint failed.
+  // TODO propogate candy core errors through the guard correctly
+  await t.throwsAsync(res, {name: 'IncorrectOwner'})
+})

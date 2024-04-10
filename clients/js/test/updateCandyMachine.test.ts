@@ -64,7 +64,7 @@ test('it can update the data of a candy machine', async (t) => {
         isSequential: false,
       }),
       hiddenSettings: none(),
-      editionStartingNumber: some(BigInt(1))
+      editionStartingNumber: some(1)
     },
   });
 });

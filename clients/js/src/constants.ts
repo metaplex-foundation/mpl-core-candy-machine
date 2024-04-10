@@ -17,7 +17,7 @@ export const CANDY_MACHINE_HIDDEN_SECTION =
   8 + // max supply
   1 + // is mutable
   1 + // option (edition start)
-  8 + // edition start
+  4 + // edition start
   1 + // option (config lines settings)
   4 +
   MAX_NAME_LENGTH + // u32 + max name length

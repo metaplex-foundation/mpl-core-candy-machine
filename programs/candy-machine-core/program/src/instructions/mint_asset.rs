@@ -223,9 +223,16 @@ fn create_and_mint(
         .ok_or(CandyError::MissingInstructionsSysvar)?;
 
     let plugins = if candy_machine.mint_type == MintType::CoreEdition {
+        let num: u32 = candy_machine
+            .items_redeemed
+            .try_into()
+            .map_err(|_| CandyError::NumericalOverflowError)?;
+
         vec![PluginAuthorityPair {
             plugin: Plugin::Edition(Edition {
-                number: candy_machine.items_redeemed + candy_machine.data.edition_starting_number.unwrap_or(0),
+                number: num
+                    .checked_add(candy_machine.data.edition_starting_number.unwrap_or(0))
+                    .ok_or(CandyError::NumericalOverflowError)?,
             }),
             authority: None,
         }]

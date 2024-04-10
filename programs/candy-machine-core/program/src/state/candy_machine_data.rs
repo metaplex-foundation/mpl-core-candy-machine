@@ -13,7 +13,7 @@ pub struct CandyMachineData {
     /// Indicates if the asset is mutable or not (default yes)
     pub is_mutable: bool,
     /// Edition number to start minting at (none is 0)
-    pub edition_starting_number: Option<u64>,
+    pub edition_starting_number: Option<u32>,
     /// Config line settings
     pub config_line_settings: Option<ConfigLineSettings>,
     /// Hidden setttings

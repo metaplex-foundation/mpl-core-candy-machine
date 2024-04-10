@@ -25,6 +25,7 @@ import {
   mapSerializer,
   option,
   struct,
+  u32,
   u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
@@ -108,7 +109,7 @@ export type InitializeCandyMachineV2InstructionData = {
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable: boolean;
   /** Edition number to start minting at (none is 0) */
-  editionStartingNumber: Option<bigint>;
+  editionStartingNumber: Option<number>;
   /** Config line settings */
   configLineSettings: Option<ConfigLineSettings>;
   /** Hidden setttings */
@@ -124,7 +125,7 @@ export type InitializeCandyMachineV2InstructionDataArgs = {
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable?: boolean;
   /** Edition number to start minting at (none is 0) */
-  editionStartingNumber?: OptionOrNullable<number | bigint>;
+  editionStartingNumber?: OptionOrNullable<number>;
   /** Config line settings */
   configLineSettings?: OptionOrNullable<ConfigLineSettingsArgs>;
   /** Hidden setttings */
@@ -147,7 +148,7 @@ export function getInitializeCandyMachineV2InstructionDataSerializer(): Serializ
         ['itemsAvailable', u64()],
         ['maxEditionSupply', u64()],
         ['isMutable', bool()],
-        ['editionStartingNumber', option(u64())],
+        ['editionStartingNumber', option(u32())],
         ['configLineSettings', option(getConfigLineSettingsSerializer())],
         ['hiddenSettings', option(getHiddenSettingsSerializer())],
         ['mintType', getMintTypeSerializer()],
