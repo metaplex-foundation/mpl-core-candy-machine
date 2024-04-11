@@ -14,7 +14,7 @@ import {
   CandyMachine,
   fetchCandyMachine,
   mintAssetFromCandyMachine,
-  setCollectionV2,
+  setCollection,
 } from '../src';
 import { createCollection, createUmi, createV2 } from './_setup';
 
@@ -36,7 +36,7 @@ test('it can update the collection of a candy machine v2', async (t) => {
     updateAuthority: collectionUpdateAuthorityB.publicKey,
   });
 
-  await setCollectionV2(umi, {
+  await setCollection(umi, {
     candyMachine: candyMachine.publicKey,
     collection: collectionA.publicKey,
     collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,
@@ -89,7 +89,7 @@ test('it cannot update the collection of a candy machine when mint is in progres
   const collectionB = await createCollection(umi, {
     updateAuthority: collectionUpdateAuthorityB.publicKey,
   });
-  const promise = setCollectionV2(umi, {
+  const promise = setCollection(umi, {
     candyMachine: candyMachine.publicKey,
     collection: collectionA.publicKey,
     collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,
@@ -142,7 +142,7 @@ test.only('it can set the same collection of a candy machine when mint is in pro
   }).sendAndConfirm(umi);
 
   // When we set the same collection.
-  await setCollectionV2(umi, {
+  await setCollection(umi, {
     candyMachine: candyMachine.publicKey,
     collection: collectionA.publicKey,
     collectionUpdateAuthority: collectionUpdateAuthorityA.publicKey,

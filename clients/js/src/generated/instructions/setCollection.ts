@@ -31,7 +31,7 @@ import {
 } from '../shared';
 
 // Accounts.
-export type SetCollectionV2InstructionAccounts = {
+export type SetCollectionInstructionAccounts = {
   /** Candy Machine account. */
   candyMachine: PublicKey | Pda;
   /** Candy Machine authority. */
@@ -81,34 +81,37 @@ export type SetCollectionV2InstructionAccounts = {
 };
 
 // Data.
-export type SetCollectionV2InstructionData = { discriminator: Array<number> };
+export type SetCollectionInstructionData = { discriminator: Array<number> };
 
-export type SetCollectionV2InstructionDataArgs = {};
+export type SetCollectionInstructionDataArgs = {};
 
-export function getSetCollectionV2InstructionDataSerializer(): Serializer<
-  SetCollectionV2InstructionDataArgs,
-  SetCollectionV2InstructionData
+export function getSetCollectionInstructionDataSerializer(): Serializer<
+  SetCollectionInstructionDataArgs,
+  SetCollectionInstructionData
 > {
   return mapSerializer<
-    SetCollectionV2InstructionDataArgs,
+    SetCollectionInstructionDataArgs,
     any,
-    SetCollectionV2InstructionData
+    SetCollectionInstructionData
   >(
-    struct<SetCollectionV2InstructionData>(
+    struct<SetCollectionInstructionData>(
       [['discriminator', array(u8(), { size: 8 })]],
-      { description: 'SetCollectionV2InstructionData' }
+      { description: 'SetCollectionInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: [229, 35, 61, 91, 15, 14, 99, 160] })
+    (value) => ({
+      ...value,
+      discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
+    })
   ) as Serializer<
-    SetCollectionV2InstructionDataArgs,
-    SetCollectionV2InstructionData
+    SetCollectionInstructionDataArgs,
+    SetCollectionInstructionData
   >;
 }
 
 // Instruction.
-export function setCollectionV2(
+export function setCollection(
   context: Pick<Context, 'eddsa' | 'identity' | 'payer' | 'programs'>,
-  input: SetCollectionV2InstructionAccounts
+  input: SetCollectionInstructionAccounts
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
@@ -209,7 +212,7 @@ export function setCollectionV2(
   );
 
   // Data.
-  const data = getSetCollectionV2InstructionDataSerializer().serialize({});
+  const data = getSetCollectionInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

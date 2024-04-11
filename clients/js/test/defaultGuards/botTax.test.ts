@@ -6,7 +6,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { mintV2 } from '../../src';
+import { mintV1 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
@@ -32,7 +32,7 @@ test('it does nothing if all conditions are valid', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -61,7 +61,7 @@ test('it optionally charges a bot tax if the mint instruction is not the last on
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,

@@ -29,12 +29,7 @@ import {
   CandyMachineAccountData,
   getCandyMachineAccountDataSerializer,
 } from '../../hooked';
-import {
-  AccountVersionArgs,
-  CandyMachineDataArgs,
-  getAccountVersionSerializer,
-  getCandyMachineDataSerializer,
-} from '../types';
+import { CandyMachineDataArgs, getCandyMachineDataSerializer } from '../types';
 
 /** Candy machine state and config data. */
 export type CandyMachine = Account<CandyMachineAccountData>;
@@ -107,7 +102,6 @@ export function getCandyMachineGpaBuilder(
   return gpaBuilder(context, programId)
     .registerFields<{
       discriminator: Array<number>;
-      version: AccountVersionArgs;
       authority: PublicKey;
       mintAuthority: PublicKey;
       collectionMint: PublicKey;
@@ -115,12 +109,11 @@ export function getCandyMachineGpaBuilder(
       data: CandyMachineDataArgs;
     }>({
       discriminator: [0, array(u8(), { size: 8 })],
-      version: [8, getAccountVersionSerializer()],
-      authority: [9, publicKeySerializer()],
-      mintAuthority: [41, publicKeySerializer()],
-      collectionMint: [73, publicKeySerializer()],
-      itemsRedeemed: [105, u64()],
-      data: [113, getCandyMachineDataSerializer()],
+      authority: [8, publicKeySerializer()],
+      mintAuthority: [40, publicKeySerializer()],
+      collectionMint: [72, publicKeySerializer()],
+      itemsRedeemed: [104, u64()],
+      data: [112, getCandyMachineDataSerializer()],
     })
     .deserializeUsing<CandyMachine>((account) =>
       deserializeCandyMachine(account)

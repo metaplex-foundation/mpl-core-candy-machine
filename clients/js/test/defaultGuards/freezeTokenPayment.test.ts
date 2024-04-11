@@ -25,7 +25,7 @@ import {
   findCandyGuardPda,
   findFreezeEscrowPda,
   FreezeEscrow,
-  mintV2,
+  mintV1,
   route,
 } from '../../src';
 import {
@@ -89,7 +89,7 @@ test('it transfers tokens to an escrow account and freezes the NFT', async (t) =
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -180,7 +180,7 @@ test('it allows minting even when the payer is different from the minter', async
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -496,7 +496,7 @@ test('it can have multiple freeze escrow and reuse the same ones', async (t) => 
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: nftD,
         collection,
@@ -669,7 +669,7 @@ test('it fails to mint if the freeze escrow was not initialized', async (t) => {
       })
     )
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -725,7 +725,7 @@ test('it fails to mint if the payer does not have enough tokens', async (t) => {
       })
     )
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -780,7 +780,7 @@ test('it charges a bot tax if something goes wrong', async (t) => {
       })
     )
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -834,7 +834,7 @@ test('it transfers tokens to an escrow account and locks the Programmable NFT', 
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 800_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -919,7 +919,7 @@ test('it can thaw a Programmable NFT once all NFTs are minted', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 800_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -1054,7 +1054,7 @@ const mintNft = async (
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,

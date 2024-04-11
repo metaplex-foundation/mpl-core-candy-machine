@@ -8,16 +8,15 @@ import {
 } from '@metaplex-foundation/umi';
 import test from 'ava';
 import {
-  AccountVersion,
   CandyMachine,
   fetchCandyMachine,
-  initializeCandyMachineV2,
+  initializeCandyMachine,
 } from '../src';
 import { createCollection, createUmi } from './_setup';
 
 /**
- * Note that most of the tests for the "initializeCandyMachineV2" instructions are
- * part of the "createCandyMachineV2" tests as they are more convenient to test.
+ * Note that most of the tests for the "initializeCandyMachine" instructions are
+ * part of the "createCandyMachine" tests as they are more convenient to test.
  */
 
 test('it can initialize a new candy machine account', async (t) => {
@@ -40,7 +39,7 @@ test('it can initialize a new candy machine account', async (t) => {
   // When we initialize a candy machine at this address.
   await transactionBuilder()
     .add(
-      initializeCandyMachineV2(umi, {
+      initializeCandyMachine(umi, {
         candyMachine: candyMachine.publicKey,
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
@@ -66,7 +65,6 @@ test('it can initialize a new candy machine account', async (t) => {
     authority: publicKey(umi.identity),
     mintAuthority: publicKey(umi.identity),
     collectionMint: publicKey(collection),
-    version: AccountVersion.V2,
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,

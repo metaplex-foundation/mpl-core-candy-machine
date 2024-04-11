@@ -6,7 +6,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { mintV2 } from '../../src';
+import { mintV1 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
@@ -35,7 +35,7 @@ test('it allows minting until a threshold of NFTs have been redeemed', async (t)
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -67,7 +67,7 @@ test('it forbids minting once the redeemed threshold has been reached', async (t
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintA,
         collection,
@@ -81,7 +81,7 @@ test('it forbids minting once the redeemed threshold has been reached', async (t
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintB,
         collection,
@@ -115,7 +115,7 @@ test('it charges a bot tax when trying to mint once the threshold has been reach
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintA,
         collection,
@@ -129,7 +129,7 @@ test('it charges a bot tax when trying to mint once the threshold has been reach
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintB,
         collection,

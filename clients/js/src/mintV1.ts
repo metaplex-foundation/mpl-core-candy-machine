@@ -8,9 +8,9 @@ import {
 } from '@metaplex-foundation/umi';
 import { DefaultGuardSetMintArgs } from './defaultGuards';
 import {
-  MintV2InstructionAccounts,
-  mintV2 as baseMintV2,
-} from './generated/instructions/mintV2';
+  MintV1InstructionAccounts,
+  mintV1 as baseMintV1,
+} from './generated/instructions/mintV1';
 import {
   CandyGuardProgram,
   GuardRepository,
@@ -21,7 +21,7 @@ import {
 } from './guards';
 import { findCandyGuardPda } from './hooked';
 
-export { MintV2InstructionAccounts };
+export { MintV1InstructionAccounts };
 
 export type MintV2InstructionData<MA extends GuardSetMintArgs> = {
   discriminator: Array<number>;
@@ -34,11 +34,11 @@ export type MintV2InstructionDataArgs<MA extends GuardSetMintArgs> = {
   group?: OptionOrNullable<string>;
 };
 
-export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
-  context: Parameters<typeof baseMintV2>[0] & {
+export function mintV1<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
+  context: Parameters<typeof baseMintV1>[0] & {
     coreGuards: GuardRepository;
   },
-  input: MintV2InstructionAccounts &
+  input: MintV1InstructionAccounts &
     MintV2InstructionDataArgs<
       MA extends undefined ? DefaultGuardSetMintArgs : MA
     >
@@ -62,7 +62,7 @@ export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
     MA extends undefined ? DefaultGuardSetMintArgs : MA
   >(context, program, mintContext, mintArgs);
 
-  const ix = baseMintV2(context, {
+  const ix = baseMintV1(context, {
     ...rest,
     mintArgs: data,
     group,
@@ -71,14 +71,6 @@ export function mintV2<MA extends GuardSetMintArgs = DefaultGuardSetMintArgs>(
   const [keys, signers] = parseGuardRemainingAccounts(remainingAccounts);
   ix.instruction.keys.push(...keys);
   ix.signers.push(...signers);
-  // TODO fix size calculation
-  // ix.bytesCreatedOnChain =
-  //   METADATA_SIZE + MASTER_EDITION_SIZE + 2 * ACCOUNT_HEADER_SIZE;
-
-  // if (isSigner(input.asset)) {
-  //   ix.bytesCreatedOnChain +=
-  //     getMintSize() + getTokenSize() + 2 * ACCOUNT_HEADER_SIZE;
-  // }
 
   return transactionBuilder([ix]);
 }

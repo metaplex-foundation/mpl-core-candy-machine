@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 pub use initialize::*;
-pub use mint_v2::*;
+pub use mint_v1::*;
 use mpl_core_candy_machine_core::CandyMachine;
 pub use route::*;
 pub use set_authority::*;
@@ -12,7 +12,7 @@ pub use wrap::*;
 use crate::state::CandyGuard;
 
 pub mod initialize;
-pub mod mint_v2;
+pub mod mint_v1;
 pub mod route;
 pub mod set_authority;
 pub mod unwrap;

@@ -15,7 +15,7 @@ import {
   createUmi,
   createV2,
 } from '../_setup';
-import { mintV2 } from '../../src';
+import { mintV1 } from '../../src';
 
 test('it transfers SOL from the payer to the destination', async (t) => {
   // Given a loaded Candy Machine with a solPayment guard.
@@ -37,7 +37,7 @@ test('it transfers SOL from the payer to the destination', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -79,7 +79,7 @@ test('it fails if the payer does not have enough funds', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         payer,
@@ -117,7 +117,7 @@ test('it charges a bot tax if the payer does not have enough funds', async (t) =
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         payer,

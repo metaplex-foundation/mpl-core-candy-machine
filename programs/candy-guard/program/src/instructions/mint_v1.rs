@@ -12,8 +12,8 @@ use crate::{
 
 use super::MintAccounts;
 
-pub fn mint_v2<'info>(
-    ctx: Context<'_, '_, '_, 'info, MintV2<'info>>,
+pub fn mint_v1<'info>(
+    ctx: Context<'_, '_, '_, 'info, MintV1<'info>>,
     mint_args: Vec<u8>,
     label: Option<String>,
 ) -> Result<()> {
@@ -187,7 +187,7 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
 
 /// Mint an NFT.
 #[derive(Accounts)]
-pub struct MintV2<'info> {
+pub struct MintV1<'info> {
     /// Candy Guard account.
     #[account(seeds = [SEED, candy_guard.base.key().as_ref()], bump = candy_guard.bump)]
     candy_guard: Account<'info, CandyGuard>,

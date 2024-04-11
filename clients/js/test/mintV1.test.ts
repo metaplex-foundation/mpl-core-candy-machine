@@ -12,7 +12,7 @@ import {
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import test from 'ava';
 import { fetchAssetV1 } from '@metaplex-foundation/mpl-core';
-import { CandyMachine, fetchCandyMachine, mintV2 } from '../src';
+import { CandyMachine, fetchCandyMachine, mintV1 } from '../src';
 import {
   assertSuccessfulMint,
   createCollection,
@@ -40,7 +40,7 @@ test('it can mint from a candy guard with no guards', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         minter,
         asset: mint,
@@ -79,7 +79,7 @@ test('it can mint from a candy guard with guards', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         payer,
@@ -127,7 +127,7 @@ test('it can mint from a candy guard with guards to different owner', async (t) 
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         payer,
@@ -178,7 +178,7 @@ test('it can mint from a candy guard with groups', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -215,7 +215,7 @@ test('it cannot mint using the default guards if the candy guard has groups', as
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -248,7 +248,7 @@ test('it cannot mint from a group if the provided group label does not exist', a
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -283,7 +283,7 @@ test('it can mint using an explicit payer', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         minter,
         payer,
@@ -318,7 +318,7 @@ test('it cannot mint from an empty candy machine', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -348,7 +348,7 @@ test('it cannot mint from a candy machine that is not fully loaded', async (t) =
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -374,7 +374,7 @@ test('it cannot mint from a candy machine that has been fully minted', async (t)
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -387,7 +387,7 @@ test('it cannot mint from a candy machine that has been fully minted', async (t)
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: generateSigner(umi),
         collection,
@@ -421,7 +421,7 @@ test('it can mint from a candy machine using hidden settings', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         minter,
         asset: mint,
@@ -517,7 +517,7 @@ test('it can mint a programmable NFT', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         minter,
         asset: mint,
@@ -551,7 +551,7 @@ const drain = async (
     await transactionBuilder()
       .add(setComputeUnitLimit(umi, { units: 600_000 }))
       .add(
-        mintV2(umi, {
+        mintV1(umi, {
           candyMachine,
           minter,
           asset: mint,

@@ -42,7 +42,7 @@
       ]
     },
     {
-      "name": "mintV2",
+      "name": "mintV1",
       "docs": [
         "Mint an NFT from a candy machine wrapped in the candy guard."
       ],

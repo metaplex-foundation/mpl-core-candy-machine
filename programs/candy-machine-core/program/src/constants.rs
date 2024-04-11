@@ -23,7 +23,6 @@ pub const AUTHORITY_SEED: &str = "candy_machine";
 
 // Determine the start of the account hidden section.
 pub const HIDDEN_SECTION: usize = 8           // discriminator
-    + 1                                       // version
     + 32                                      // authority
     + 32                                      // mint authority
     + 32                                      // collection mint

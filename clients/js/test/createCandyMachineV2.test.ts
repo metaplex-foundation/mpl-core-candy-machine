@@ -7,9 +7,8 @@ import {
 } from '@metaplex-foundation/umi';
 import test from 'ava';
 import {
-  AccountVersion,
   CandyMachine,
-  createCandyMachineV2,
+  createCandyMachine,
   fetchCandyMachine,
 } from '../src';
 import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
@@ -23,7 +22,7 @@ test('it can create a candy machine using config line settings', async (t) => {
   const candyMachine = generateSigner(umi);
   await transactionBuilder()
     .add(
-      await createCandyMachineV2(umi, {
+      await createCandyMachine(umi, {
         candyMachine,
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
@@ -49,7 +48,6 @@ test('it can create a candy machine using config line settings', async (t) => {
     authority: publicKey(umi.identity),
     mintAuthority: publicKey(umi.identity),
     collectionMint: publicKey(collection),
-    version: AccountVersion.V2,
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
@@ -76,7 +74,7 @@ test('it can create a candy machine using hidden settings', async (t) => {
   const candyMachine = generateSigner(umi);
   await transactionBuilder()
     .add(
-      await createCandyMachineV2(umi, {
+      await createCandyMachine(umi, {
         candyMachine,
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
@@ -100,7 +98,6 @@ test('it can create a candy machine using hidden settings', async (t) => {
     authority: publicKey(umi.identity),
     mintAuthority: publicKey(umi.identity),
     collectionMint: publicKey(collection),
-    version: AccountVersion.V2,
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
@@ -125,7 +122,7 @@ test('it cannot create a candy machine without hidden or config line settings', 
   const candyMachine = generateSigner(umi);
   const promise = transactionBuilder()
     .add(
-      await createCandyMachineV2(umi, {
+      await createCandyMachine(umi, {
         ...defaultCandyMachineData(umi),
         collection,
         candyMachine,
@@ -148,7 +145,7 @@ test('it can create a candy machine of Programmable NFTs', async (t) => {
   const candyMachine = generateSigner(umi);
   await transactionBuilder()
     .add(
-      await createCandyMachineV2(umi, {
+      await createCandyMachine(umi, {
         ...defaultCandyMachineData(umi),
         candyMachine,
         collection,
@@ -163,7 +160,6 @@ test('it can create a candy machine of Programmable NFTs', async (t) => {
   );
   t.like(candyMachineAccount, <CandyMachine>{
     publicKey: publicKey(candyMachine),
-    version: AccountVersion.V2,
   });
 });
 
@@ -176,7 +172,7 @@ test("it can create a candy machine that's bigger than 10Kb", async (t) => {
   const candyMachine = generateSigner(umi);
   await transactionBuilder()
     .add(
-      await createCandyMachineV2(umi, {
+      await createCandyMachine(umi, {
         ...defaultCandyMachineData(umi),
         candyMachine,
         itemsAvailable: 20000,

@@ -13,7 +13,7 @@ import {
   findCandyGuardPda,
   getMerkleProof,
   getMerkleRoot,
-  mintV2,
+  mintV1,
   route,
 } from '../../src';
 import {
@@ -66,7 +66,7 @@ test('it allows minting from wallets of a predefined list', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -118,7 +118,7 @@ test('it is possible to verify the proof and mint in the same transaction if the
       })
     )
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -171,7 +171,7 @@ test('it allows minting even when the payer is different from the minter', async
       })
     )
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -299,7 +299,7 @@ test('it forbids minting if the wallet has not been verified via the route instr
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -341,7 +341,7 @@ test('it charges a bot tax when trying to mint whilst not verified', async (t) =
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,

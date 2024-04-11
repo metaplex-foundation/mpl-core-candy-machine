@@ -19,7 +19,7 @@ import {
   fetchNftMintCounter,
   findCandyGuardPda,
   findNftMintCounterPda,
-  mintV2,
+  mintV1,
 } from '../../src';
 import {
   assertBotTax,
@@ -61,7 +61,7 @@ test('it allows minting when the nft mint limit is not reached', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -118,7 +118,7 @@ test('it allows minting even when the payer is different from the minter', async
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -174,7 +174,7 @@ test('it forbids minting when the nft mint limit is reached', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -189,7 +189,7 @@ test('it forbids minting when the nft mint limit is reached', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: generateSigner(umi),
         collection,
@@ -234,7 +234,7 @@ test('it forbids minting when minter does not own nft', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         minter: minterA,
         asset: generateSigner(umi),
@@ -289,7 +289,7 @@ test('it forbids minting when nft does not belong to the required collection', a
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: generateSigner(umi),
         collection,
@@ -342,7 +342,7 @@ test('the mint limit is local to each nft', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintA,
         minter: minterA,
@@ -360,7 +360,7 @@ test('the mint limit is local to each nft', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintB,
         minter: minterA,
@@ -407,7 +407,7 @@ test('forbids minting with different owners using the same nft', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintA,
         minter: minterA,
@@ -462,7 +462,7 @@ test('forbids minting with different owners using the same nft', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintB,
         minter: minterB,
@@ -508,7 +508,7 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintA,
         collection,
@@ -524,7 +524,7 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintB,
         collection,

@@ -9,7 +9,7 @@ import {
 } from '@metaplex-foundation/umi';
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import test from 'ava';
-import { CandyMachine, fetchCandyMachine, mintV2 } from '../src';
+import { CandyMachine, fetchCandyMachine, mintV1 } from '../src';
 import {
   assertSuccessfulMint,
   createCollection,
@@ -42,7 +42,7 @@ test('it can mint edition from a candy guard with guards', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         payer,
@@ -98,7 +98,7 @@ test('it can mint edition from a candy guard with groups', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -142,7 +142,7 @@ test('it can mint many editions from a candy machine with guard in order', async
     await transactionBuilder()
       .add(setComputeUnitLimit(umi, { units: 600_000 }))
       .add(
-        mintV2(umi, {
+        mintV1(umi, {
           candyMachine,
           asset: mint,
           payer,
@@ -187,7 +187,7 @@ test('it can mint many editions from a candy machine with guard starting from of
     await transactionBuilder()
       .add(setComputeUnitLimit(umi, { units: 600_000 }))
       .add(
-        mintV2(umi, {
+        mintV1(umi, {
           candyMachine,
           asset: mint,
           payer,
@@ -228,7 +228,7 @@ test('it can mint edition from a candy machine using hidden settings', async (t)
     await transactionBuilder()
       .add(setComputeUnitLimit(umi, { units: 600_000 }))
       .add(
-        mintV2(umi, {
+        mintV1(umi, {
           candyMachine,
           minter,
           asset: mint,
@@ -272,7 +272,7 @@ test('it overflows when trying to mint editions out of bounds', async (t) => {
   const res = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         minter,
         asset: mint,

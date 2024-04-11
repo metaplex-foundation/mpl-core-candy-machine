@@ -18,7 +18,7 @@ import {
   createUmi,
   createV2,
 } from '../_setup';
-import { mintV2 } from '../../src';
+import { mintV1 } from '../../src';
 
 test('it burns a specific token to allow minting', async (t) => {
   // Given a payer with one token.
@@ -49,7 +49,7 @@ test('it burns a specific token to allow minting', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -104,7 +104,7 @@ test('it allows minting even when the payer is different from the minter', async
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -159,7 +159,7 @@ test('it may burn multiple tokens from a specific mint', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -213,7 +213,7 @@ test('it fails to mint if there are not enough tokens to burn', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -268,7 +268,7 @@ test('it charges a bot tax when trying to mint without the required amount of to
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
