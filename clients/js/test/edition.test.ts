@@ -5,12 +5,11 @@ import {
   isEqualToAmount,
   none,
   sol,
-  some,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import test from 'ava';
-import { CandyMachine, fetchCandyMachine, MintType, mintV2 } from '../src';
+import { CandyMachine, fetchCandyMachine, mintV2 } from '../src';
 import {
   assertSuccessfulMint,
   createCollection,
@@ -19,7 +18,6 @@ import {
   tomorrow,
   yesterday,
 } from './_setup';
-
 
 test('it can mint edition from a candy guard with guards', async (t) => {
   // Given a candy machine with some guards.
@@ -32,8 +30,8 @@ test('it can mint edition from a candy guard with guards', async (t) => {
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
       solPayment: { lamports: sol(2), destination },
+      edition: { editionStartOffset: 0 }
     },
-    mintType: MintType.CoreEdition,
   });
   const candyMachine = candyMachineSigner.publicKey;
 
@@ -58,7 +56,12 @@ test('it can mint edition from a candy guard with guards', async (t) => {
     .sendAndConfirm(umi);
 
   // Then the mint was successful.
-  await assertSuccessfulMint(t, umi, { mint, owner: minter, name: 'Degen #1', edition: 1 });
+  await assertSuccessfulMint(t, umi, {
+    mint,
+    owner: minter,
+    name: 'Degen #1',
+    edition: 1,
+  });
 
   // And the payer was charged.
   const payerBalance = await umi.rpc.getBalance(payer.publicKey);
@@ -80,12 +83,12 @@ test('it can mint edition from a candy guard with groups', async (t) => {
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
       solPayment: { lamports: sol(2), destination },
+      edition: { editionStartOffset: 0 }
     },
     groups: [
       { label: 'GROUP1', guards: { startDate: { date: yesterday() } } },
       { label: 'GROUP2', guards: { startDate: { date: tomorrow() } } },
     ],
-    mintType: MintType.CoreEdition,
   });
   const candyMachine = candyMachineSigner.publicKey;
 
@@ -126,8 +129,8 @@ test('it can mint many editions from a candy machine with guard in order', async
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
       solPayment: { lamports: sol(2), destination },
+      edition: { editionStartOffset: 0 }
     },
-    mintType: MintType.CoreEdition,
   });
   const candyMachine = candyMachineSigner.publicKey;
 
@@ -151,9 +154,9 @@ test('it can mint many editions from a candy machine with guard in order', async
         })
       )
       .sendAndConfirm(umi);
-      await assertSuccessfulMint(t, umi, { mint, owner: minter, edition: i });
+    await assertSuccessfulMint(t, umi, { mint, owner: minter, edition: i });
   }
-})
+});
 
 test('it can mint many editions from a candy machine with guard starting from offset', async (t) => {
   const umi = await createUmi();
@@ -171,9 +174,8 @@ test('it can mint many editions from a candy machine with guard starting from of
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
       solPayment: { lamports: sol(2), destination },
+      edition: { editionStartOffset: 5 }
     },
-    mintType: MintType.CoreEdition,
-    editionStartingNumber: some(5)
   });
   const candyMachine = candyMachineSigner.publicKey;
 
@@ -197,9 +199,9 @@ test('it can mint many editions from a candy machine with guard starting from of
         })
       )
       .sendAndConfirm(umi);
-      await assertSuccessfulMint(t, umi, { mint, owner: minter, edition: i + 5 });
+    await assertSuccessfulMint(t, umi, { mint, owner: minter, edition: i + 5 });
   }
-})
+});
 
 test('it can mint edition from a candy machine using hidden settings', async (t) => {
   // Given a candy machine with hidden settings.
@@ -209,13 +211,14 @@ test('it can mint edition from a candy machine using hidden settings', async (t)
     collection,
     itemsAvailable: 100,
     configLineSettings: none(),
-    mintType: MintType.CoreEdition,
     hiddenSettings: {
       name: 'Degen #$ID+1$',
       uri: 'https://example.com/degen/$ID+1$',
       hash: new Uint8Array(32),
     },
-    guards: {},
+    guards: {
+      edition: { editionStartOffset: 0 }
+    },
   });
 
   // When we mint from it.
@@ -253,14 +256,14 @@ test('it overflows when trying to mint editions out of bounds', async (t) => {
     collection,
     itemsAvailable: 100,
     configLineSettings: none(),
-    mintType: MintType.CoreEdition,
     hiddenSettings: {
       name: 'Degen #$ID+1$',
       uri: 'https://example.com/degen/$ID+1$',
       hash: new Uint8Array(32),
     },
-    guards: {},
-    editionStartingNumber: some(2**32 - 1)
+    guards: {
+      edition: { editionStartOffset: 2 ** 32 - 1 }
+    },
   });
 
   // When we try to mint out of bounds.
@@ -280,5 +283,5 @@ test('it overflows when trying to mint editions out of bounds', async (t) => {
 
   // Then the mint failed.
   // TODO propogate candy core errors through the guard correctly
-  await t.throwsAsync(res, {name: 'IncorrectOwner'})
-})
+  await t.throwsAsync(res, { name: 'NumericalOverflowError' });
+});

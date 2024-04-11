@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use mpl_core::types::PluginAuthorityPair;
 
 use super::candy_machine_data::CandyMachineData;
 
@@ -8,8 +9,6 @@ use super::candy_machine_data::CandyMachineData;
 pub struct CandyMachine {
     /// Version of the account.
     pub version: AccountVersion,
-    /// Type of asset to mint
-    pub mint_type: MintType,
     /// Authority address.
     pub authority: Pubkey,
     /// Authority address allowed to mint from the candy machine.
@@ -30,13 +29,6 @@ pub struct CandyMachine {
     // - (u32 * items_available) mint indices
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Debug, PartialEq)]
-pub enum MintType {
-    #[default]
-    Core,
-    CoreEdition,
-}
-
 /// Config line struct for storing asset (NFT) data pre-mint.
 #[derive(AnchorSerialize, AnchorDeserialize, Debug)]
 pub struct ConfigLine {
@@ -52,4 +44,9 @@ pub enum AccountVersion {
     #[default]
     V1,
     V2,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Eq, PartialEq, Clone, Debug)]
+pub struct MintAssetArgs {
+    pub plugins: Vec<PluginAuthorityPair>,
 }

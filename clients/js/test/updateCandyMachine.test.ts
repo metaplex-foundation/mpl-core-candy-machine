@@ -1,8 +1,4 @@
-import {
-  none,
-  some,
-  transactionBuilder,
-} from '@metaplex-foundation/umi';
+import { none, some, transactionBuilder } from '@metaplex-foundation/umi';
 import test from 'ava';
 import { CandyMachine, fetchCandyMachine, updateCandyMachine } from '../src';
 import { createV2, createUmi } from './_setup';
@@ -40,7 +36,6 @@ test('it can update the data of a candy machine', async (t) => {
             isSequential: false,
           }),
           hiddenSettings: none(),
-          editionStartingNumber: some(1)
         },
       })
     )
@@ -64,7 +59,6 @@ test('it can update the data of a candy machine', async (t) => {
         isSequential: false,
       }),
       hiddenSettings: none(),
-      editionStartingNumber: some(1)
     },
   });
 });

@@ -8,6 +8,8 @@ import {
   AllowListArgs,
   BotTax,
   BotTaxArgs,
+  Edition,
+  EditionArgs,
   EndDate,
   EndDateArgs,
   FreezeSolPayment,
@@ -104,6 +106,7 @@ export type DefaultGuardSetArgs = GuardSetArgs & {
   token2022Payment: OptionOrNullable<Token2022PaymentArgs>;
   solFixedFee: OptionOrNullable<SolFixedFeeArgs>;
   nftMintLimit: OptionOrNullable<NftMintLimitArgs>;
+  edition: OptionOrNullable<EditionArgs>;
 };
 
 /**
@@ -133,6 +136,7 @@ export type DefaultGuardSet = GuardSet & {
   token2022Payment: Option<Token2022Payment>;
   solFixedFee: Option<SolFixedFee>;
   nftMintLimit: Option<NftMintLimit>;
+  edition: Option<Edition>;
 };
 
 /**
@@ -162,6 +166,7 @@ export type DefaultGuardSetMintArgs = GuardSetMintArgs & {
   token2022Payment: OptionOrNullable<Token2022PaymentMintArgs>;
   solFixedFee: OptionOrNullable<SolFixedFeeMintArgs>;
   nftMintLimit: OptionOrNullable<NftMintLimitMintArgs>;
+  // edition: no mint settings
 };
 
 /**
@@ -216,6 +221,7 @@ export const defaultCandyGuardNames: string[] = [
   'token2022Payment',
   'solFixedFee',
   'nftMintLimit',
+  'edition',
 ];
 
 /** @internal */

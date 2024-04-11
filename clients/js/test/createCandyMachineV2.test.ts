@@ -11,7 +11,6 @@ import {
   CandyMachine,
   createCandyMachineV2,
   fetchCandyMachine,
-  MintType,
 } from '../src';
 import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
 
@@ -26,7 +25,6 @@ test('it can create a candy machine using config line settings', async (t) => {
     .add(
       await createCandyMachineV2(umi, {
         candyMachine,
-        mintType: MintType.Core,
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
@@ -53,7 +51,6 @@ test('it can create a candy machine using config line settings', async (t) => {
     collectionMint: publicKey(collection),
     version: AccountVersion.V2,
     itemsRedeemed: 0n,
-    mintType: MintType.Core,
     data: {
       itemsAvailable: 100n,
       maxEditionSupply: 0n,
@@ -81,7 +78,6 @@ test('it can create a candy machine using hidden settings', async (t) => {
     .add(
       await createCandyMachineV2(umi, {
         candyMachine,
-        mintType: MintType.CoreEdition,
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
@@ -105,7 +101,6 @@ test('it can create a candy machine using hidden settings', async (t) => {
     mintAuthority: publicKey(umi.identity),
     collectionMint: publicKey(collection),
     version: AccountVersion.V2,
-    mintType: MintType.CoreEdition,
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
@@ -132,7 +127,6 @@ test('it cannot create a candy machine without hidden or config line settings', 
     .add(
       await createCandyMachineV2(umi, {
         ...defaultCandyMachineData(umi),
-        mintType: MintType.Core,
         collection,
         candyMachine,
         configLineSettings: none(),
@@ -156,7 +150,6 @@ test('it can create a candy machine of Programmable NFTs', async (t) => {
     .add(
       await createCandyMachineV2(umi, {
         ...defaultCandyMachineData(umi),
-        mintType: MintType.Core,
         candyMachine,
         collection,
       })
@@ -185,7 +178,6 @@ test("it can create a candy machine that's bigger than 10Kb", async (t) => {
     .add(
       await createCandyMachineV2(umi, {
         ...defaultCandyMachineData(umi),
-        mintType: MintType.Core,
         candyMachine,
         itemsAvailable: 20000,
         collection: collection.publicKey,

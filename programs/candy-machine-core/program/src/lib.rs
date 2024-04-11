@@ -51,12 +51,8 @@ pub mod candy_machine_core {
     ///   11. `[]` Instructions sysvar account
     ///   12. `[optional]` Token Authorization Rules program
     ///   13. `[optional]` Token authorization rules account
-    pub fn initialize_v2(
-        ctx: Context<InitializeV2>,
-        data: CandyMachineData,
-        mint_type: MintType,
-    ) -> Result<()> {
-        instructions::initialize_v2(ctx, data, mint_type)
+    pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData) -> Result<()> {
+        instructions::initialize_v2(ctx, data)
     }
 
     /// Mint an NFT.
@@ -78,8 +74,11 @@ pub mod candy_machine_core {
     ///   9. `[]` System program
     ///   10. `[optional]` Instructions sysvar account
     ///   11. `[]` SlotHashes sysvar cluster data.
-    pub fn mint_asset<'info>(ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>) -> Result<()> {
-        instructions::mint_asset(ctx)
+    pub fn mint_asset<'info>(
+        ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>,
+        args: MintAssetArgs,
+    ) -> Result<()> {
+        instructions::mint_asset(ctx, args)
     }
 
     /// Set a new authority of the candy machine.

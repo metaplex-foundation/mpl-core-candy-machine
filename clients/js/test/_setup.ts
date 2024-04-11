@@ -42,7 +42,6 @@ import {
   CreateCandyGuardInstructionDataArgs,
   DefaultGuardSetArgs,
   GuardSetArgs,
-  MintType,
   addConfigLines,
   createCandyGuard as baseCreateCandyGuard,
   createCandyMachineV2 as baseCreateCandyMachineV2,
@@ -218,7 +217,6 @@ export const createV2 = async <DA extends GuardSetArgs = DefaultGuardSetArgs>(
     itemsAvailable: input.itemsAvailable ?? input.configLines?.length ?? 100,
     candyMachine,
     collection,
-    mintType: input.mintType || MintType.Core
   });
 
   if (input.configLines !== undefined) {
@@ -308,7 +306,7 @@ export const assertSuccessfulMint = async (
   });
 
   if (input.edition !== undefined) {
-    t.is(nft.edition?.number, input.edition)
+    t.is(nft.edition?.number, input.edition);
   }
 
   // Name.

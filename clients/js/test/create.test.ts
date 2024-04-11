@@ -16,7 +16,6 @@ import {
   findCandyGuardPda,
   GuardGroup,
   GuardSet,
-  MintType,
 } from '../src';
 import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
 
@@ -35,7 +34,6 @@ test('it can create a candy machine with an associated candy guard', async (t) =
       botTax: some({ lamports: sol(0.01), lastInstruction: true }),
       solPayment: some({ lamports: sol(2), destination }),
     },
-    mintType: MintType.Core,
     ...defaultCandyMachineData(umi),
   });
   await transactionBuilder().add(createInstructions).sendAndConfirm(umi);

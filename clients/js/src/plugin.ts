@@ -25,6 +25,7 @@ import {
   tokenPaymentGuardManifest,
   solFixedFeeGuardManifest,
   nftMintLimitGuardManifest,
+  editionGuardManifest,
 } from './defaultGuards';
 import {
   createMplCoreCandyGuardProgram,
@@ -81,7 +82,8 @@ export const mplCandyMachine = (): UmiPlugin => ({
       allocationGuardManifest,
       token2022PaymentGuardManifest,
       solFixedFeeGuardManifest,
-      nftMintLimitGuardManifest
+      nftMintLimitGuardManifest,
+      editionGuardManifest,
     );
   },
 });

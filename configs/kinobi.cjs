@@ -141,17 +141,15 @@ kinobi.update(
 // Update fields.
 kinobi.update(
   new k.TransformNodesVisitor([
-    // {
-    //   selector: { kind: "structFieldTypeNode", name: "tokenStandard" },
-    //   transformer: (node) => {
-    //     return k.structFieldTypeNode({
-    //       ...node,
-    //       child: k.linkTypeNode("tokenStandard", {
-    //         importFrom: "mplTokenMetadata",
-    //       }),
-    //     });
-    //   },
-    // },
+    {
+      selector: { kind: "linkTypeNode", name: "pluginAuthorityPair" },
+      transformer: (node) => {
+        return k.linkTypeNode(
+          "pluginAuthorityPair", {
+          importFrom: "@metaplex-foundation/mpl-core",
+        });
+      },
+    },
     {
       selector: { type: "structFieldTypeNode", name: "maxSupply" },
       transformer: (node) => {
@@ -355,6 +353,11 @@ kinobi.update(
     },
     "mplCoreCandyMachineCore.mintAsset": {
       name: "mintAssetFromCandyMachine",
+      args: {
+        plugins: {
+          defaultsTo: k.valueDefault(k.vList([]))
+        }
+      },
       accounts: {
         asset: { isSigner: "either" },
         mplCoreProgram: {

@@ -19,8 +19,6 @@ if [ -z ${RPC+x} ]; then
     RPC="https://api.mainnet-beta.solana.com"
 fi
 
-echo "dump using RPC: ${RPC}"
-
 if [ -z "$OUTPUT" ]; then
     echo "missing output directory"
     exit 1

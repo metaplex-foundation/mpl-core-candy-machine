@@ -4,19 +4,14 @@ use crate::{
     approve_asset_collection_delegate,
     constants::{AUTHORITY_SEED, HIDDEN_SECTION},
     state::{CandyMachine, CandyMachineData},
-    AccountVersion, ApproveAssetDelegateHelperAccounts, MintType,
+    AccountVersion, ApproveAssetDelegateHelperAccounts,
 };
 
-pub fn initialize_v2(
-    ctx: Context<InitializeV2>,
-    data: CandyMachineData,
-    mint_type: MintType,
-) -> Result<()> {
+pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData) -> Result<()> {
     let candy_machine_account = &mut ctx.accounts.candy_machine;
 
     let candy_machine = CandyMachine {
         data,
-        mint_type,
         version: AccountVersion::V2,
         authority: ctx.accounts.authority.key(),
         mint_authority: ctx.accounts.authority.key(),

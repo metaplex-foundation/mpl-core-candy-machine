@@ -46,6 +46,7 @@ pub fn mint_v2<'info>(
         account_cursor: 0,
         args_cursor: 0,
         indices: BTreeMap::new(),
+        plugins: vec![],
     };
 
     process_mint(&mut ctx, mint_args, label)
@@ -155,10 +156,24 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
         }
     });
 
+    let args = mpl_core_candy_machine_core::instruction::MintAsset {
+        args: mpl_core_candy_machine_core::MintAssetArgs {
+            plugins: ctx.plugins.to_vec(),
+        },
+    };
+    let arg_data = args.try_to_vec()?;
+
+    let data = mpl_core_candy_machine_core::instruction::MintAsset::DISCRIMINATOR
+        .to_vec()
+        .iter()
+        .cloned()
+        .chain(arg_data.iter().cloned())
+        .collect();
+
     let mint_ix = Instruction {
         program_id: mpl_core_candy_machine_core::ID,
         accounts: mint_metas,
-        data: mpl_core_candy_machine_core::instruction::MintAsset::DISCRIMINATOR.to_vec(),
+        data,
     };
 
     // PDA signer for the transaction

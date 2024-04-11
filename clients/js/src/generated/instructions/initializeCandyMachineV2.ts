@@ -25,7 +25,6 @@ import {
   mapSerializer,
   option,
   struct,
-  u32,
   u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
@@ -41,11 +40,8 @@ import {
   ConfigLineSettingsArgs,
   HiddenSettings,
   HiddenSettingsArgs,
-  MintType,
-  MintTypeArgs,
   getConfigLineSettingsSerializer,
   getHiddenSettingsSerializer,
-  getMintTypeSerializer,
 } from '../types';
 
 // Accounts.
@@ -108,13 +104,10 @@ export type InitializeCandyMachineV2InstructionData = {
   maxEditionSupply: bigint;
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable: boolean;
-  /** Edition number to start minting at (none is 0) */
-  editionStartingNumber: Option<number>;
   /** Config line settings */
   configLineSettings: Option<ConfigLineSettings>;
   /** Hidden setttings */
   hiddenSettings: Option<HiddenSettings>;
-  mintType: MintType;
 };
 
 export type InitializeCandyMachineV2InstructionDataArgs = {
@@ -124,13 +117,10 @@ export type InitializeCandyMachineV2InstructionDataArgs = {
   maxEditionSupply?: number | bigint;
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable?: boolean;
-  /** Edition number to start minting at (none is 0) */
-  editionStartingNumber?: OptionOrNullable<number>;
   /** Config line settings */
   configLineSettings?: OptionOrNullable<ConfigLineSettingsArgs>;
   /** Hidden setttings */
   hiddenSettings?: OptionOrNullable<HiddenSettingsArgs>;
-  mintType: MintTypeArgs;
 };
 
 export function getInitializeCandyMachineV2InstructionDataSerializer(): Serializer<
@@ -148,10 +138,8 @@ export function getInitializeCandyMachineV2InstructionDataSerializer(): Serializ
         ['itemsAvailable', u64()],
         ['maxEditionSupply', u64()],
         ['isMutable', bool()],
-        ['editionStartingNumber', option(u32())],
         ['configLineSettings', option(getConfigLineSettingsSerializer())],
         ['hiddenSettings', option(getHiddenSettingsSerializer())],
-        ['mintType', getMintTypeSerializer()],
       ],
       { description: 'InitializeCandyMachineV2InstructionData' }
     ),
@@ -160,7 +148,6 @@ export function getInitializeCandyMachineV2InstructionDataSerializer(): Serializ
       discriminator: [67, 153, 175, 39, 218, 16, 38, 32],
       maxEditionSupply: value.maxEditionSupply ?? 0,
       isMutable: value.isMutable ?? true,
-      editionStartingNumber: value.editionStartingNumber ?? none(),
       configLineSettings: value.configLineSettings ?? none(),
       hiddenSettings: value.hiddenSettings ?? none(),
     })

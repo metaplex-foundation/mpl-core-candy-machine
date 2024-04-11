@@ -5,14 +5,14 @@ use mpl_core::{
     accounts::BaseCollectionV1,
     fetch_plugin,
     instructions::CreateV1CpiBuilder,
-    types::{Edition, Plugin, PluginAuthorityPair, PluginType, UpdateDelegate},
+    types::{PluginAuthorityPair, PluginType, UpdateDelegate},
 };
 use solana_program::sysvar;
 
 use crate::{
     constants::{AUTHORITY_SEED, EMPTY_STR, HIDDEN_SECTION, NULL_STRING},
     utils::*,
-    CandyError, CandyMachine, ConfigLine, MintType,
+    CandyError, CandyMachine, ConfigLine, MintAssetArgs,
 };
 
 /// Accounts to mint an NFT.
@@ -28,7 +28,10 @@ pub(crate) struct MintAccounts<'info> {
     pub recent_slothashes: AccountInfo<'info>,
 }
 
-pub fn mint_asset<'info>(ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>) -> Result<()> {
+pub fn mint_asset<'info>(
+    ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>,
+    mint_args: MintAssetArgs,
+) -> Result<()> {
     let accounts = MintAccounts {
         authority_pda: ctx.accounts.authority_pda.to_account_info(),
         collection: ctx.accounts.collection.to_account_info(),
@@ -45,6 +48,7 @@ pub fn mint_asset<'info>(ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>) -> R
         &mut ctx.accounts.candy_machine,
         accounts,
         ctx.bumps["authority_pda"],
+        &mint_args,
     )
 }
 
@@ -57,6 +61,7 @@ pub(crate) fn process_mint_asset(
     candy_machine: &mut Box<Account<'_, CandyMachine>>,
     accounts: MintAccounts,
     bump: u8,
+    mint_args: &MintAssetArgs,
 ) -> Result<()> {
     if !accounts.asset.data_is_empty() {
         return err!(CandyError::MetadataAccountMustBeEmpty);
@@ -109,7 +114,13 @@ pub(crate) fn process_mint_asset(
 
     // (3) minting
 
-    create_and_mint(candy_machine, accounts, bump, config_line)
+    create_and_mint(
+        candy_machine,
+        accounts,
+        bump,
+        config_line,
+        &mint_args.plugins,
+    )
 }
 
 /// Selects and returns the information of a config line.
@@ -208,7 +219,7 @@ fn create_and_mint(
     accounts: MintAccounts,
     bump: u8,
     config_line: ConfigLine,
-    // collection_metadata: Metadata,
+    plugins: &[PluginAuthorityPair],
 ) -> Result<()> {
     let candy_machine_key = candy_machine.key();
     let authority_seeds = [
@@ -222,24 +233,6 @@ fn create_and_mint(
         .as_ref()
         .ok_or(CandyError::MissingInstructionsSysvar)?;
 
-    let plugins = if candy_machine.mint_type == MintType::CoreEdition {
-        let num: u32 = candy_machine
-            .items_redeemed
-            .try_into()
-            .map_err(|_| CandyError::NumericalOverflowError)?;
-
-        vec![PluginAuthorityPair {
-            plugin: Plugin::Edition(Edition {
-                number: num
-                    .checked_add(candy_machine.data.edition_starting_number.unwrap_or(0))
-                    .ok_or(CandyError::NumericalOverflowError)?,
-            }),
-            authority: None,
-        }]
-    } else {
-        vec![]
-    };
-
     CreateV1CpiBuilder::new(&accounts.mpl_core_program)
         .payer(&accounts.payer)
         .asset(&accounts.asset)
@@ -247,7 +240,7 @@ fn create_and_mint(
         .name(config_line.name)
         .uri(config_line.uri)
         .collection(Some(&accounts.collection))
-        .plugins(plugins)
+        .plugins(plugins.to_vec())
         .data_state(mpl_core::types::DataState::AccountState)
         .authority(Some(&accounts.authority_pda))
         .system_program(&accounts.system_program)

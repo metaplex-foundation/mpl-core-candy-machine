@@ -12,7 +12,6 @@ import {
   CandyMachine,
   fetchCandyMachine,
   initializeCandyMachineV2,
-  MintType,
 } from '../src';
 import { createCollection, createUmi } from './_setup';
 
@@ -43,7 +42,6 @@ test('it can initialize a new candy machine account', async (t) => {
     .add(
       initializeCandyMachineV2(umi, {
         candyMachine: candyMachine.publicKey,
-        mintType: MintType.Core,
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,

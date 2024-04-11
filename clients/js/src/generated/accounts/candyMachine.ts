@@ -32,10 +32,8 @@ import {
 import {
   AccountVersionArgs,
   CandyMachineDataArgs,
-  MintTypeArgs,
   getAccountVersionSerializer,
   getCandyMachineDataSerializer,
-  getMintTypeSerializer,
 } from '../types';
 
 /** Candy machine state and config data. */
@@ -110,7 +108,6 @@ export function getCandyMachineGpaBuilder(
     .registerFields<{
       discriminator: Array<number>;
       version: AccountVersionArgs;
-      mintType: MintTypeArgs;
       authority: PublicKey;
       mintAuthority: PublicKey;
       collectionMint: PublicKey;
@@ -119,12 +116,11 @@ export function getCandyMachineGpaBuilder(
     }>({
       discriminator: [0, array(u8(), { size: 8 })],
       version: [8, getAccountVersionSerializer()],
-      mintType: [9, getMintTypeSerializer()],
-      authority: [10, publicKeySerializer()],
-      mintAuthority: [42, publicKeySerializer()],
-      collectionMint: [74, publicKeySerializer()],
-      itemsRedeemed: [106, u64()],
-      data: [114, getCandyMachineDataSerializer()],
+      authority: [9, publicKeySerializer()],
+      mintAuthority: [41, publicKeySerializer()],
+      collectionMint: [73, publicKeySerializer()],
+      itemsRedeemed: [105, u64()],
+      data: [113, getCandyMachineDataSerializer()],
     })
     .deserializeUsing<CandyMachine>((account) =>
       deserializeCandyMachine(account)

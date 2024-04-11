@@ -155,12 +155,6 @@
           "type": {
             "defined": "CandyMachineData"
           }
-        },
-        {
-          "name": "mintType",
-          "type": {
-            "defined": "MintType"
-          }
         }
       ]
     },
@@ -285,7 +279,14 @@
           ]
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "MintAssetArgs"
+          }
+        }
+      ]
     },
     {
       "name": "setAuthority",
@@ -573,15 +574,6 @@
             }
           },
           {
-            "name": "mintType",
-            "docs": [
-              "Type of asset to mint"
-            ],
-            "type": {
-              "defined": "MintType"
-            }
-          },
-          {
             "name": "authority",
             "docs": [
               "Authority address."
@@ -651,15 +643,6 @@
               "Indicates if the asset is mutable or not (default yes)"
             ],
             "type": "bool"
-          },
-          {
-            "name": "editionStartingNumber",
-            "docs": [
-              "Edition number to start minting at (none is 0)"
-            ],
-            "type": {
-              "option": "u32"
-            }
           },
           {
             "name": "configLineSettings",
@@ -795,15 +778,17 @@
       }
     },
     {
-      "name": "MintType",
+      "name": "MintAssetArgs",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "Core"
-          },
-          {
-            "name": "CoreEdition"
+            "name": "plugins",
+            "type": {
+              "vec": {
+                "defined": "PluginAuthorityPair"
+              }
+            }
           }
         ]
       }
