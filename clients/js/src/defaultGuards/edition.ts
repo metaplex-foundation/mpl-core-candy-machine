@@ -1,8 +1,4 @@
-import {
-  getEditionSerializer,
-  Edition,
-  EditionArgs,
-} from '../generated';
+import { getEditionSerializer, Edition, EditionArgs } from '../generated';
 import { GuardManifest, noopParser } from '../guards';
 
 /**

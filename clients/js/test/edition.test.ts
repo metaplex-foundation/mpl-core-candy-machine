@@ -30,7 +30,7 @@ test('it can mint edition from a candy guard with guards', async (t) => {
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
       solPayment: { lamports: sol(2), destination },
-      edition: { editionStartOffset: 0 }
+      edition: { editionStartOffset: 0 },
     },
   });
   const candyMachine = candyMachineSigner.publicKey;
@@ -83,7 +83,7 @@ test('it can mint edition from a candy guard with groups', async (t) => {
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
       solPayment: { lamports: sol(2), destination },
-      edition: { editionStartOffset: 0 }
+      edition: { editionStartOffset: 0 },
     },
     groups: [
       { label: 'GROUP1', guards: { startDate: { date: yesterday() } } },
@@ -129,7 +129,7 @@ test('it can mint many editions from a candy machine with guard in order', async
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
       solPayment: { lamports: sol(2), destination },
-      edition: { editionStartOffset: 0 }
+      edition: { editionStartOffset: 0 },
     },
   });
   const candyMachine = candyMachineSigner.publicKey;
@@ -174,7 +174,7 @@ test('it can mint many editions from a candy machine with guard starting from of
     guards: {
       botTax: { lamports: sol(0.01), lastInstruction: true },
       solPayment: { lamports: sol(2), destination },
-      edition: { editionStartOffset: 5 }
+      edition: { editionStartOffset: 5 },
     },
   });
   const candyMachine = candyMachineSigner.publicKey;
@@ -217,7 +217,7 @@ test('it can mint edition from a candy machine using hidden settings', async (t)
       hash: new Uint8Array(32),
     },
     guards: {
-      edition: { editionStartOffset: 0 }
+      edition: { editionStartOffset: 0 },
     },
   });
 
@@ -262,7 +262,7 @@ test('it overflows when trying to mint editions out of bounds', async (t) => {
       hash: new Uint8Array(32),
     },
     guards: {
-      edition: { editionStartOffset: 2 ** 32 - 1 }
+      edition: { editionStartOffset: 2 ** 32 - 1 },
     },
   });
 
