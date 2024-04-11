@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
-use mpl_token_metadata::MAX_SYMBOL_LENGTH;
 
-use crate::{utils::fixed_length_string, CandyError, CandyMachine, CandyMachineData};
+use crate::{CandyError, CandyMachine, CandyMachineData};
 
 pub fn update(ctx: Context<Update>, data: CandyMachineData) -> Result<()> {
     let candy_machine = &mut ctx.accounts.candy_machine;
@@ -19,7 +18,6 @@ pub fn update(ctx: Context<Update>, data: CandyMachineData) -> Result<()> {
         return err!(CandyError::CannotSwitchToHiddenSettings);
     }
 
-    let symbol = fixed_length_string(data.symbol.clone(), MAX_SYMBOL_LENGTH)?;
     // validates the config data settings
     data.validate()?;
 
@@ -44,7 +42,6 @@ pub fn update(ctx: Context<Update>, data: CandyMachineData) -> Result<()> {
     }
 
     candy_machine.data = data;
-    candy_machine.data.symbol = symbol;
 
     Ok(())
 }

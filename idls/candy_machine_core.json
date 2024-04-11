@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "name": "candy_machine_core",
   "instructions": [
     {
@@ -279,7 +279,14 @@
           ]
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "MintAssetArgs"
+          }
+        }
+      ]
     },
     {
       "name": "setAuthority",
@@ -567,18 +574,6 @@
             }
           },
           {
-            "name": "features",
-            "docs": [
-              "Features flags."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                6
-              ]
-            }
-          },
-          {
             "name": "authority",
             "docs": [
               "Authority address."
@@ -636,20 +631,6 @@
             "type": "u64"
           },
           {
-            "name": "symbol",
-            "docs": [
-              "Symbol for the asset"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "sellerFeeBasisPoints",
-            "docs": [
-              "Secondary sales royalty basis points (0-10000)"
-            ],
-            "type": "u16"
-          },
-          {
             "name": "maxSupply",
             "docs": [
               "Max supply of each individual asset (default 0)"
@@ -662,17 +643,6 @@
               "Indicates if the asset is mutable or not (default yes)"
             ],
             "type": "bool"
-          },
-          {
-            "name": "creators",
-            "docs": [
-              "List of creators"
-            ],
-            "type": {
-              "vec": {
-                "defined": "Creator"
-              }
-            }
           },
           {
             "name": "configLineSettings",
@@ -695,32 +665,6 @@
                 "defined": "HiddenSettings"
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Creator",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "address",
-            "docs": [
-              "Pubkey address"
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "verified",
-            "docs": [
-              "Whether the creator is verified or not"
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "percentageShare",
-            "type": "u8"
           }
         ]
       }
@@ -829,6 +773,22 @@
               "URI to JSON metadata."
             ],
             "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintAssetArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "plugins",
+            "type": {
+              "vec": {
+                "defined": "PluginAuthorityPair"
+              }
+            }
           }
         ]
       }

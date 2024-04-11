@@ -2,7 +2,6 @@ import { createAccountWithRent } from '@metaplex-foundation/mpl-toolbox';
 import {
   generateSigner,
   none,
-  percentAmount,
   publicKey,
   some,
   transactionBuilder,
@@ -11,7 +10,6 @@ import test from 'ava';
 import {
   AccountVersion,
   CandyMachine,
-  Creator,
   fetchCandyMachine,
   initializeCandyMachineV2,
 } from '../src';
@@ -40,7 +38,6 @@ test('it can initialize a new candy machine account', async (t) => {
   const collection = await createCollection(umi);
 
   // When we initialize a candy machine at this address.
-  const creator = generateSigner(umi);
   await transactionBuilder()
     .add(
       initializeCandyMachineV2(umi, {
@@ -48,10 +45,6 @@ test('it can initialize a new candy machine account', async (t) => {
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
-        sellerFeeBasisPoints: percentAmount(1.23),
-        creators: [
-          { address: creator.publicKey, verified: false, percentageShare: 100 },
-        ],
         configLineSettings: some({
           prefixName: 'My NFT #',
           nameLength: 8,
@@ -77,17 +70,8 @@ test('it can initialize a new candy machine account', async (t) => {
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
-      symbol: '',
-      sellerFeeBasisPoints: percentAmount(1.23),
       maxEditionSupply: 0n,
       isMutable: true,
-      creators: [
-        {
-          address: publicKey(creator),
-          verified: false,
-          percentageShare: 100,
-        },
-      ] as Creator[],
       configLineSettings: some({
         prefixName: 'My NFT #',
         nameLength: 8,

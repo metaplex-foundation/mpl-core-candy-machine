@@ -14,7 +14,7 @@ export * from './botTax';
 export * from './candyMachineData';
 export * from './configLine';
 export * from './configLineSettings';
-export * from './creator';
+export * from './edition';
 export * from './endDate';
 export * from './freezeInstruction';
 export * from './freezeSolPayment';

@@ -1,7 +1,6 @@
 import {
   generateSigner,
   none,
-  percentAmount,
   publicKey,
   some,
   transactionBuilder,
@@ -11,7 +10,6 @@ import {
   AccountVersion,
   CandyMachine,
   createCandyMachineV2,
-  Creator,
   fetchCandyMachine,
 } from '../src';
 import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
@@ -23,7 +21,6 @@ test('it can create a candy machine using config line settings', async (t) => {
 
   // When we create a new candy machine with config line settings.
   const candyMachine = generateSigner(umi);
-  const creator = generateSigner(umi);
   await transactionBuilder()
     .add(
       await createCandyMachineV2(umi, {
@@ -31,10 +28,6 @@ test('it can create a candy machine using config line settings', async (t) => {
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
-        sellerFeeBasisPoints: percentAmount(1.23),
-        creators: [
-          { address: creator.publicKey, verified: false, percentageShare: 100 },
-        ],
         configLineSettings: some({
           prefixName: 'My NFT #',
           nameLength: 8,
@@ -60,17 +53,8 @@ test('it can create a candy machine using config line settings', async (t) => {
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
-      symbol: '',
-      sellerFeeBasisPoints: percentAmount(1.23),
       maxEditionSupply: 0n,
       isMutable: true,
-      creators: [
-        {
-          address: publicKey(creator),
-          verified: false,
-          percentageShare: 100,
-        },
-      ] as Creator[],
       configLineSettings: some({
         prefixName: 'My NFT #',
         nameLength: 8,
@@ -90,7 +74,6 @@ test('it can create a candy machine using hidden settings', async (t) => {
 
   // When we create a new candy machine with hidden settings.
   const candyMachine = generateSigner(umi);
-  const creator = generateSigner(umi);
   await transactionBuilder()
     .add(
       await createCandyMachineV2(umi, {
@@ -98,10 +81,6 @@ test('it can create a candy machine using hidden settings', async (t) => {
         collection: collection.publicKey,
         collectionUpdateAuthority: umi.identity,
         itemsAvailable: 100,
-        sellerFeeBasisPoints: percentAmount(1.23),
-        creators: [
-          { address: creator.publicKey, verified: false, percentageShare: 100 },
-        ],
         hiddenSettings: some({
           name: 'My NFT #$ID+1$',
           uri: 'https://example.com/$ID+1$.json',
@@ -125,17 +104,8 @@ test('it can create a candy machine using hidden settings', async (t) => {
     itemsRedeemed: 0n,
     data: {
       itemsAvailable: 100n,
-      symbol: '',
-      sellerFeeBasisPoints: percentAmount(1.23),
       maxEditionSupply: 0n,
       isMutable: true,
-      creators: [
-        {
-          address: publicKey(creator),
-          verified: false,
-          percentageShare: 100,
-        },
-      ] as Creator[],
       configLineSettings: none(),
       hiddenSettings: some({
         name: 'My NFT #$ID+1$',

@@ -583,6 +583,21 @@
       }
     },
     {
+      "name": "Edition",
+      "docs": [
+        "Guard that adds an edition plugin to the asset."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "editionStartOffset",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
       "name": "EndDate",
       "docs": [
         "Guard that sets a specific date for the mint to stop."
@@ -1426,6 +1441,17 @@
                 "defined": "NftMintLimit"
               }
             }
+          },
+          {
+            "name": "edition",
+            "docs": [
+              "NFT mint limit guard (add a limit on the number of mints per NFT)."
+            ],
+            "type": {
+              "option": {
+                "defined": "Edition"
+              }
+            }
           }
         ]
       }
@@ -1523,6 +1549,9 @@
           },
           {
             "name": "NftMintLimit"
+          },
+          {
+            "name": "Edition"
           }
         ]
       }

@@ -108,7 +108,6 @@ export function getCandyMachineGpaBuilder(
     .registerFields<{
       discriminator: Array<number>;
       version: AccountVersionArgs;
-      features: Array<number>;
       authority: PublicKey;
       mintAuthority: PublicKey;
       collectionMint: PublicKey;
@@ -117,12 +116,11 @@ export function getCandyMachineGpaBuilder(
     }>({
       discriminator: [0, array(u8(), { size: 8 })],
       version: [8, getAccountVersionSerializer()],
-      features: [9, array(u8(), { size: 6 })],
-      authority: [15, publicKeySerializer()],
-      mintAuthority: [47, publicKeySerializer()],
-      collectionMint: [79, publicKeySerializer()],
-      itemsRedeemed: [111, u64()],
-      data: [119, getCandyMachineDataSerializer()],
+      authority: [9, publicKeySerializer()],
+      mintAuthority: [41, publicKeySerializer()],
+      collectionMint: [73, publicKeySerializer()],
+      itemsRedeemed: [105, u64()],
+      data: [113, getCandyMachineDataSerializer()],
     })
     .deserializeUsing<CandyMachine>((account) =>
       deserializeCandyMachine(account)

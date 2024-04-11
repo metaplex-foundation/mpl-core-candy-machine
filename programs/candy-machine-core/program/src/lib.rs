@@ -74,8 +74,11 @@ pub mod candy_machine_core {
     ///   9. `[]` System program
     ///   10. `[optional]` Instructions sysvar account
     ///   11. `[]` SlotHashes sysvar cluster data.
-    pub fn mint_asset<'info>(ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>) -> Result<()> {
-        instructions::mint_asset(ctx)
+    pub fn mint_asset<'info>(
+        ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>,
+        args: MintAssetArgs,
+    ) -> Result<()> {
+        instructions::mint_asset(ctx, args)
     }
 
     /// Set a new authority of the candy machine.

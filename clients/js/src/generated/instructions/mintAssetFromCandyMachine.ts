@@ -7,6 +7,11 @@
  */
 
 import {
+  PluginAuthorityPair,
+  PluginAuthorityPairArgs,
+  getPluginAuthorityPairSerializer,
+} from '@metaplex-foundation/mpl-core';
+import {
   Context,
   Pda,
   PublicKey,
@@ -24,6 +29,7 @@ import {
 } from '@metaplex-foundation/umi/serializers';
 import { findCandyMachineAuthorityPda } from '../../hooked';
 import {
+  PickPartial,
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   expectPublicKey,
@@ -88,9 +94,12 @@ export type MintAssetFromCandyMachineInstructionAccounts = {
 // Data.
 export type MintAssetFromCandyMachineInstructionData = {
   discriminator: Array<number>;
+  plugins: Array<PluginAuthorityPair>;
 };
 
-export type MintAssetFromCandyMachineInstructionDataArgs = {};
+export type MintAssetFromCandyMachineInstructionDataArgs = {
+  plugins: Array<PluginAuthorityPairArgs>;
+};
 
 export function getMintAssetFromCandyMachineInstructionDataSerializer(): Serializer<
   MintAssetFromCandyMachineInstructionDataArgs,
@@ -102,7 +111,10 @@ export function getMintAssetFromCandyMachineInstructionDataSerializer(): Seriali
     MintAssetFromCandyMachineInstructionData
   >(
     struct<MintAssetFromCandyMachineInstructionData>(
-      [['discriminator', array(u8(), { size: 8 })]],
+      [
+        ['discriminator', array(u8(), { size: 8 })],
+        ['plugins', array(getPluginAuthorityPairSerializer())],
+      ],
       { description: 'MintAssetFromCandyMachineInstructionData' }
     ),
     (value) => ({
@@ -115,10 +127,17 @@ export function getMintAssetFromCandyMachineInstructionDataSerializer(): Seriali
   >;
 }
 
+// Args.
+export type MintAssetFromCandyMachineInstructionArgs = PickPartial<
+  MintAssetFromCandyMachineInstructionDataArgs,
+  'plugins'
+>;
+
 // Instruction.
 export function mintAssetFromCandyMachine(
   context: Pick<Context, 'eddsa' | 'payer' | 'programs'>,
-  input: MintAssetFromCandyMachineInstructionAccounts
+  input: MintAssetFromCandyMachineInstructionAccounts &
+    MintAssetFromCandyMachineInstructionArgs
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
@@ -173,6 +192,9 @@ export function mintAssetFromCandyMachine(
     },
   };
 
+  // Arguments.
+  const resolvedArgs: MintAssetFromCandyMachineInstructionArgs = { ...input };
+
   // Default values.
   if (!resolvedAccounts.authorityPda.value) {
     resolvedAccounts.authorityPda.value = findCandyMachineAuthorityPda(
@@ -207,6 +229,9 @@ export function mintAssetFromCandyMachine(
       'SysvarS1otHashes111111111111111111111111111'
     );
   }
+  if (!resolvedArgs.plugins) {
+    resolvedArgs.plugins = [];
+  }
 
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
@@ -222,7 +247,9 @@ export function mintAssetFromCandyMachine(
 
   // Data.
   const data =
-    getMintAssetFromCandyMachineInstructionDataSerializer().serialize({});
+    getMintAssetFromCandyMachineInstructionDataSerializer().serialize(
+      resolvedArgs as MintAssetFromCandyMachineInstructionDataArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

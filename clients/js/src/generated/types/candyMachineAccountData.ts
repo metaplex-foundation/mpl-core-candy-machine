@@ -30,8 +30,6 @@ export type CandyMachineAccountData = {
   discriminator: Array<number>;
   /** Version of the account. */
   version: AccountVersion;
-  /** Features flags. */
-  features: Array<number>;
   /** Authority address. */
   authority: PublicKey;
   /** Authority address allowed to mint from the candy machine. */
@@ -47,8 +45,6 @@ export type CandyMachineAccountData = {
 export type CandyMachineAccountDataArgs = {
   /** Version of the account. */
   version: AccountVersionArgs;
-  /** Features flags. */
-  features: Array<number>;
   /** Authority address. */
   authority: PublicKey;
   /** Authority address allowed to mint from the candy machine. */
@@ -74,7 +70,6 @@ export function getCandyMachineAccountDataSerializer(): Serializer<
       [
         ['discriminator', array(u8(), { size: 8 })],
         ['version', getAccountVersionSerializer()],
-        ['features', array(u8(), { size: 6 })],
         ['authority', publicKeySerializer()],
         ['mintAuthority', publicKeySerializer()],
         ['collectionMint', publicKeySerializer()],

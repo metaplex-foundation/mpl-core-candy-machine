@@ -1,28 +1,24 @@
 use anchor_lang::{prelude::*, solana_program::sysvar, Discriminator};
-use mpl_token_metadata::MAX_SYMBOL_LENGTH;
 
 use crate::{
     approve_asset_collection_delegate,
     constants::{AUTHORITY_SEED, HIDDEN_SECTION},
     state::{CandyMachine, CandyMachineData},
-    utils::fixed_length_string,
     AccountVersion, ApproveAssetDelegateHelperAccounts,
 };
 
 pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData) -> Result<()> {
     let candy_machine_account = &mut ctx.accounts.candy_machine;
 
-    let mut candy_machine = CandyMachine {
+    let candy_machine = CandyMachine {
         data,
         version: AccountVersion::V2,
-        features: [0u8; 6],
         authority: ctx.accounts.authority.key(),
         mint_authority: ctx.accounts.authority.key(),
         collection_mint: ctx.accounts.collection.key(),
         items_redeemed: 0,
     };
 
-    candy_machine.data.symbol = fixed_length_string(candy_machine.data.symbol, MAX_SYMBOL_LENGTH)?;
     // validates the config lines settings
     candy_machine.data.validate()?;
 

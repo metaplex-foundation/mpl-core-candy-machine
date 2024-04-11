@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use mpl_token_metadata::{MAX_CREATOR_LIMIT, MAX_NAME_LENGTH, MAX_URI_LENGTH};
+use mpl_token_metadata::{MAX_NAME_LENGTH, MAX_URI_LENGTH};
 
 use crate::{constants::HIDDEN_SECTION, errors::CandyError, utils::replace_patterns};
 
@@ -8,31 +8,14 @@ use crate::{constants::HIDDEN_SECTION, errors::CandyError, utils::replace_patter
 pub struct CandyMachineData {
     /// Number of assets available
     pub items_available: u64,
-    /// Symbol for the asset
-    pub symbol: String,
-    /// Secondary sales royalty basis points (0-10000)
-    pub seller_fee_basis_points: u16,
     /// Max supply of each individual asset (default 0)
     pub max_supply: u64,
     /// Indicates if the asset is mutable or not (default yes)
     pub is_mutable: bool,
-    /// List of creators
-    pub creators: Vec<Creator>,
     /// Config line settings
     pub config_line_settings: Option<ConfigLineSettings>,
     /// Hidden setttings
     pub hidden_settings: Option<HiddenSettings>,
-}
-
-// Creator information.
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
-pub struct Creator {
-    /// Pubkey address
-    pub address: Pubkey,
-    /// Whether the creator is verified or not
-    pub verified: bool,
-    // Share of secondary sales royalty
-    pub percentage_share: u8,
 }
 
 /// Hidden settings for large mints used with off-chain data.
@@ -130,11 +113,6 @@ impl CandyMachineData {
             }
         } else {
             return err!(CandyError::MissingConfigLinesSettings);
-        }
-
-        // (MAX_CREATOR_LIMIT - 1) because the candy machine is going to be a creator
-        if self.creators.len() > (MAX_CREATOR_LIMIT - 1) {
-            return err!(CandyError::TooManyCreators);
         }
 
         Ok(())

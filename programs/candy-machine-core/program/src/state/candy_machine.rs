@@ -1,8 +1,5 @@
 use anchor_lang::prelude::*;
-use arrayref::array_ref;
-use mpl_token_metadata::{accounts::Metadata, types::ProgrammableConfig};
-
-use crate::constants::{RULE_SET_LENGTH, SET};
+use mpl_core::types::PluginAuthorityPair;
 
 use super::candy_machine_data::CandyMachineData;
 
@@ -12,8 +9,6 @@ use super::candy_machine_data::CandyMachineData;
 pub struct CandyMachine {
     /// Version of the account.
     pub version: AccountVersion,
-    /// Features flags.
-    pub features: [u8; 6],
     /// Authority address.
     pub authority: Pubkey,
     /// Authority address allowed to mint from the candy machine.
@@ -32,39 +27,6 @@ pub struct CandyMachine {
     // - (item_available / 8) + 1 bit mask to keep track of which ConfigLines
     //   have been added
     // - (u32 * items_available) mint indices
-    // - for pNFT:
-    //   (u8) indicates whether to use a custom rule set
-    //   (Pubkey) custom rule set
-}
-
-impl CandyMachine {
-    pub fn get_rule_set(
-        &self,
-        account_data: &[u8],
-        collection_metadata: &Metadata,
-    ) -> Result<Option<Pubkey>> {
-        let required_length = self.data.get_space_for_candy()?;
-
-        if account_data.len() <= required_length {
-            return Ok(None);
-        }
-
-        if account_data[required_length] == SET {
-            let index = required_length + 1;
-
-            Ok(Some(Pubkey::from(*array_ref![
-                account_data,
-                index,
-                RULE_SET_LENGTH
-            ])))
-        } else if let Some(ProgrammableConfig::V1 { rule_set }) =
-            collection_metadata.programmable_config
-        {
-            Ok(rule_set)
-        } else {
-            Ok(None)
-        }
-    }
 }
 
 /// Config line struct for storing asset (NFT) data pre-mint.
@@ -82,4 +44,9 @@ pub enum AccountVersion {
     #[default]
     V1,
     V2,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Eq, PartialEq, Clone, Debug)]
+pub struct MintAssetArgs {
+    pub plugins: Vec<PluginAuthorityPair>,
 }

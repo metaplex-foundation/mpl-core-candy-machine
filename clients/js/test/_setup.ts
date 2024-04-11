@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {
-  TokenStandard,
   createNft as baseCreateNft,
   createProgrammableNft as baseCreateProgrammableNft,
   findMasterEditionPda,
@@ -252,17 +251,8 @@ export const defaultAssetData = () => ({
 export const defaultCandyMachineData = (
   context: Pick<Context, 'identity'>
 ) => ({
-  tokenStandard: TokenStandard.NonFungible,
   collectionUpdateAuthority: context.identity,
   itemsAvailable: 100,
-  sellerFeeBasisPoints: percentAmount(10, 2),
-  creators: [
-    {
-      address: context.identity.publicKey,
-      verified: true,
-      percentageShare: 100,
-    },
-  ],
   configLineSettings: some({
     prefixName: '',
     nameLength: 32,
@@ -299,6 +289,7 @@ export const assertSuccessfulMint = async (
     owner: PublicKey | Signer;
     name?: string | RegExp;
     uri?: string | RegExp;
+    edition?: number;
   }
 ) => {
   const mint = publicKey(input.mint);
@@ -313,6 +304,10 @@ export const assertSuccessfulMint = async (
     publicKey: publicKey(mint),
     owner,
   });
+
+  if (input.edition !== undefined) {
+    t.is(nft.edition?.number, input.edition);
+  }
 
   // Name.
   if (typeof name === 'string') t.is(nft.name, name);

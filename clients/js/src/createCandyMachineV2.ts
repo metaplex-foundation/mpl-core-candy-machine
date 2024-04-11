@@ -25,6 +25,7 @@ export const createCandyMachineV2 = async (
     input.itemsAvailable,
     input.configLineSettings ?? none()
   );
+
   const lamports = await context.rpc.getRent(space);
   return transactionBuilder()
     .add(
