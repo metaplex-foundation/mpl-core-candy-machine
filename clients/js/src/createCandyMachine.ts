@@ -6,20 +6,20 @@ import {
   transactionBuilder,
   TransactionBuilder,
 } from '@metaplex-foundation/umi';
-import { initializeCandyMachineV2 } from './generated';
+import { initializeCandyMachine } from './generated';
 import { getCandyMachineSize } from './hooked';
 
-export type CreateCandyMachineV2Input = Omit<
-  Parameters<typeof initializeCandyMachineV2>[1],
+export type CreateCandyMachineInput = Omit<
+  Parameters<typeof initializeCandyMachine>[1],
   'candyMachine'
 > & {
   candyMachine: Signer;
 };
 
-export const createCandyMachineV2 = async (
-  context: Parameters<typeof initializeCandyMachineV2>[0] &
+export const createCandyMachine = async (
+  context: Parameters<typeof initializeCandyMachine>[0] &
     Pick<Context, 'rpc'>,
-  input: CreateCandyMachineV2Input
+  input: CreateCandyMachineInput
 ): Promise<TransactionBuilder> => {
   const space = getCandyMachineSize(
     input.itemsAvailable,
@@ -37,7 +37,7 @@ export const createCandyMachineV2 = async (
       })
     )
     .add(
-      initializeCandyMachineV2(context, {
+      initializeCandyMachine(context, {
         ...input,
         candyMachine: input.candyMachine.publicKey,
       })

@@ -10,7 +10,7 @@ import {
   fetchAllocationTracker,
   findCandyGuardPda,
   findAllocationTrackerPda,
-  mintV2,
+  mintV1,
   route,
 } from '../../src';
 import {
@@ -55,7 +55,7 @@ test('it allows minting when the allocation limit is not reached', async (t) => 
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -111,7 +111,7 @@ test('it forbids minting when the allocation limit is reached', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -124,7 +124,7 @@ test('it forbids minting when the allocation limit is reached', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -196,7 +196,7 @@ test('the allocation limit is local to each id', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintA,
         minter: minterA,
@@ -214,7 +214,7 @@ test('the allocation limit is local to each id', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintB,
         minter: minterB,
@@ -264,7 +264,7 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintA,
         collection,
@@ -278,7 +278,7 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mintB,
         collection,

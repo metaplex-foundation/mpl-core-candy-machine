@@ -9,7 +9,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { mintV2 } from '../../src';
+import { mintV1 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
@@ -54,7 +54,7 @@ test('it transfers tokens from the payer to the destination', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -113,7 +113,7 @@ test('it allows minting even when the payer is different from the minter', async
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -170,7 +170,7 @@ test('it fails if the payer does not have enough tokens', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -223,7 +223,7 @@ test('it charges a bot tax if the payer does not have enough tokens', async (t) 
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,

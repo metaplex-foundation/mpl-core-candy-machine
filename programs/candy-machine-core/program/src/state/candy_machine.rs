@@ -7,8 +7,6 @@ use super::candy_machine_data::CandyMachineData;
 #[account]
 #[derive(Default, Debug)]
 pub struct CandyMachine {
-    /// Version of the account.
-    pub version: AccountVersion,
     /// Authority address.
     pub authority: Pubkey,
     /// Authority address allowed to mint from the candy machine.
@@ -36,14 +34,6 @@ pub struct ConfigLine {
     pub name: String,
     /// URI to JSON metadata.
     pub uri: String,
-}
-
-/// Account versioning.
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Debug)]
-pub enum AccountVersion {
-    #[default]
-    V1,
-    V2,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Eq, PartialEq, Clone, Debug)]

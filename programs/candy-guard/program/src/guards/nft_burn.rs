@@ -1,9 +1,8 @@
 use super::*;
 
-use mpl_core_candy_machine_core::AccountVersion;
 use mpl_token_metadata::{
     accounts::{Metadata, TokenRecord},
-    instructions::{BurnNftCpiBuilder, BurnV1CpiBuilder},
+    instructions::BurnV1CpiBuilder,
     types::TokenStandard,
 };
 
@@ -107,41 +106,29 @@ impl Condition for NftBurn {
         let spl_token_info = spl_token_program.to_account_info();
         let token_metadata_info = token_metadata_program.to_account_info();
 
-        if matches!(ctx.accounts.candy_machine.version, AccountVersion::V2) {
-            let metadata: Metadata = Metadata::try_from(nft_metadata)?;
-            let mut burn_cpi = BurnV1CpiBuilder::new(&token_metadata_info);
-            burn_cpi
-                .authority(&ctx.accounts.minter)
-                .metadata(nft_metadata)
-                .edition(Some(nft_edition))
-                .mint(nft_mint_account)
-                .token(nft_account)
-                .collection_metadata(Some(nft_mint_collection_metadata))
-                .system_program(&ctx.accounts.system_program)
-                .sysvar_instructions(&ctx.accounts.sysvar_instructions)
-                .spl_token_program(&spl_token_info)
-                .amount(1);
+        let metadata: Metadata = Metadata::try_from(nft_metadata)?;
+        let mut burn_cpi = BurnV1CpiBuilder::new(&token_metadata_info);
+        burn_cpi
+            .authority(&ctx.accounts.minter)
+            .metadata(nft_metadata)
+            .edition(Some(nft_edition))
+            .mint(nft_mint_account)
+            .token(nft_account)
+            .collection_metadata(Some(nft_mint_collection_metadata))
+            .system_program(&ctx.accounts.system_program)
+            .sysvar_instructions(&ctx.accounts.sysvar_instructions)
+            .spl_token_program(&spl_token_info)
+            .amount(1);
 
-            if matches!(
-                metadata.token_standard,
-                Some(TokenStandard::ProgrammableNonFungible)
-            ) {
-                let token_record_info = try_get_account_info(ctx.accounts.remaining, index + 7)?;
-                burn_cpi.token_record(Some(token_record_info));
-            }
-
-            burn_cpi.invoke()?;
-        } else {
-            BurnNftCpiBuilder::new(&token_metadata_program.to_account_info())
-                .metadata(nft_metadata)
-                .owner(&ctx.accounts.payer)
-                .mint(nft_mint_account)
-                .token_account(nft_account)
-                .master_edition_account(nft_edition)
-                .collection_metadata(Some(nft_mint_collection_metadata))
-                .spl_token_program(&spl_token_program.to_account_info())
-                .invoke()?;
+        if matches!(
+            metadata.token_standard,
+            Some(TokenStandard::ProgrammableNonFungible)
+        ) {
+            let token_record_info = try_get_account_info(ctx.accounts.remaining, index + 7)?;
+            burn_cpi.token_record(Some(token_record_info));
         }
+
+        burn_cpi.invoke()?;
 
         Ok(())
     }

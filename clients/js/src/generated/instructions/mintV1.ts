@@ -37,7 +37,7 @@ import {
 } from '../shared';
 
 // Accounts.
-export type MintV2InstructionAccounts = {
+export type MintV1InstructionAccounts = {
   /** Candy Guard account. */
   candyGuard?: PublicKey | Pda;
   /**
@@ -104,44 +104,44 @@ export type MintV2InstructionAccounts = {
 };
 
 // Data.
-export type MintV2InstructionData = {
+export type MintV1InstructionData = {
   discriminator: Array<number>;
   mintArgs: Uint8Array;
   group: Option<string>;
 };
 
-export type MintV2InstructionDataArgs = {
+export type MintV1InstructionDataArgs = {
   mintArgs: Uint8Array;
   group: OptionOrNullable<string>;
 };
 
-export function getMintV2InstructionDataSerializer(): Serializer<
-  MintV2InstructionDataArgs,
-  MintV2InstructionData
+export function getMintV1InstructionDataSerializer(): Serializer<
+  MintV1InstructionDataArgs,
+  MintV1InstructionData
 > {
-  return mapSerializer<MintV2InstructionDataArgs, any, MintV2InstructionData>(
-    struct<MintV2InstructionData>(
+  return mapSerializer<MintV1InstructionDataArgs, any, MintV1InstructionData>(
+    struct<MintV1InstructionData>(
       [
         ['discriminator', array(u8(), { size: 8 })],
         ['mintArgs', bytes({ size: u32() })],
         ['group', option(string())],
       ],
-      { description: 'MintV2InstructionData' }
+      { description: 'MintV1InstructionData' }
     ),
     (value) => ({
       ...value,
-      discriminator: [120, 121, 23, 146, 173, 110, 199, 205],
+      discriminator: [145, 98, 192, 118, 184, 147, 118, 104],
     })
-  ) as Serializer<MintV2InstructionDataArgs, MintV2InstructionData>;
+  ) as Serializer<MintV1InstructionDataArgs, MintV1InstructionData>;
 }
 
 // Args.
-export type MintV2InstructionArgs = MintV2InstructionDataArgs;
+export type MintV1InstructionArgs = MintV1InstructionDataArgs;
 
 // Instruction.
-export function mintV2(
+export function mintV1(
   context: Pick<Context, 'eddsa' | 'identity' | 'payer' | 'programs'>,
-  input: MintV2InstructionAccounts & MintV2InstructionArgs
+  input: MintV1InstructionAccounts & MintV1InstructionArgs
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
@@ -199,7 +199,7 @@ export function mintV2(
   };
 
   // Arguments.
-  const resolvedArgs: MintV2InstructionArgs = { ...input };
+  const resolvedArgs: MintV1InstructionArgs = { ...input };
 
   // Default values.
   if (!resolvedAccounts.candyGuard.value) {
@@ -264,8 +264,8 @@ export function mintV2(
   );
 
   // Data.
-  const data = getMintV2InstructionDataSerializer().serialize(
-    resolvedArgs as MintV2InstructionDataArgs
+  const data = getMintV1InstructionDataSerializer().serialize(
+    resolvedArgs as MintV1InstructionDataArgs
   );
 
   // Bytes Created On Chain.

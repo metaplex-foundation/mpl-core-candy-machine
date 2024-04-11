@@ -6,7 +6,7 @@ use crate::{
     RevokeAssetDelegateHelperAccounts,
 };
 
-pub fn set_collection_v2(ctx: Context<SetCollectionV2>) -> Result<()> {
+pub fn set_collection(ctx: Context<SetCollection>) -> Result<()> {
     let accounts = ctx.accounts;
     let candy_machine = &mut accounts.candy_machine;
 
@@ -55,7 +55,7 @@ pub fn set_collection_v2(ctx: Context<SetCollectionV2>) -> Result<()> {
 
 /// Sets the collection PDA for the candy machine.
 #[derive(Accounts)]
-pub struct SetCollectionV2<'info> {
+pub struct SetCollection<'info> {
     /// Candy Machine account.
     #[account(mut, has_one = authority)]
     candy_machine: Box<Account<'info, CandyMachine>>,

@@ -14,7 +14,7 @@ import {
   findCandyGuardPda,
   findCandyMachineAuthorityPda,
   getMplCoreCandyMachineCoreProgramId,
-  mintV2,
+  mintV1,
   setMintAuthority,
 } from '../src';
 import {
@@ -39,7 +39,7 @@ test('it can create a LUT for a candy machine v2', async (t) => {
   const builderWithoutLut = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,

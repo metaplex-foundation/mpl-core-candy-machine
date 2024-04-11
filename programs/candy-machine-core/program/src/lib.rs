@@ -51,8 +51,8 @@ pub mod candy_machine_core {
     ///   11. `[]` Instructions sysvar account
     ///   12. `[optional]` Token Authorization Rules program
     ///   13. `[optional]` Token authorization rules account
-    pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData) -> Result<()> {
-        instructions::initialize_v2(ctx, data)
+    pub fn initialize(ctx: Context<Initialize>, data: CandyMachineData) -> Result<()> {
+        instructions::initialize(ctx, data)
     }
 
     /// Mint an NFT.
@@ -114,8 +114,8 @@ pub mod candy_machine_core {
     ///   16. `[]` Instructions sysvar account
     ///   17. `[optional]` Token Authorization Rules program
     ///   18. `[optional]` Token authorization rules account
-    pub fn set_collection_v2(ctx: Context<SetCollectionV2>) -> Result<()> {
-        instructions::set_collection_v2(ctx)
+    pub fn set_collection(ctx: Context<SetCollection>) -> Result<()> {
+        instructions::set_collection(ctx)
     }
 
     /// Set a new mint authority of the candy machine.

@@ -46,7 +46,7 @@
       ]
     },
     {
-      "name": "initializeV2",
+      "name": "initialize",
       "docs": [
         "Initialize the candy machine account with the specified data and token standard.",
         "",
@@ -324,7 +324,7 @@
       ]
     },
     {
-      "name": "setCollectionV2",
+      "name": "setCollection",
       "docs": [
         "Set the collection mint for the candy machine.",
         "",
@@ -565,15 +565,6 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "version",
-            "docs": [
-              "Version of the account."
-            ],
-            "type": {
-              "defined": "AccountVersion"
-            }
-          },
-          {
             "name": "authority",
             "docs": [
               "Authority address."
@@ -789,23 +780,6 @@
                 "defined": "PluginAuthorityPair"
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "AccountVersion",
-      "docs": [
-        "Account versioning."
-      ],
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "V1"
-          },
-          {
-            "name": "V2"
           }
         ]
       }

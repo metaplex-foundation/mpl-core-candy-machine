@@ -348,8 +348,8 @@ kinobi.update(
         },
       },
     },
-    "mplCoreCandyMachineCore.initializeV2": {
-      name: "initializeCandyMachineV2",
+    "mplCoreCandyMachineCore.initialize": {
+      name: "initializeCandyMachine",
     },
     "mplCoreCandyMachineCore.mintAsset": {
       name: "mintAssetFromCandyMachine",
@@ -380,7 +380,7 @@ kinobi.update(
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       }
     },
-    "mplCoreCandyGuard.mintV2": {
+    "mplCoreCandyGuard.mintV1": {
       internal: true,
       args: {
         label: { name: "group" },
@@ -404,7 +404,7 @@ kinobi.update(
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
       },
     },
-    "mplCoreCandyMachineCore.setCollectionV2": {
+    "mplCoreCandyMachineCore.setCollection": {
       accounts: {
         newCollectionDelegateRecord: {
           defaultsTo: defaultsToMetadataDelegateRecordPda(
@@ -429,7 +429,6 @@ kinobi.update(
 kinobi.update(
   new k.UnwrapTypeDefinedLinksVisitor([
     "initializeCandyMachine.candyMachineData",
-    "initializeCandyMachineV2.candyMachineData",
   ])
 );
 kinobi.update(new k.FlattenInstructionArgsStructVisitor());
@@ -445,7 +444,6 @@ const defaultInitialCandyMachineData = {
 kinobi.update(
   new k.SetStructDefaultValuesVisitor({
     initializeCandyMachineInstructionData: defaultInitialCandyMachineData,
-    initializeCandyMachineV2InstructionData: defaultInitialCandyMachineData,
   })
 );
 
@@ -455,8 +453,6 @@ kinobi.update(
   new k.SetNumberWrappersVisitor({
     "candyMachineData.sellerFeeBasisPoints": percentAmount,
     "initializeCandyMachineInstructionData.sellerFeeBasisPoints": percentAmount,
-    "initializeCandyMachineV2InstructionData.sellerFeeBasisPoints":
-      percentAmount,
     "startDate.date": { kind: "DateTime" },
     "endDate.date": { kind: "DateTime" },
     "botTax.lamports": { kind: "SolAmount" },

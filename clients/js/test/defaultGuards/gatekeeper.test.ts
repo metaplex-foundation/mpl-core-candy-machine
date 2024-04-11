@@ -26,7 +26,7 @@ import {
 } from '@metaplex-foundation/umi-web3js-adapters';
 import test from 'ava';
 import { Buffer } from 'buffer';
-import { mintV2 } from '../../src';
+import { mintV1 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
@@ -69,7 +69,7 @@ test('it allows minting via a gatekeeper service', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -120,7 +120,7 @@ test('it defaults to calculating the gateway token PDA for us', async (t) => {
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -172,7 +172,7 @@ test('it allows minting even when the payer is different from the minter', async
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         minter,
@@ -215,7 +215,7 @@ test('it forbids minting when providing the wrong token', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -268,7 +268,7 @@ test('it allows minting using gateway tokens that expire when they are still val
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -321,7 +321,7 @@ test('it forbids minting using gateway tokens that have expired', async (t) => {
   const promise = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -380,7 +380,7 @@ test('it may immediately mark gateway tokens as expired after using them', async
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,
@@ -436,7 +436,7 @@ test('it charges a bot tax when trying to mint using the wrong token', async (t)
   const { signature } = await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
-      mintV2(umi, {
+      mintV1(umi, {
         candyMachine,
         asset: mint,
         collection,

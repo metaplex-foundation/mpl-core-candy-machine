@@ -22,12 +22,12 @@ pub mod candy_guard {
     }
 
     /// Mint an NFT from a candy machine wrapped in the candy guard.
-    pub fn mint_v2<'info>(
-        ctx: Context<'_, '_, '_, 'info, MintV2<'info>>,
+    pub fn mint_v1<'info>(
+        ctx: Context<'_, '_, '_, 'info, MintV1<'info>>,
         mint_args: Vec<u8>,
         label: Option<String>,
     ) -> Result<()> {
-        instructions::mint_v2(ctx, mint_args, label)
+        instructions::mint_v1(ctx, mint_args, label)
     }
 
     /// Route the transaction to a guard instruction.

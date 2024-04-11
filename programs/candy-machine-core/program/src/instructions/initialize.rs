@@ -4,15 +4,14 @@ use crate::{
     approve_asset_collection_delegate,
     constants::{AUTHORITY_SEED, HIDDEN_SECTION},
     state::{CandyMachine, CandyMachineData},
-    AccountVersion, ApproveAssetDelegateHelperAccounts,
+    ApproveAssetDelegateHelperAccounts,
 };
 
-pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData) -> Result<()> {
+pub fn initialize(ctx: Context<Initialize>, data: CandyMachineData) -> Result<()> {
     let candy_machine_account = &mut ctx.accounts.candy_machine;
 
     let candy_machine = CandyMachine {
         data,
-        version: AccountVersion::V2,
         authority: ctx.accounts.authority.key(),
         mint_authority: ctx.accounts.authority.key(),
         collection_mint: ctx.accounts.collection.key(),
@@ -49,7 +48,7 @@ pub fn initialize_v2(ctx: Context<InitializeV2>, data: CandyMachineData) -> Resu
 /// Initializes a new candy machine.
 #[derive(Accounts)]
 #[instruction(data: CandyMachineData)]
-pub struct InitializeV2<'info> {
+pub struct Initialize<'info> {
     /// Candy Machine account. The account space must be allocated to allow accounts larger
     /// than 10kb.
     ///

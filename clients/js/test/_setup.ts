@@ -44,7 +44,7 @@ import {
   GuardSetArgs,
   addConfigLines,
   createCandyGuard as baseCreateCandyGuard,
-  createCandyMachineV2 as baseCreateCandyMachineV2,
+  createCandyMachine as baseCreateCandyMachineV2,
   findCandyGuardPda,
   mplCandyMachine,
   wrap,
