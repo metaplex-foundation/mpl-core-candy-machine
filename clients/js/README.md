@@ -7,7 +7,7 @@ A Umi-compatible JavaScript library for candy machines.
 1. First, if you're not already using Umi, [follow these instructions to install the Umi framework](https://github.com/metaplex-foundation/umi/blob/main/docs/installation.md).
 2. Next, install this library using the package manager of your choice.
    ```sh
-   npm install @metaplex-foundation/mpl-candy-machine
+   npm install @metaplex-foundation/mpl-core-candy-machine
    ```
 2. Finally, register the library with your Umi instance like so.
    ```ts
