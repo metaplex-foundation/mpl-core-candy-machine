@@ -6,11 +6,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import test from 'ava';
-import {
-  CandyMachine,
-  createCandyMachine,
-  fetchCandyMachine,
-} from '../src';
+import { CandyMachine, createCandyMachine, fetchCandyMachine } from '../src';
 import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
 
 test('it can create a candy machine using config line settings', async (t) => {

@@ -17,8 +17,7 @@ export type CreateCandyMachineInput = Omit<
 };
 
 export const createCandyMachine = async (
-  context: Parameters<typeof initializeCandyMachine>[0] &
-    Pick<Context, 'rpc'>,
+  context: Parameters<typeof initializeCandyMachine>[0] & Pick<Context, 'rpc'>,
   input: CreateCandyMachineInput
 ): Promise<TransactionBuilder> => {
   const space = getCandyMachineSize(
