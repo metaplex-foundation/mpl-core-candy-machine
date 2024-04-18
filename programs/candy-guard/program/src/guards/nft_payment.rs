@@ -147,7 +147,7 @@ impl Condition for NftPayment {
         let destination_ata = try_get_account_info(ctx.accounts.remaining, index + 4)?;
         let spl_ata_program = try_get_account_info(ctx.accounts.remaining, index + 5)?;
         let spl_token_program = try_get_account_info(ctx.accounts.remaining, index + 6)?;
-        let token_metadata_program = try_get_account_info(ctx.accounts.remaining, index + 7)?;
+        let _token_metadata_program = try_get_account_info(ctx.accounts.remaining, index + 7)?;
 
         let spl_token_info = spl_token_program.to_account_info();
         let token_metadata_info = spl_token_program.to_account_info();

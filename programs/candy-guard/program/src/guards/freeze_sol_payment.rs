@@ -326,7 +326,7 @@ pub fn freeze_nft(
     let (_, bump) = Pubkey::find_program_address(&seeds, &crate::ID);
 
     // TODO maybe remove
-    let signer = [
+    let _signer = [
         FreezeEscrow::PREFIX_SEED,
         destination.as_ref(),
         candy_guard_key.as_ref(),
