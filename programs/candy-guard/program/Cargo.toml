@@ -20,7 +20,7 @@ default = []
 [dependencies]
 anchor-lang = "0.28.0"
 arrayref = "0.3.6"
-mpl-core-candy-guard-derive = { path = "../macro", version = "0.2.0" }
+mpl-core-candy-guard-derive = { path = "../macro", version = "0.2.1" }
 mpl-core-candy-machine-core = { path = "../../candy-machine-core/program", version = "0.2.0", features = ["cpi"] }
 mpl-token-metadata = "3.2.1"
 mpl-core = { version = "0.4.3" }
