@@ -228,7 +228,7 @@ fn create_and_mint(
         &[bump],
     ];
 
-    let sysvar_instructions_info = accounts
+    let _sysvar_instructions_info = accounts
         .sysvar_instructions
         .as_ref()
         .ok_or(CandyError::MissingInstructionsSysvar)?;
