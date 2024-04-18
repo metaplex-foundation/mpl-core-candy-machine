@@ -1,5 +1,5 @@
 [package]
-name = "mpl-candy-guard-derive"
+name = "mpl-core-candy-guard-derive"
 version = "0.2.0"
 edition = "2021"
 description = "Procedural macro for automating the implementation of Metaplex Candy Guard."

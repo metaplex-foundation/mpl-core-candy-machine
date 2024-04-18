@@ -1232,14 +1232,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mpl-candy-guard-derive"
-version = "0.2.0"
-dependencies = [
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
 name = "mpl-core"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1259,8 +1251,8 @@ version = "0.2.0"
 dependencies = [
  "anchor-lang",
  "arrayref",
- "mpl-candy-guard-derive",
  "mpl-core",
+ "mpl-core-candy-guard-derive",
  "mpl-core-candy-machine-core",
  "mpl-token-metadata",
  "solana-gateway",
@@ -1268,6 +1260,14 @@ dependencies = [
  "spl-associated-token-account",
  "spl-token",
  "spl-token-2022",
+]
+
+[[package]]
+name = "mpl-core-candy-guard-derive"
+version = "0.2.0"
+dependencies = [
+ "quote",
+ "syn 1.0.109",
 ]
 
 [[package]]
