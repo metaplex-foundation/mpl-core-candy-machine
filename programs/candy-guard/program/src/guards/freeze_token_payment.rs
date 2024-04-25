@@ -22,7 +22,7 @@ use crate::{
     },
 };
 
-/// Guard that charges an amount in a specified spl-token as payment for the mint with a freeze period.
+/// Guard that charges an amount in a specified spl-token as payment for the creation with a freeze period.
 ///
 /// List of accounts required:
 ///
@@ -30,7 +30,7 @@ use crate::{
 ///           destination_ata pubkey, candy guard pubkey, candy machine pubkey]`).
 ///   1. `[writable]` Token account holding the required amount.
 ///   2. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA
-///                   pubkey, token program pubkey, nft mint pubkey]`).
+///                   pubkey, token program pubkey, asset pubkey]`).
 ///   3. `[]` SPL Token program.
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct FreezeTokenPayment {
@@ -76,7 +76,7 @@ impl Guard for FreezeTokenPayment {
             //   1. `[signer]` Candy Guard authority.
             //   2. `[]` System program account.
             //   3. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA
-            //                   pubkey, token program pubkey, nft mint pubkey]`).
+            //                   pubkey, token program pubkey, asset pubkey]`).
             //   4. `[]` Token mint account.
             //   5. `[]` Token program account.
             //   6. `[]` Associate token program account.
@@ -151,13 +151,13 @@ impl Guard for FreezeTokenPayment {
 
                 Ok(())
             }
-            // Thaw an eligible NFT.
+            // Thaw an eligible Asset.
             //
             // List of accounts required:
             //
             //   0. `[writable]` Freeze PDA to receive the funds (seeds `["freeze_escrow",
             //                   destination_ata pubkey, candy guard pubkey, candy machine pubkey]`).
-            //   1. `[writable]` Mint account for the Asset.
+            //   1. `[writable]` Asset Pubkey.
             //   2. `[writable]` Collection address of the Asset.
             //   3. `[]` mpl-core program ID.
             //   4. `[]` System program.
@@ -173,7 +173,7 @@ impl Guard for FreezeTokenPayment {
             //                   candy machine pubkey]`).
             //   1. `[signer]` Candy Guard authority.
             //   2. `[writable]` Associate token account of the Freeze PDA (seeds `[freeze PDA pubkey, token
-            //                   program pubkey, nft mint pubkey]`).
+            //                   program pubkey, asset pubkey]`).
             //   3. `[writable]` Address to receive the funds (must match the `destination_ata` address
             //                   of the guard configuration).
             //   4. `[]` Token program account.

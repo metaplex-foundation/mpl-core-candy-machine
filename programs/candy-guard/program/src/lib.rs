@@ -21,7 +21,7 @@ pub mod candy_guard {
         instructions::initialize(ctx, data)
     }
 
-    /// Mint an NFT from a candy machine wrapped in the candy guard.
+    /// Create an Asset from a candy machine wrapped in the candy guard.
     pub fn mint_v1<'info>(
         ctx: Context<'_, '_, '_, 'info, MintV1<'info>>,
         mint_args: Vec<u8>,
@@ -60,8 +60,8 @@ pub mod candy_guard {
         instructions::withdraw(ctx)
     }
 
-    /// Add a candy guard to a candy machine. After the guard is added, mint
-    /// is only allowed through the candy guard.
+    /// Add a candy guard to a candy machine. After the guard is added, 
+    /// Asset creation is only allowed through the candy guard.
     pub fn wrap(ctx: Context<Wrap>) -> Result<()> {
         instructions::wrap(ctx)
     }

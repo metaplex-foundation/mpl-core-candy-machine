@@ -128,11 +128,11 @@ fn validate(ctx: &EvaluationContext) -> Result<()> {
     Ok(())
 }
 
-/// Send a mint transaction to the candy machine.
+/// Send a asset creation transaction to the candy machine.
 fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
     let candy_guard = &ctx.accounts.candy_guard;
 
-    // candy machine mint instruction accounts
+    // candy machine asset creation instruction accounts
     let mint_accounts = Box::new(mpl_core_candy_machine_core::cpi::accounts::MintAsset {
         candy_machine: ctx.accounts.candy_machine.to_account_info(),
         authority_pda: ctx.accounts.candy_machine_authority_pda.clone(),
@@ -185,7 +185,7 @@ fn cpi_mint(ctx: &EvaluationContext) -> Result<()> {
     Ok(())
 }
 
-/// Mint an NFT.
+/// Create an Asset.
 #[derive(Accounts)]
 pub struct MintV1<'info> {
     /// Candy Guard account.
@@ -208,7 +208,7 @@ pub struct MintV1<'info> {
     #[account(mut)]
     candy_machine_authority_pda: UncheckedAccount<'info>,
 
-    /// Payer for the mint (SOL) fees.
+    /// Payer for the asset creation (SOL) fees.
     #[account(mut)]
     payer: Signer<'info>,
 
@@ -216,19 +216,19 @@ pub struct MintV1<'info> {
     #[account(mut)]
     minter: Signer<'info>,
 
-    /// Optionally mint to different owner
+    /// Optionally create to different owner
     owner: Option<UncheckedAccount<'info>>,
 
-    /// Mint account of the NFT. The account will be initialized if necessary.
+    /// Account of the Asset. The account will be initialized if necessary.
     ///
     /// Must be a signer if:
-    ///   * the nft_mint account does not exist.
+    ///   * the asset account does not exist.
     ///
     /// CHECK: account checked in CPI
     #[account(mut)]
     asset: UncheckedAccount<'info>,
 
-    /// Mint account of the collection NFT.
+    /// Account of the collection Asset.
     ///
     /// CHECK: account checked in CPI
     #[account(mut)]
@@ -240,14 +240,11 @@ pub struct MintV1<'info> {
     // #[account(address = mpl_token_metadata::ID)]
     // token_metadata_program: Option<UncheckedAccount<'info>>,
 
-    /// Token Metadata program.
+    /// MPL Core program.
     ///
     /// CHECK: account checked in CPI
     #[account(address = mpl_core::ID)]
     mpl_core_program: UncheckedAccount<'info>,
-
-    /// SPL Token program.
-    // spl_token_program: Program<'info, Token>,
 
     /// System program.
     system_program: Program<'info, System>,

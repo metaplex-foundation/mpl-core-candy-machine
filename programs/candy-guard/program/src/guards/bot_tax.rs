@@ -10,7 +10,7 @@ use crate::{errors::CandyGuardError, state::GuardType};
 
 /// Guard is used to:
 /// * charge a penalty for invalid transactions
-/// * validate that the mint transaction is the last transaction
+/// * validate that the create transaction is the last transaction
 /// * verify that only authorized programs have instructions
 ///
 /// The `bot_tax` is applied to any error that occurs during the

@@ -2,8 +2,8 @@ use crate::state::GuardType;
 
 use super::*;
 
-/// Guard that stop the mint once the specified amount of items
-/// redeenmed is reached.
+/// Guard that stop the asset creation once the
+/// specified amount of items redeemed is reached.
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct RedeemedAmount {
     pub maximum: u64,

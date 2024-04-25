@@ -9,7 +9,7 @@ use crate::{
 
 use super::*;
 
-/// Guard that uses a merkle tree to specify the addresses allowed to mint.
+/// Guard that uses a merkle tree to specify the addresses allowed to create assets.
 ///
 /// List of accounts required:
 ///
@@ -17,7 +17,7 @@ use super::*;
 ///           payer key, candy guard pubkey, candy machine pubkey]`).
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct AllowList {
-    /// Merkle root of the addresses allowed to mint.
+    /// Merkle root of the addresses allowed to create assets.
     pub merkle_root: [u8; 32],
 }
 

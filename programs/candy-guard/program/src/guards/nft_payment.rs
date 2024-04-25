@@ -9,7 +9,7 @@ use super::*;
 use crate::{state::GuardType, utils::assert_keys_equal};
 
 /// Guard that charges another NFT (token) from a specific collection as payment
-/// for the mint.
+/// for the asset creation.
 ///
 /// List of accounts required:
 ///

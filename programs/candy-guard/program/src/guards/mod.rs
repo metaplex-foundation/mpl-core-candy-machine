@@ -164,7 +164,7 @@ pub trait Guard: Condition + AnchorSerialize + AnchorDeserialize {
     }
 }
 pub struct EvaluationContext<'b, 'c, 'info> {
-    /// Accounts required to mint an NFT.
+    /// Accounts required to create an Asset.
     pub(crate) accounts: MintAccounts<'b, 'c, 'info>,
 
     /// The cursor for the remaining account list. When a guard "consumes" one of the

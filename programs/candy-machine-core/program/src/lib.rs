@@ -41,24 +41,18 @@ pub mod candy_machine_core {
     ///   1. `[writable]` Authority PDA (seeds `["candy_machine", candy machine id]`)
     ///   2. `[]` Candy Machine authority
     ///   3. `[signer]` Payer
-    ///   4. `[]` Collection metadata
-    ///   5. `[]` Collection mint
-    ///   6. `[]` Collection master edition
-    ///   7. `[signer]` Collection update authority
-    ///   8. `[writable]` Collection metadata delegate record
-    ///   9. `[]` Token Metadata program
-    ///   10. `[]` System program
-    ///   11. `[]` Instructions sysvar account
-    ///   12. `[optional]` Token Authorization Rules program
-    ///   13. `[optional]` Token authorization rules account
+    ///   4. `[]` Collection address
+    ///   5. `[signer]` Collection update authority
+    ///   6. `[]` MPL Core program
+    ///   7. `[]` System program
+    ///   8. `[]` Instructions sysvar account
     pub fn initialize(ctx: Context<Initialize>, data: CandyMachineData) -> Result<()> {
         instructions::initialize(ctx, data)
     }
 
-    /// Mint an NFT.
+    /// Create an Asset.
     ///
-    /// Only the candy machine mint authority is allowed to mint. This handler mints both
-    /// NFTs and Programmable NFTs.
+    /// Only the candy machine mint authority is allowed to mint. 
     ///
     /// # Accounts
     ///
@@ -69,11 +63,10 @@ pub mod candy_machine_core {
     ///   4. `[]` Asset Owner
     ///   5. `[writable]` Asset account
     ///   6. `[]` Collection
-    ///   7. `[]` Collection delegate or update authority
-    ///   8. `[]` Asset program
-    ///   9. `[]` System program
-    ///   10. `[optional]` Instructions sysvar account
-    ///   11. `[]` SlotHashes sysvar cluster data.
+    ///   7. `[]` MPL Core program
+    ///   8. `[]` System program
+    ///   9. `[optional]` Instructions sysvar account
+    ///   10. `[]` SlotHashes sysvar cluster data.
     pub fn mint_asset<'info>(
         ctx: Context<'_, '_, '_, 'info, MintAsset<'info>>,
         args: MintAssetArgs,
@@ -91,7 +84,7 @@ pub mod candy_machine_core {
         instructions::set_authority(ctx, new_authority)
     }
 
-    /// Set the collection mint for the candy machine.
+    /// Set the collection Address for the candy machine.
     ///
     /// # Accounts
     ///
@@ -100,20 +93,11 @@ pub mod candy_machine_core {
     ///   2. `[]` Authority PDA (seeds `["candy_machine", candy machine id]`)
     ///   3. `[signer]` Payer
     ///   4. `[]` Collection update authority
-    ///   5. `[]` Collection mint
-    ///   6. `[]` Collection metadata
-    ///   7. `[optional, writable]` Metadata delegate record
-    ///   8. `[optional, writable]` Collection authority record
-    ///   9. `[signer]` New collection update authority
-    ///   10. `[]` New collection mint
-    ///   11. `[]` New collection metadata
-    ///   12. `[]` New collection master edition
-    ///   13. `[writable]` New collection metadata delegate record
-    ///   14. `[]` Token Metadata program
-    ///   15. `[]` System program
-    ///   16. `[]` Instructions sysvar account
-    ///   17. `[optional]` Token Authorization Rules program
-    ///   18. `[optional]` Token authorization rules account
+    ///   5. `[]` Collection address
+    ///   6. `[signer]` update authority of new collection
+    ///   7. `[]` MPL Core program
+    ///   8. `[]` System program
+    ///   9. `[]` Instructions sysvar account
     pub fn set_collection(ctx: Context<SetCollection>) -> Result<()> {
         instructions::set_collection(ctx)
     }

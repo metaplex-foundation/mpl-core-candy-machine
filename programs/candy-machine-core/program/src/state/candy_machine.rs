@@ -11,7 +11,7 @@ pub struct CandyMachine {
     pub authority: Pubkey,
     /// Authority address allowed to mint from the candy machine.
     pub mint_authority: Pubkey,
-    /// The collection mint for the candy machine.
+    /// The collection Address for the candy machine.
     pub collection_mint: Pubkey,
     /// Number of assets redeemed.
     pub items_redeemed: u64,
@@ -27,7 +27,7 @@ pub struct CandyMachine {
     // - (u32 * items_available) mint indices
 }
 
-/// Config line struct for storing asset (NFT) data pre-mint.
+/// Config line struct for storing asset data pre-mint.
 #[derive(AnchorSerialize, AnchorDeserialize, Debug)]
 pub struct ConfigLine {
     /// Name of the asset.

@@ -15,7 +15,7 @@ use crate::{
     CandyError, CandyMachine, ConfigLine, MintAssetArgs,
 };
 
-/// Accounts to mint an NFT.
+/// Accounts to create an Asset.
 pub(crate) struct MintAccounts<'info> {
     pub authority_pda: AccountInfo<'info>,
     pub payer: AccountInfo<'info>,
@@ -52,7 +52,7 @@ pub fn mint_asset<'info>(
     )
 }
 
-/// Mint a new NFT.
+/// Create a new Asset.
 ///
 /// The index minted depends on the configuration of the candy machine: it could be
 /// a psuedo-randomly selected one or sequential. In both cases, after minted a
@@ -269,24 +269,24 @@ pub struct MintAsset<'info> {
     #[account(mut)]
     payer: Signer<'info>,
 
-    /// NFT account owner.
+    /// Asset account owner.
     ///
     /// CHECK: account not written or read from
     asset_owner: UncheckedAccount<'info>,
 
-    /// Mint account of the NFT. The account will be initialized if necessary.
+    /// Asset account. The account will be initialized if necessary.
     ///
     /// CHECK: account checked in CPI
     #[account(mut)]
     asset: Signer<'info>,
 
-    /// Mint account of the collection NFT.
+    /// Account of the collection.
     ///
     /// CHECK: account checked in CPI
     #[account(mut)]
     collection: UncheckedAccount<'info>,
 
-    /// Token Metadata program.
+    /// MPL Core program.
     ///
     /// CHECK: account checked in CPI
     #[account(address = mpl_core::ID)]

@@ -13,8 +13,8 @@ use crate::{
 ///
 /// List of accounts required:
 ///
-///   0. `[writable]` Mint counter PDA. The PDA is derived
-///                   using the seed `["nft_mint_limit", nft mint guard id, mint key,
+///   0. `[writable]` Creation counter PDA. The PDA is derived
+///                   using the seed `["nft_mint_limit", nft mint guard id, Asset key,
 ///                   candy guard pubkey, candy machine pubkey]`.
 ///   1. `[]` Token account of the NFT.
 ///   2. `[]` Metadata account of the NFT.
@@ -22,9 +22,9 @@ use crate::{
 pub struct NftMintLimit {
     /// Unique identifier of the mint limit.
     pub id: u8,
-    /// Limit of mints per individual mint address.
+    /// Limit of mints per individual aset address.
     pub limit: u16,
-    /// Required collection of the mint.
+    /// Required collection of the asset.
     pub required_collection: Pubkey,
 }
 

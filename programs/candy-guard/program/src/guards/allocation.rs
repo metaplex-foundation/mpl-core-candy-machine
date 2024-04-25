@@ -6,7 +6,7 @@ use crate::{
     utils::{assert_keys_equal, assert_owned_by, cmp_pubkeys},
 };
 
-/// Gaurd to specify the maximum number of mints in a guard set.
+/// Gaurd to specify the maximum number of creations in a guard set.
 ///
 /// List of accounts required:
 ///

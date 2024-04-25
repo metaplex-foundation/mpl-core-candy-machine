@@ -123,7 +123,7 @@ pub struct GuardSet {
     pub sol_fixed_fee: Option<SolFixedFee>,
     /// NFT mint limit guard (add a limit on the number of mints per NFT).
     pub nft_mint_limit: Option<NftMintLimit>,
-    /// NFT mint limit guard (add a limit on the number of mints per NFT).
+    /// Edition guard (counts the edition number and adds it to the asset).
     pub edition: Option<Edition>,
 }
 

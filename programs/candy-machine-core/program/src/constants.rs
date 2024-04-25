@@ -25,7 +25,7 @@ pub const AUTHORITY_SEED: &str = "candy_machine";
 pub const HIDDEN_SECTION: usize = 8           // discriminator
     + 32                                      // authority
     + 32                                      // mint authority
-    + 32                                      // collection mint
+    + 32                                      // collection address
     + 8                                       // items redeemed
     + 8                                       // items available (config data)
     + 8                                       // max supply

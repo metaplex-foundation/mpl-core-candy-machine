@@ -10,7 +10,7 @@ pub fn set_collection(ctx: Context<SetCollection>) -> Result<()> {
     let accounts = ctx.accounts;
     let candy_machine = &mut accounts.candy_machine;
 
-    // check whether the new collection mint is the same as the current collection; when they
+    // check whether the new collection address is the same as the current collection; when they
     // are the same, we are just using this instruction to update the collection delegate so
     // we don't enforce the "mint in progress" constraint
     if !cmp_pubkeys(accounts.new_collection.key, &candy_machine.collection_mint) {
@@ -82,22 +82,22 @@ pub struct SetCollection<'info> {
     /// CHECK: account checked in CPI
     collection_update_authority: UncheckedAccount<'info>,
 
-    /// Mint account of the collection.
+    /// Account of the collection.
     ///
     /// CHECK: account checked in CPI
     #[account(mut)]
     collection: UncheckedAccount<'info>,
 
-    /// Update authority of the new collection NFT.
+    /// Update authority of the new collection.
     new_collection_update_authority: Signer<'info>,
 
-    /// New collection mint.
+    /// New collection Address.
     ///
     /// CHECK: account checked in CPI
     #[account(mut)]
     new_collection: UncheckedAccount<'info>,
 
-    /// Token Metadata program.
+    /// MPL Core program.
     ///
     /// CHECK: account checked in CPI
     #[account(address = mpl_core::ID)]

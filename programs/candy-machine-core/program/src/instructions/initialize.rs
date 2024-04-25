@@ -60,7 +60,7 @@ pub struct Initialize<'info> {
     )]
     candy_machine: UncheckedAccount<'info>,
 
-    /// Authority PDA used to verify minted NFTs to the collection.
+    /// Authority PDA used to verify Assets created to the collection.
     ///
     /// CHECK: account checked in seeds constraint
     #[account(
@@ -70,7 +70,7 @@ pub struct Initialize<'info> {
     )]
     authority_pda: UncheckedAccount<'info>,
 
-    /// Candy Machine authority. This is the address that controls the upate of the candy machine.
+    /// Candy Machine authority. This is the address that controls the update of the candy machine.
     ///
     /// CHECK: authority can be any account and is not written to or read
     authority: UncheckedAccount<'info>,
@@ -79,14 +79,14 @@ pub struct Initialize<'info> {
     #[account(mut)]
     payer: Signer<'info>,
 
-    /// Mint account of the collection.
+    /// Account of the collection.
     ///
     /// CHECK: account checked in CPI
     #[account(mut)]
     collection: UncheckedAccount<'info>,
 
     /// Update authority of the collection. This needs to be a signer so the candy
-    /// machine can approve a delegate to verify minted NFTs to the collection.
+    /// machine can approve a delegate to verify minted Assets to the collection.
     #[account(mut)]
     collection_update_authority: Signer<'info>,
 

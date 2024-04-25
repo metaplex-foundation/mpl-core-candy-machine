@@ -23,14 +23,7 @@ use crate::{
 
 pub const FREEZE_SOL_FEE: u64 = 10_000;
 
-/// Guard that charges an amount in SOL (lamports) for the mint with a freeze period.
-///
-/// List of accounts required:
-///
-///   0. `[writable]` Freeze PDA to receive the funds (seeds `["freeze_escrow",
-///           destination pubkey, candy guard pubkey, candy machine pubkey]`).
-///   1. `[]` Associate token account of the NFT (seeds `[payer pubkey, token
-///           program pubkey, nft mint pubkey]`).
+/// Guard that charges an amount in SOL (lamports) for the creation with a freeze period.
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct FreezeSolPayment {
     pub lamports: u64,
@@ -99,13 +92,13 @@ impl Guard for FreezeSolPayment {
 
                 initialize_freeze(ctx, route_context, data, destination)
             }
-            // Thaw an eligible NFT.
+            // Thaw an eligible Asset.
             //
             // List of accounts required:
             //
             //   0. `[writable]` Freeze PDA to receive the funds (seeds `["freeze_escrow",
             //                   destination pubkey, candy guard pubkey, candy machine pubkey]`).
-            //   1. `[writable]` Mint account for the Asset.
+            //   1. `[writable]` Asset Account.
             //   2. `[writable]` Collection account for the Asset.
             //   3. `[]` MPL Core program ID.
             //   4. `[]` System program.
@@ -224,7 +217,7 @@ pub struct FreezeEscrow {
     /// Number of NFTs frozen.
     pub frozen_count: u64,
 
-    /// The timestamp of the first (frozen) mint. This is used to calculate
+    /// The timestamp of the first (frozen) asset creation. This is used to calculate
     /// when the freeze period is over.
     pub first_mint_time: Option<i64>,
 
@@ -247,7 +240,7 @@ impl FreezeEscrow {
         + 32    // candy guard
         + 32    // candy machine
         + 8     // frozen count
-        + 1 + 8 // option + first mint time
+        + 1 + 8 // option + first asset creation time
         + 8     // freeze time
         + 32    // destination
         + 32; // authority
