@@ -234,12 +234,6 @@ pub struct MintV1<'info> {
     #[account(mut)]
     collection: UncheckedAccount<'info>,
 
-    /// Token Metadata program.
-    ///
-    /// CHECK: account checked in CPI
-    // #[account(address = mpl_token_metadata::ID)]
-    // token_metadata_program: Option<UncheckedAccount<'info>>,
-
     /// MPL Core program.
     ///
     /// CHECK: account checked in CPI
