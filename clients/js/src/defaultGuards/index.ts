@@ -23,3 +23,4 @@ export * from './tokenGate';
 export * from './tokenPayment';
 export * from './token2022Payment';
 export * from './edition';
+export * from './assetPayment'

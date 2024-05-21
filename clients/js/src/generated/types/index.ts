@@ -9,6 +9,7 @@
 export * from './addressGate';
 export * from './allocation';
 export * from './allowList';
+export * from './assetPayment';
 export * from './botTax';
 export * from './candyMachineData';
 export * from './configLine';

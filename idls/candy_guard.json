@@ -558,6 +558,32 @@
       }
     },
     {
+      "name": "AssetPayment",
+      "docs": [
+        "Guard that charges another Core Asset from a specific collection as payment",
+        "for the mint.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[writeable]` Asset address.",
+        "1. `[]` Collection address.",
+        "2. `[]` Destination address."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requiredCollection",
+            "type": "publicKey"
+          },
+          {
+            "name": "destination",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
       "name": "BotTax",
       "docs": [
         "Guard is used to:",
@@ -1452,6 +1478,17 @@
                 "defined": "Edition"
               }
             }
+          },
+          {
+            "name": "assetPayment",
+            "docs": [
+              "Asset Payment (charge an Asset in order to mint)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetPayment"
+              }
+            }
           }
         ]
       }
@@ -1552,6 +1589,9 @@
           },
           {
             "name": "Edition"
+          },
+          {
+            "name": "AssetPayment"
           }
         ]
       }

@@ -10,6 +10,7 @@ import {
   AssetV1,
   fetchAssetV1,
   createCollectionV1 as baseCreateCollection,
+  createV1 as baseCreate,
 } from '@metaplex-foundation/mpl-core';
 import {
   createAssociatedToken,
@@ -85,6 +86,17 @@ export const createProgrammableNft = async (
   return mint;
 };
 
+export const createAsset = async (umi: Umi, input: Partial<Parameters<typeof baseCreate>[1]>): Promise<Signer> => {
+  const mint = generateSigner(umi);
+  await baseCreate(umi, {
+    asset: mint,
+    ...defaultAssetData(),
+    ...input,
+  }).sendAndConfirm(umi);
+
+  return mint;
+}
+
 export const createCollection = async (
   umi: Umi,
   input: Partial<Parameters<typeof baseCreateCollection>[1]> = {}
@@ -98,6 +110,12 @@ export const createCollection = async (
 
   return mint;
 };
+
+export const createAssetWithCollection = async (umi: Umi) => {
+  const collection = await createCollection(umi);
+  const asset = await createAsset(umi, { collection: collection.publicKey });
+  return [asset, collection];
+}
 
 export const createCollectionNft = async (
   umi: Umi,

@@ -34,6 +34,7 @@ export enum GuardType {
   SolFixedFee,
   NftMintLimit,
   Edition,
+  AssetPayment,
 }
 
 export type GuardTypeArgs = GuardType;
