@@ -26,7 +26,7 @@ export const assetPaymentGuardManifest: GuardManifest<
   mintParser: (context, mintContext, args) => {
     const remainingAccounts: GuardRemainingAccount[] = [
       { publicKey: args.asset, isWritable: true },
-      { publicKey: args.requiredCollection, isWritable: false},
+      { publicKey: args.requiredCollection, isWritable: false },
       { publicKey: args.destination, isWritable: false },
     ];
 

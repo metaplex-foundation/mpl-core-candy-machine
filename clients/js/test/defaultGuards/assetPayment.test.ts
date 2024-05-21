@@ -1,6 +1,4 @@
-import {
-  setComputeUnitLimit,
-} from '@metaplex-foundation/mpl-toolbox';
+import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
 import {
   generateSigner,
   publicKey,
@@ -25,15 +23,20 @@ test('it transfers an Asset from the payer to the destination', async (t) => {
   // Given a loaded Candy Machine with an assetPayment guard on a required collection.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  
-  const [assetToSend, requiredCollection] = await createAssetWithCollection(umi)
+
+  const [assetToSend, requiredCollection] = await createAssetWithCollection(
+    umi
+  );
 
   const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
-      assetPayment: some({ requiredCollection: publicKey(requiredCollection), destination }),
+      assetPayment: some({
+        requiredCollection: publicKey(requiredCollection),
+        destination,
+      }),
     },
   });
 
@@ -69,14 +72,17 @@ test('it allows minting even when the payer is different from the minter', async
   // Given a loaded Candy Machine with an assetPayment guard on a required collection.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const requiredCollection = await createCollection(umi)
+  const requiredCollection = await createCollection(umi);
 
   const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
-      assetPayment: some({ requiredCollection: publicKey(requiredCollection), destination }),
+      assetPayment: some({
+        requiredCollection: publicKey(requiredCollection),
+        destination,
+      }),
     },
   });
 
@@ -123,21 +129,24 @@ test('it fails if the payer does not own the right Asset', async (t) => {
   // Given a loaded Candy Machine with an assetPayment guard on a required collection.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const [, requiredCollection] = await createAssetWithCollection(umi)
+  const [, requiredCollection] = await createAssetWithCollection(umi);
   const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
-      assetPayment: some({ requiredCollection: publicKey(requiredCollection), destination }),
+      assetPayment: some({
+        requiredCollection: publicKey(requiredCollection),
+        destination,
+      }),
     },
   });
 
   // And given the identity owns an Asset this is not from that collection.
-  const wrongAsset = generateSigner(umi)
+  const wrongAsset = generateSigner(umi);
   await createV1(umi, {
     asset: wrongAsset,
-    ...defaultAssetData()
+    ...defaultAssetData(),
   }).sendAndConfirm(umi);
 
   // When the identity tries to mint from it using its Asset to pay.
@@ -164,27 +173,29 @@ test('it fails if the payer does not own the right Asset', async (t) => {
   await t.throwsAsync(promise, { message: /InvalidNftCollection/ });
 });
 
-
 test('it charges a bot tax when trying to pay with the wrong Asset', async (t) => {
   // Given a loaded Candy Machine with an assetPayment guard on a required collection and a bot tax.
   const umi = await createUmi();
   const destination = generateSigner(umi).publicKey;
-  const [, requiredCollection] = await createAssetWithCollection(umi)
+  const [, requiredCollection] = await createAssetWithCollection(umi);
   const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
       botTax: some({ lamports: sol(0.1), lastInstruction: true }),
-      assetPayment: some({ requiredCollection: publicKey(requiredCollection), destination }),
+      assetPayment: some({
+        requiredCollection: publicKey(requiredCollection),
+        destination,
+      }),
     },
   });
 
   // And given the identity owns an Asset this is not from that collection.
-  const wrongAsset = generateSigner(umi)
+  const wrongAsset = generateSigner(umi);
   await createV1(umi, {
     asset: wrongAsset,
-    ...defaultAssetData()
+    ...defaultAssetData(),
   }).sendAndConfirm(umi);
 
   // When the identity tries to mint from it using its Asset to pay.

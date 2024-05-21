@@ -86,7 +86,10 @@ export const createProgrammableNft = async (
   return mint;
 };
 
-export const createAsset = async (umi: Umi, input: Partial<Parameters<typeof baseCreate>[1]>): Promise<Signer> => {
+export const createAsset = async (
+  umi: Umi,
+  input: Partial<Parameters<typeof baseCreate>[1]>
+): Promise<Signer> => {
   const mint = generateSigner(umi);
   await baseCreate(umi, {
     asset: mint,
@@ -95,7 +98,7 @@ export const createAsset = async (umi: Umi, input: Partial<Parameters<typeof bas
   }).sendAndConfirm(umi);
 
   return mint;
-}
+};
 
 export const createCollection = async (
   umi: Umi,
@@ -115,7 +118,7 @@ export const createAssetWithCollection = async (umi: Umi) => {
   const collection = await createCollection(umi);
   const asset = await createAsset(umi, { collection: collection.publicKey });
   return [asset, collection];
-}
+};
 
 export const createCollectionNft = async (
   umi: Umi,
