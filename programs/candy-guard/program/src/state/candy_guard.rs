@@ -128,6 +128,8 @@ pub struct GuardSet {
     pub edition: Option<Edition>,
     /// Asset Payment (charge an Asset in order to mint).
     pub asset_payment: Option<AssetPayment>,
+    /// Asset Burn (burn an Asset).
+    pub asset_burn: Option<AssetBurn>,
 }
 
 /// Available guard types.
@@ -158,6 +160,7 @@ pub enum GuardType {
     NftMintLimit,
     Edition,
     AssetPayment,
+    AssetBurn,
 }
 
 impl GuardType {

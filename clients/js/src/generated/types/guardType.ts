@@ -35,6 +35,7 @@ export enum GuardType {
   NftMintLimit,
   Edition,
   AssetPayment,
+  AssetBurn,
 }
 
 export type GuardTypeArgs = GuardType;
