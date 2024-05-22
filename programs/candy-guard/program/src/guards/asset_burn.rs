@@ -72,7 +72,7 @@ impl Condition for AssetBurn {
             .asset(asset_info)
             .collection(Some(collection_info))
             .authority(Some(&ctx.accounts.minter))
-            .payer(&ctx.accounts.payer);
+            .payer(&ctx.accounts.minter);
 
         burn_cpi.invoke()?;
 
