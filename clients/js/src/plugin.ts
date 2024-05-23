@@ -89,7 +89,7 @@ export const mplCandyMachine = (): UmiPlugin => ({
       editionGuardManifest,
       assetPaymentGuardManifest,
       assetBurnGuardManifest,
-      assetMintLimitGuardManifest,
+      assetMintLimitGuardManifest
     );
   },
 });

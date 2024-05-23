@@ -91,7 +91,7 @@ test('it allows minting even when the payer is different from the minter', async
   const assetToSend = await createAsset(umi, {
     collection: requiredCollection.publicKey,
     owner: minter.publicKey,
-  })
+  });
 
   // When the minter mints from it using its Asset to pay.
   const mint = generateSigner(umi);
@@ -140,9 +140,7 @@ test('it fails if the payer does not own the right Asset', async (t) => {
   });
 
   // And given the identity owns an Asset this is not from that collection.
-  const wrongAsset = await createAsset(umi, {
-
-  })
+  const wrongAsset = await createAsset(umi, {});
 
   // When the identity tries to mint from it using its Asset to pay.
   const mint = generateSigner(umi);
@@ -187,9 +185,7 @@ test('it charges a bot tax when trying to pay with the wrong Asset', async (t) =
   });
 
   // And given the identity owns an Asset this is not from that collection.
-  const wrongAsset = await createAsset(umi, {
-
-  })
+  const wrongAsset = await createAsset(umi, {});
 
   // When the identity tries to mint from it using its Asset to pay.
   const mint = generateSigner(umi);

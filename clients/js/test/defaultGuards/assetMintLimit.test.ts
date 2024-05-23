@@ -1,6 +1,4 @@
-import {
-  setComputeUnitLimit,
-} from '@metaplex-foundation/mpl-toolbox';
+import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
 import {
   generateSigner,
   sol,
@@ -41,7 +39,11 @@ test('it allows minting when the asset mint limit is not reached', async (t) => 
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
     ],
     guards: {
-      assetMintLimit: some({ id: 1, limit: 5, requiredCollection: requiredCollection.publicKey}),
+      assetMintLimit: some({
+        id: 1,
+        limit: 5,
+        requiredCollection: requiredCollection.publicKey,
+      }),
     },
   });
 
@@ -79,14 +81,12 @@ test('it allows minting even when the payer is different from the minter', async
   // Given a loaded Candy Machine with a mint limit of 5.
   const umi = await createUmi();
   const minter = generateSigner(umi);
-  const [, requiredCollection] = await createAssetWithCollection(
-    umi
-  );
+  const [, requiredCollection] = await createAssetWithCollection(umi);
 
   const assetToVerify = await createAsset(umi, {
     collection: requiredCollection.publicKey,
     owner: minter.publicKey,
-  })
+  });
 
   const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
@@ -96,7 +96,11 @@ test('it allows minting even when the payer is different from the minter', async
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
     ],
     guards: {
-      assetMintLimit: some({ id: 1, limit: 5, requiredCollection: requiredCollection.publicKey}),
+      assetMintLimit: some({
+        id: 1,
+        limit: 5,
+        requiredCollection: requiredCollection.publicKey,
+      }),
     },
   });
 
@@ -147,7 +151,11 @@ test('it forbids minting when the asset mint limit is reached', async (t) => {
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
     ],
     guards: {
-      assetMintLimit: some({ id: 42, limit: 1, requiredCollection: requiredCollection.publicKey}),
+      assetMintLimit: some({
+        id: 42,
+        limit: 1,
+        requiredCollection: requiredCollection.publicKey,
+      }),
     },
   });
 
@@ -202,7 +210,11 @@ test('it forbids minting when minter does not own asset', async (t) => {
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
     ],
     guards: {
-      assetMintLimit: some({ id: 42, limit: 1, requiredCollection: requiredCollection.publicKey}),
+      assetMintLimit: some({
+        id: 42,
+        limit: 1,
+        requiredCollection: requiredCollection.publicKey,
+      }),
     },
   });
 
@@ -231,13 +243,9 @@ test('it forbids minting when minter does not own asset', async (t) => {
 test('it forbids minting when asset does not belong to the required collection', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 1.
   const umi = await createUmi();
-  const [assetToVerify] = await createAssetWithCollection(
-    umi
-  );
+  const [assetToVerify] = await createAssetWithCollection(umi);
 
-  const [, requiredCollectionB] = await createAssetWithCollection(
-    umi
-  );
+  const [, requiredCollectionB] = await createAssetWithCollection(umi);
 
   const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
@@ -277,19 +285,19 @@ test('it forbids minting when asset does not belong to the required collection',
 test('the mint limit is local to each asset', async (t) => {
   // Given a loaded Candy Machine with a mint limit of 1.
   const umi = await createUmi();
-  
+
   const minterA = generateSigner(umi);
   const requiredCollection = (await createCollection(umi)).publicKey;
 
   const assetToVerify = await createAsset(umi, {
     collection: requiredCollection,
     owner: minterA.publicKey,
-  })
+  });
 
   const assetToVerify2 = await createAsset(umi, {
     collection: requiredCollection,
     owner: minterA.publicKey,
-  })
+  });
 
   const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
@@ -346,14 +354,12 @@ test('forbids minting with different owners using the same asset', async (t) => 
   // Given a loaded Candy Machine with a mint limit of 1.
   const umi = await createUmi();
   const minterA = generateSigner(umi);
-  const [, requiredCollection] = await createAssetWithCollection(
-    umi
-  );
+  const [, requiredCollection] = await createAssetWithCollection(umi);
 
   const assetToVerify = await createAsset(umi, {
     collection: requiredCollection.publicKey,
     owner: minterA.publicKey,
-  })
+  });
 
   const collection = (await createCollection(umi)).publicKey;
   const { publicKey: candyMachine } = await createV2(umi, {
@@ -363,7 +369,11 @@ test('forbids minting with different owners using the same asset', async (t) => 
       { name: 'Degen #2', uri: 'https://example.com/degen/2' },
     ],
     guards: {
-      assetMintLimit: some({ id: 42, limit: 1, requiredCollection: requiredCollection.publicKey}),
+      assetMintLimit: some({
+        id: 42,
+        limit: 1,
+        requiredCollection: requiredCollection.publicKey,
+      }),
     },
   });
 
@@ -431,7 +441,11 @@ test('it charges a bot tax when trying to mint after the limit', async (t) => {
     ],
     guards: {
       botTax: some({ lamports: sol(0.1), lastInstruction: true }),
-      assetMintLimit: some({ id: 42, limit: 1, requiredCollection: requiredCollection.publicKey}),
+      assetMintLimit: some({
+        id: 42,
+        limit: 1,
+        requiredCollection: requiredCollection.publicKey,
+      }),
     },
   });
 

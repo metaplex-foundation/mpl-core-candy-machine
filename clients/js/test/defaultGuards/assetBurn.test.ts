@@ -74,7 +74,7 @@ test('it allows minting even when the payer is different from the minter', async
   const assetToBurn = await createAsset(umi, {
     collection: requiredCollection.publicKey,
     owner: minter.publicKey,
-  })
+  });
 
   // And a loaded Candy Machine with an assetBurn guard on that collection.
   const collection = (await createCollection(umi)).publicKey;
@@ -128,7 +128,7 @@ test('it fails if there is not valid Asset to burn', async (t) => {
   });
 
   // When we try to mint from it using an Asset that's not part of this collection.
-  const wrongAsset = await createAsset(umi, {})
+  const wrongAsset = await createAsset(umi, {});
 
   const mint = generateSigner(umi);
   const promise = transactionBuilder()
@@ -169,9 +169,7 @@ test('it charges a bot tax when trying to mint using the wrong Asset', async (t)
   });
 
   // When we try to mint from it using an Asset that's not part of this collection.
-  const wrongAsset = await createAsset(umi, {
-
-  })
+  const wrongAsset = await createAsset(umi, {});
 
   const mint = generateSigner(umi);
   const { signature } = await transactionBuilder()
