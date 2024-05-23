@@ -43,6 +43,8 @@ import {
   createMplTokenAuthRulesProgram,
 } from './programs';
 import { assetMintLimitGuardManifest } from './defaultGuards/assetMintLimit';
+import { assetBurnMultiGuardManifest } from './defaultGuards/assetBurnMulti';
+import { assetPaymentMultiGuardManifest } from './defaultGuards/assetPaymentMulti';
 
 export const mplCandyMachine = (): UmiPlugin => ({
   install(umi) {
@@ -89,7 +91,9 @@ export const mplCandyMachine = (): UmiPlugin => ({
       editionGuardManifest,
       assetPaymentGuardManifest,
       assetBurnGuardManifest,
-      assetMintLimitGuardManifest
+      assetMintLimitGuardManifest,
+      assetBurnMultiGuardManifest,
+      assetPaymentMultiGuardManifest,
     );
   },
 });

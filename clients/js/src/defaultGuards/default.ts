@@ -8,10 +8,14 @@ import {
   AllowListArgs,
   AssetBurn,
   AssetBurnArgs,
+  AssetBurnMulti,
+  AssetBurnMultiArgs,
   AssetMintLimit,
   AssetMintLimitArgs,
   AssetPayment,
   AssetPaymentArgs,
+  AssetPaymentMulti,
+  AssetPaymentMultiArgs,
   BotTax,
   BotTaxArgs,
   Edition,
@@ -87,6 +91,8 @@ import { NftMintLimitMintArgs } from './nftMintLimit';
 import { AssetPaymentMintArgs } from './assetPayment';
 import { AssetBurnMintArgs } from './assetBurn';
 import { AssetMintLimitMintArgs } from './assetMintLimit';
+import { AssetBurnMultiMintArgs } from './assetBurnMulti';
+import { AssetPaymentMultiMintArgs } from './assetPaymentMulti';
 
 /**
  * The arguments for all default Candy Machine guards.
@@ -119,6 +125,8 @@ export type DefaultGuardSetArgs = GuardSetArgs & {
   assetPayment: OptionOrNullable<AssetPaymentArgs>;
   assetBurn: OptionOrNullable<AssetBurnArgs>;
   assetMintLimit: OptionOrNullable<AssetMintLimitArgs>;
+  assetBurnMulti: OptionOrNullable<AssetBurnMultiArgs>;
+  assetPaymentMulti: OptionOrNullable<AssetPaymentMultiArgs>;
 };
 
 /**
@@ -152,6 +160,8 @@ export type DefaultGuardSet = GuardSet & {
   assetPayment: Option<AssetPayment>;
   assetBurn: Option<AssetBurn>;
   assetMintLimit: Option<AssetMintLimit>;
+  assetBurnMulti: Option<AssetBurnMulti>;
+  assetPaymentMulti: Option<AssetPaymentMulti>;
 };
 
 /**
@@ -185,6 +195,8 @@ export type DefaultGuardSetMintArgs = GuardSetMintArgs & {
   assetPayment: OptionOrNullable<AssetPaymentMintArgs>;
   assetBurn: OptionOrNullable<AssetBurnMintArgs>;
   assetMintLimit: OptionOrNullable<AssetMintLimitMintArgs>;
+  assetBurnMulti: OptionOrNullable<AssetBurnMultiMintArgs>;
+  assetPaymentMulti: OptionOrNullable<AssetPaymentMultiMintArgs>;
 };
 
 /**
@@ -243,6 +255,8 @@ export const defaultCandyGuardNames: string[] = [
   'assetPayment',
   'assetBurn',
   'assetMintLimit',
+  'assetBurnMulti',
+  'assetPaymentMulti',
 ];
 
 /** @internal */

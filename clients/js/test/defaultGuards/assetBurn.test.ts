@@ -7,7 +7,6 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { TokenStandard } from '@metaplex-foundation/mpl-token-metadata';
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import { mintV1 } from '../../src';
 import {
@@ -49,7 +48,6 @@ test('it burns a specific Asset to allow minting', async (t) => {
         collection,
         mintArgs: {
           assetBurn: some({
-            tokenStandard: TokenStandard.NonFungible,
             requiredCollection: publicKey(requiredCollection),
             asset: assetToBurn.publicKey,
           }),
@@ -98,7 +96,6 @@ test('it allows minting even when the payer is different from the minter', async
         collection,
         mintArgs: {
           assetBurn: some({
-            tokenStandard: TokenStandard.NonFungible,
             requiredCollection: publicKey(requiredCollection),
             asset: assetToBurn.publicKey,
           }),
@@ -140,7 +137,6 @@ test('it fails if there is not valid Asset to burn', async (t) => {
         collection,
         mintArgs: {
           assetBurn: some({
-            tokenStandard: TokenStandard.NonFungible,
             requiredCollection: requiredCollection.publicKey,
             asset: wrongAsset.publicKey,
           }),
@@ -181,7 +177,6 @@ test('it charges a bot tax when trying to mint using the wrong Asset', async (t)
         collection,
         mintArgs: {
           assetBurn: some({
-            tokenStandard: TokenStandard.NonFungible,
             requiredCollection: requiredCollection.publicKey,
             asset: wrongAsset.publicKey,
           }),

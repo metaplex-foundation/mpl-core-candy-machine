@@ -558,6 +558,30 @@
       }
     },
     {
+      "name": "AssetBurnMulti",
+      "docs": [
+        "Guard that requires a specific number of Assets from a specific collection to be burned.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[writeable]` Address of the collection.",
+        "x. `[writeable]` Address of the Asset(s)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requiredCollection",
+            "type": "publicKey"
+          },
+          {
+            "name": "num",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
       "name": "AssetBurn",
       "docs": [
         "Guard that requires another Core Asset from a specific collection to be burned.",
@@ -627,6 +651,35 @@
           {
             "name": "count",
             "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AssetPaymentMulti",
+      "docs": [
+        "Guard that requires a specific number of Assets from a specific collection to be used as payment.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[writeable]` Address of the collection.",
+        "1. `[writeable]` Address of the destination.",
+        "x. `[writeable]` Address of the Asset(s)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requiredCollection",
+            "type": "publicKey"
+          },
+          {
+            "name": "destination",
+            "type": "publicKey"
+          },
+          {
+            "name": "num",
+            "type": "u8"
           }
         ]
       }
@@ -1585,6 +1638,28 @@
                 "defined": "AssetMintLimit"
               }
             }
+          },
+          {
+            "name": "assetBurnMulti",
+            "docs": [
+              "Asset Burn Multi (multi burn Assets)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetBurnMulti"
+              }
+            }
+          },
+          {
+            "name": "assetPaymentMulti",
+            "docs": [
+              "Asset Payment Multi (multi pay Assets)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetPaymentMulti"
+              }
+            }
           }
         ]
       }
@@ -1694,6 +1769,12 @@
           },
           {
             "name": "AssetMintLimit"
+          },
+          {
+            "name": "AssetBurnMulti"
+          },
+          {
+            "name": "AssetPaymentMulti"
           }
         ]
       }
