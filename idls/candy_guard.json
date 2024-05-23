@@ -558,6 +558,26 @@
       }
     },
     {
+      "name": "AssetBurn",
+      "docs": [
+        "Guard that requires another Core Asset from a specific collection to be burned.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[writeable]` Address of the asset.",
+        "1. `[writeable]` Address of the required collection."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requiredCollection",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
       "name": "AssetPayment",
       "docs": [
         "Guard that charges another Core Asset from a specific collection as payment",
@@ -1489,6 +1509,17 @@
                 "defined": "AssetPayment"
               }
             }
+          },
+          {
+            "name": "assetBurn",
+            "docs": [
+              "Asset Burn (burn an Asset)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetBurn"
+              }
+            }
           }
         ]
       }
@@ -1592,6 +1623,9 @@
           },
           {
             "name": "AssetPayment"
+          },
+          {
+            "name": "AssetBurn"
           }
         ]
       }

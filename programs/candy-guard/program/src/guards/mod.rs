@@ -12,6 +12,7 @@ use crate::{
 pub use address_gate::AddressGate;
 pub use allocation::Allocation;
 pub use allow_list::AllowList;
+pub use asset_burn::AssetBurn;
 pub use asset_payment::AssetPayment;
 pub use bot_tax::BotTax;
 pub use edition::Edition;
@@ -38,6 +39,7 @@ pub use token_payment::TokenPayment;
 mod address_gate;
 mod allocation;
 mod allow_list;
+mod asset_burn;
 mod asset_payment;
 mod bot_tax;
 mod edition;

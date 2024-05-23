@@ -6,6 +6,8 @@ import {
   AllocationArgs,
   AllowList,
   AllowListArgs,
+  AssetBurn,
+  AssetBurnArgs,
   AssetPayment,
   AssetPaymentArgs,
   BotTax,
@@ -81,6 +83,7 @@ import { TokenPaymentMintArgs } from './tokenPayment';
 import { SolFixedFeeMintArgs } from './solFixedFee';
 import { NftMintLimitMintArgs } from './nftMintLimit';
 import { AssetPaymentMintArgs } from './assetPayment';
+import { AssetBurnMintArgs } from './assetBurn';
 
 /**
  * The arguments for all default Candy Machine guards.
@@ -111,6 +114,7 @@ export type DefaultGuardSetArgs = GuardSetArgs & {
   nftMintLimit: OptionOrNullable<NftMintLimitArgs>;
   edition: OptionOrNullable<EditionArgs>;
   assetPayment: OptionOrNullable<AssetPaymentArgs>;
+  assetBurn: OptionOrNullable<AssetBurnArgs>;
 };
 
 /**
@@ -142,6 +146,7 @@ export type DefaultGuardSet = GuardSet & {
   nftMintLimit: Option<NftMintLimit>;
   edition: Option<Edition>;
   assetPayment: Option<AssetPayment>;
+  assetBurn: Option<AssetBurn>;
 };
 
 /**
@@ -173,6 +178,7 @@ export type DefaultGuardSetMintArgs = GuardSetMintArgs & {
   nftMintLimit: OptionOrNullable<NftMintLimitMintArgs>;
   // edition: no mint settings
   assetPayment: OptionOrNullable<AssetPaymentMintArgs>;
+  assetBurn: OptionOrNullable<AssetBurnMintArgs>;
 };
 
 /**
@@ -229,6 +235,7 @@ export const defaultCandyGuardNames: string[] = [
   'nftMintLimit',
   'edition',
   'assetPayment',
+  'assetBurn',
 ];
 
 /** @internal */

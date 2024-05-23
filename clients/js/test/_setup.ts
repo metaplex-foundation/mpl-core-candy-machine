@@ -11,6 +11,7 @@ import {
   fetchAssetV1,
   createCollectionV1 as baseCreateCollection,
   createV1 as baseCreate,
+  Key,
 } from '@metaplex-foundation/mpl-core';
 import {
   createAssociatedToken,
@@ -378,6 +379,18 @@ export const assertBurnedNft = async (
 
   t.false(await umi.rpc.accountExists(tokenAccount));
   t.false(await umi.rpc.accountExists(editionAccount));
+};
+
+export const assertBurnedAsset = async (
+  t: Assertions,
+  umi: Umi,
+  asset: Signer | PublicKey
+) => {
+  const account = await umi.rpc.getAccount(publicKey(asset));
+  t.true(account.exists);
+  assertAccountExists(account);
+  t.is(account.data.length, 1);
+  t.is(account.data[0], Key.Uninitialized);
 };
 
 export const yesterday = (): DateTime => now() - 3600n * 24n;
