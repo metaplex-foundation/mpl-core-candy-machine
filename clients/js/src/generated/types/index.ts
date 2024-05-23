@@ -10,6 +10,7 @@ export * from './addressGate';
 export * from './allocation';
 export * from './allowList';
 export * from './assetBurn';
+export * from './assetMintLimit';
 export * from './assetPayment';
 export * from './botTax';
 export * from './candyMachineData';

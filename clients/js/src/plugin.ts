@@ -42,6 +42,7 @@ import {
   createCivicGatewayProgram,
   createMplTokenAuthRulesProgram,
 } from './programs';
+import { assetMintLimitGuardManifest } from './defaultGuards/assetMintLimit';
 
 export const mplCandyMachine = (): UmiPlugin => ({
   install(umi) {
@@ -87,7 +88,8 @@ export const mplCandyMachine = (): UmiPlugin => ({
       nftMintLimitGuardManifest,
       editionGuardManifest,
       assetPaymentGuardManifest,
-      assetBurnGuardManifest
+      assetBurnGuardManifest,
+      assetMintLimitGuardManifest,
     );
   },
 });

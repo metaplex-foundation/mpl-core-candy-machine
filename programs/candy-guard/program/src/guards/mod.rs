@@ -1,18 +1,23 @@
 use std::collections::BTreeMap;
 
 pub use anchor_lang::prelude::*;
-use mpl_core::types::PluginAuthorityPair;
+use mpl_core::{
+    types::{PluginAuthorityPair, UpdateAuthority},
+    Asset,
+};
 
 pub use crate::{errors::CandyGuardError, state::GuardSet};
 use crate::{
     instructions::{MintAccounts, Route, RouteContext},
     state::CandyGuardData,
+    utils::assert_keys_equal,
 };
 
 pub use address_gate::AddressGate;
 pub use allocation::Allocation;
 pub use allow_list::AllowList;
 pub use asset_burn::AssetBurn;
+pub use asset_mint_limit::AssetMintLimit;
 pub use asset_payment::AssetPayment;
 pub use bot_tax::BotTax;
 pub use edition::Edition;
@@ -40,6 +45,7 @@ mod address_gate;
 mod allocation;
 mod allow_list;
 mod asset_burn;
+mod asset_mint_limit;
 mod asset_payment;
 mod bot_tax;
 mod edition;
@@ -204,4 +210,23 @@ pub fn get_account_info<T>(remaining_accounts: &[T], index: usize) -> Option<&T>
     } else {
         None
     }
+}
+
+pub fn verify_core_collection(asset: &AccountInfo, collection: &Pubkey) -> Result<()> {
+    let asset = Asset::try_from(asset)?;
+
+    let asset_collection = match asset.base.update_authority {
+        UpdateAuthority::Collection(pubkey) => Some(pubkey),
+        _ => None,
+    };
+
+    if asset_collection.is_none() {
+        return err!(CandyGuardError::InvalidNftCollection);
+    }
+
+    if assert_keys_equal(&asset_collection.unwrap(), collection).is_err() {
+        return err!(CandyGuardError::InvalidNftCollection);
+    }
+
+    Ok(())
 }

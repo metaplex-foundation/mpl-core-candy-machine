@@ -8,6 +8,7 @@
 
 export * from './allocationTracker';
 export * from './allowListProof';
+export * from './assetMintCounter';
 export * from './candyMachine';
 export * from './freezeEscrow';
 export * from './mintCounter';
