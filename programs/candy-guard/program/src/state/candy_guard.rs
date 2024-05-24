@@ -61,6 +61,8 @@ pub struct CandyGuard {
     // 25) asset payment
     // 26) asset burn
     // 27) asset mint limit
+    // 28) asset burn multi
+    // 29) asset payment multi
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
@@ -134,6 +136,10 @@ pub struct GuardSet {
     pub asset_burn: Option<AssetBurn>,
     /// Asset mint limit guard (add a limit on the number of mints per asset).
     pub asset_mint_limit: Option<AssetMintLimit>,
+    /// Asset Burn Multi (multi burn Assets).
+    pub asset_burn_multi: Option<AssetBurnMulti>,
+    /// Asset Payment Multi (multi pay Assets).
+    pub asset_payment_multi: Option<AssetPaymentMulti>,
 }
 
 /// Available guard types.
@@ -166,6 +172,8 @@ pub enum GuardType {
     AssetPayment,
     AssetBurn,
     AssetMintLimit,
+    AssetBurnMulti,
+    AssetPaymentMulti,
 }
 
 impl GuardType {
