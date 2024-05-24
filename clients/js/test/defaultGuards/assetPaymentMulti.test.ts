@@ -22,7 +22,11 @@ test('it pays multiple assets to allow minting', async (t) => {
   const requiredCollection = (await createCollection(umi)).publicKey;
   const destination = generateSigner(umi).publicKey;
 
-  const assets = await Promise.all(new Array(5).fill(0).map(() => createAsset(umi, { collection: requiredCollection })));
+  const assets = await Promise.all(
+    new Array(5)
+      .fill(0)
+      .map(() => createAsset(umi, { collection: requiredCollection }))
+  );
 
   const collection = (await createCollection(umi)).publicKey;
 
@@ -47,7 +51,7 @@ test('it pays multiple assets to allow minting', async (t) => {
           assetPaymentMulti: some({
             requiredCollection,
             assets: assets.map((a) => a.publicKey),
-            destination
+            destination,
           }),
         },
       })
@@ -58,18 +62,24 @@ test('it pays multiple assets to allow minting', async (t) => {
   await assertSuccessfulMint(t, umi, { mint, owner: umi.identity });
 
   // And the Assets were payed.
-  await Promise.all(assets.map(async (a) => {
-    const asset = await fetchAssetV1(umi, a.publicKey)
-    t.is(asset.owner, destination);
-  }))
-})
+  await Promise.all(
+    assets.map(async (a) => {
+      const asset = await fetchAssetV1(umi, a.publicKey);
+      t.is(asset.owner, destination);
+    })
+  );
+});
 
 test('it fails to mint if not enough assets are paid', async (t) => {
   const umi = await createUmi();
   const requiredCollection = (await createCollection(umi)).publicKey;
   const destination = generateSigner(umi).publicKey;
 
-  const assets = await Promise.all(new Array(3).fill(0).map(() => createAsset(umi, { collection: requiredCollection })));
+  const assets = await Promise.all(
+    new Array(3)
+      .fill(0)
+      .map(() => createAsset(umi, { collection: requiredCollection }))
+  );
 
   const collection = (await createCollection(umi)).publicKey;
 
@@ -83,7 +93,7 @@ test('it fails to mint if not enough assets are paid', async (t) => {
 
   // When the identity mints from it using its Asset to pay.
   const mint = generateSigner(umi);
-  const res =  transactionBuilder()
+  const res = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
       mintV1(umi, {
@@ -94,15 +104,15 @@ test('it fails to mint if not enough assets are paid', async (t) => {
           assetPaymentMulti: some({
             requiredCollection,
             assets: assets.map((a) => a.publicKey),
-            destination
+            destination,
           }),
         },
       })
     )
     .sendAndConfirm(umi);
 
-    await t.throwsAsync(res, { message: /MissingRemainingAccount./ });
-})
+  await t.throwsAsync(res, { message: /MissingRemainingAccount./ });
+});
 
 test('if fails to mint if minter does not own the assets to be paid', async (t) => {
   const umi = await createUmi();
@@ -110,7 +120,11 @@ test('if fails to mint if minter does not own the assets to be paid', async (t) 
   const destination = generateSigner(umi).publicKey;
   const requiredCollection = (await createCollection(umi)).publicKey;
 
-  const assets = await Promise.all(new Array(3).fill(0).map(() => createAsset(umi, { collection: requiredCollection })));
+  const assets = await Promise.all(
+    new Array(3)
+      .fill(0)
+      .map(() => createAsset(umi, { collection: requiredCollection }))
+  );
 
   const collection = (await createCollection(umi)).publicKey;
 
@@ -136,12 +150,12 @@ test('if fails to mint if minter does not own the assets to be paid', async (t) 
           assetPaymentMulti: some({
             requiredCollection,
             assets: assets.map((a) => a.publicKey),
-            destination
+            destination,
           }),
         },
       })
     )
     .sendAndConfirm(umi);
 
-    await t.throwsAsync(res, { message: /IncorrectOwner/ });
-})
+  await t.throwsAsync(res, { message: /IncorrectOwner/ });
+});

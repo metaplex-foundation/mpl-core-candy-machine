@@ -219,17 +219,12 @@ pub fn get_account_info<T>(remaining_accounts: &[T], index: usize) -> Option<&T>
 pub fn verify_core_collection(asset: &AccountInfo, collection: &Pubkey) -> Result<()> {
     let asset = Asset::try_from(asset)?;
 
-    let asset_collection = match asset.base.update_authority {
-        UpdateAuthority::Collection(pubkey) => Some(pubkey),
-        _ => None,
-    };
-
-    if asset_collection.is_none() {
-        return err!(CandyGuardError::InvalidNftCollection);
-    }
-
-    if assert_keys_equal(&asset_collection.unwrap(), collection).is_err() {
-        return err!(CandyGuardError::InvalidNftCollection);
+    match asset.base.update_authority {
+        UpdateAuthority::Collection(pubkey) => {
+            assert_keys_equal(&pubkey, collection)
+                .map_err(|_| CandyGuardError::InvalidNftCollection)?;
+        }
+        _ => return Err(CandyGuardError::InvalidNftCollection.into()),
     }
 
     Ok(())

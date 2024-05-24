@@ -35,34 +35,30 @@ impl Condition for AssetBurnMulti {
         _mint_args: &[u8],
     ) -> Result<()> {
         let index = ctx.account_cursor;
-        let _collection_account = try_get_account_info(ctx.accounts.remaining, index)?;
+        let collection_account = try_get_account_info(ctx.accounts.remaining, index)?;
         ctx.account_cursor += 1;
 
         let mut i: usize = 0;
         let mut asset_account;
         let mut asset;
-        let mut asset_collection;
 
         while i < usize::from(self.num) {
             asset_account = try_get_account_info(ctx.accounts.remaining, index + i + 1)?;
 
             asset = Asset::try_from(asset_account)?;
-            asset_collection = match asset.base.update_authority {
-                UpdateAuthority::Collection(pubkey) => Some(pubkey),
-                _ => None,
-            };
 
-            if asset_collection.is_none() {
-                return err!(CandyGuardError::InvalidNftCollection);
+            match asset.base.update_authority {
+                UpdateAuthority::Collection(pubkey) => {
+                    assert_keys_equal(&pubkey, collection_account.key)
+                        .map_err(|_| CandyGuardError::InvalidNftCollection)?;
+                }
+                _ => return Err(CandyGuardError::InvalidNftCollection.into()),
             }
 
-            if assert_keys_equal(&asset_collection.unwrap(), &self.required_collection).is_err() {
-                return err!(CandyGuardError::InvalidNftCollection);
-            }
-
-            if assert_keys_equal(&asset.base.owner, ctx.accounts.minter.key).is_err() {
-                return err!(CandyGuardError::IncorrectOwner);
-            }
+            assert_keys_equal(collection_account.key, &self.required_collection)
+                .map_err(|_| CandyGuardError::InvalidNftCollection)?;
+            assert_keys_equal(&asset.base.owner, ctx.accounts.minter.key)
+                .map_err(|_| CandyGuardError::IncorrectOwner)?;
 
             i += 1;
         }

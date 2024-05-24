@@ -20,11 +20,14 @@ export const assetBurnMultiGuardManifest: GuardManifest<
   serializer: getAssetBurnMultiSerializer,
   mintParser: (context, mintContext, args) => {
     const remainingAccounts: GuardRemainingAccount[] = [];
-    remainingAccounts.push({ publicKey: args.requiredCollection, isWritable: true });
+    remainingAccounts.push({
+      publicKey: args.requiredCollection,
+      isWritable: true,
+    });
 
     args.assets.forEach((asset) => {
       remainingAccounts.push({ publicKey: asset, isWritable: true });
-    })
+    });
 
     return { data: new Uint8Array(), remainingAccounts };
   },

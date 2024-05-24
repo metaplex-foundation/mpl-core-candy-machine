@@ -21,7 +21,11 @@ test('it burns multiple assets to allow minting', async (t) => {
   const umi = await createUmi();
   const requiredCollection = (await createCollection(umi)).publicKey;
 
-  const assets = await Promise.all(new Array(5).fill(0).map(() => createAsset(umi, { collection: requiredCollection })));
+  const assets = await Promise.all(
+    new Array(5)
+      .fill(0)
+      .map(() => createAsset(umi, { collection: requiredCollection }))
+  );
 
   const collection = (await createCollection(umi)).publicKey;
 
@@ -56,14 +60,18 @@ test('it burns multiple assets to allow minting', async (t) => {
   await assertSuccessfulMint(t, umi, { mint, owner: umi.identity });
 
   // And the Assets were burned.
-  await Promise.all(assets.map((a) => assertBurnedAsset(t, umi, a)))
-})
+  await Promise.all(assets.map((a) => assertBurnedAsset(t, umi, a)));
+});
 
 test('it fails to mint if not enough assets are burned', async (t) => {
   const umi = await createUmi();
   const requiredCollection = (await createCollection(umi)).publicKey;
 
-  const assets = await Promise.all(new Array(3).fill(0).map(() => createAsset(umi, { collection: requiredCollection })));
+  const assets = await Promise.all(
+    new Array(3)
+      .fill(0)
+      .map(() => createAsset(umi, { collection: requiredCollection }))
+  );
 
   const collection = (await createCollection(umi)).publicKey;
 
@@ -77,7 +85,7 @@ test('it fails to mint if not enough assets are burned', async (t) => {
 
   // When the identity mints from it using its Asset to burn.
   const mint = generateSigner(umi);
-  const res =  transactionBuilder()
+  const res = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 600_000 }))
     .add(
       mintV1(umi, {
@@ -94,15 +102,19 @@ test('it fails to mint if not enough assets are burned', async (t) => {
     )
     .sendAndConfirm(umi);
 
-    await t.throwsAsync(res, { message: /MissingRemainingAccount./ });
-})
+  await t.throwsAsync(res, { message: /MissingRemainingAccount./ });
+});
 
 test('if fails to mint if minter does not own the assets', async (t) => {
   const umi = await createUmi();
   const minter = await generateSignerWithSol(umi, sol(1));
   const requiredCollection = (await createCollection(umi)).publicKey;
 
-  const assets = await Promise.all(new Array(3).fill(0).map(() => createAsset(umi, { collection: requiredCollection })));
+  const assets = await Promise.all(
+    new Array(3)
+      .fill(0)
+      .map(() => createAsset(umi, { collection: requiredCollection }))
+  );
 
   const collection = (await createCollection(umi)).publicKey;
 
@@ -134,5 +146,5 @@ test('if fails to mint if minter does not own the assets', async (t) => {
     )
     .sendAndConfirm(umi);
 
-    await t.throwsAsync(res, { message: /IncorrectOwner/ });
-})
+  await t.throwsAsync(res, { message: /IncorrectOwner/ });
+});

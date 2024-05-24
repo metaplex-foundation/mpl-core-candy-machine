@@ -20,12 +20,15 @@ export const assetPaymentMultiGuardManifest: GuardManifest<
   serializer: getAssetPaymentMultiSerializer,
   mintParser: (context, mintContext, args) => {
     const remainingAccounts: GuardRemainingAccount[] = [];
-    remainingAccounts.push({ publicKey: args.requiredCollection, isWritable: true });
+    remainingAccounts.push({
+      publicKey: args.requiredCollection,
+      isWritable: true,
+    });
     remainingAccounts.push({ publicKey: args.destination, isWritable: true });
 
     args.assets.forEach((asset) => {
       remainingAccounts.push({ publicKey: asset, isWritable: true });
-    })
+    });
 
     return { data: new Uint8Array(), remainingAccounts };
   },
