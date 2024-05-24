@@ -7,19 +7,17 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { TokenStandard } from '@metaplex-foundation/mpl-token-metadata';
-import { createV1 } from '@metaplex-foundation/mpl-core';
 import { generateSignerWithSol } from '@metaplex-foundation/umi-bundle-tests';
 import { mintV1 } from '../../src';
 import {
   assertBotTax,
   assertBurnedAsset,
   assertSuccessfulMint,
+  createAsset,
   createAssetWithCollection,
   createCollection,
   createUmi,
   createV2,
-  defaultAssetData,
 } from '../_setup';
 
 test('it burns a specific Asset to allow minting', async (t) => {
@@ -50,7 +48,6 @@ test('it burns a specific Asset to allow minting', async (t) => {
         collection,
         mintArgs: {
           assetBurn: some({
-            tokenStandard: TokenStandard.NonFungible,
             requiredCollection: publicKey(requiredCollection),
             asset: assetToBurn.publicKey,
           }),
@@ -72,13 +69,10 @@ test('it allows minting even when the payer is different from the minter', async
   const minter = await generateSignerWithSol(umi);
   const [, requiredCollection] = await createAssetWithCollection(umi);
 
-  const assetToBurn = generateSigner(umi);
-  await createV1(umi, {
-    ...defaultAssetData(),
-    asset: assetToBurn,
+  const assetToBurn = await createAsset(umi, {
     collection: requiredCollection.publicKey,
     owner: minter.publicKey,
-  }).sendAndConfirm(umi);
+  });
 
   // And a loaded Candy Machine with an assetBurn guard on that collection.
   const collection = (await createCollection(umi)).publicKey;
@@ -102,7 +96,6 @@ test('it allows minting even when the payer is different from the minter', async
         collection,
         mintArgs: {
           assetBurn: some({
-            tokenStandard: TokenStandard.NonFungible,
             requiredCollection: publicKey(requiredCollection),
             asset: assetToBurn.publicKey,
           }),
@@ -132,11 +125,7 @@ test('it fails if there is not valid Asset to burn', async (t) => {
   });
 
   // When we try to mint from it using an Asset that's not part of this collection.
-  const wrongAsset = generateSigner(umi);
-  await createV1(umi, {
-    asset: wrongAsset,
-    ...defaultAssetData(),
-  }).sendAndConfirm(umi);
+  const wrongAsset = await createAsset(umi, {});
 
   const mint = generateSigner(umi);
   const promise = transactionBuilder()
@@ -148,7 +137,6 @@ test('it fails if there is not valid Asset to burn', async (t) => {
         collection,
         mintArgs: {
           assetBurn: some({
-            tokenStandard: TokenStandard.NonFungible,
             requiredCollection: requiredCollection.publicKey,
             asset: wrongAsset.publicKey,
           }),
@@ -177,11 +165,7 @@ test('it charges a bot tax when trying to mint using the wrong Asset', async (t)
   });
 
   // When we try to mint from it using an Asset that's not part of this collection.
-  const wrongAsset = generateSigner(umi);
-  await createV1(umi, {
-    asset: wrongAsset,
-    ...defaultAssetData(),
-  }).sendAndConfirm(umi);
+  const wrongAsset = await createAsset(umi, {});
 
   const mint = generateSigner(umi);
   const { signature } = await transactionBuilder()
@@ -193,7 +177,6 @@ test('it charges a bot tax when trying to mint using the wrong Asset', async (t)
         collection,
         mintArgs: {
           assetBurn: some({
-            tokenStandard: TokenStandard.NonFungible,
             requiredCollection: requiredCollection.publicKey,
             asset: wrongAsset.publicKey,
           }),

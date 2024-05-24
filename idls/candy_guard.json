@@ -558,6 +558,30 @@
       }
     },
     {
+      "name": "AssetBurnMulti",
+      "docs": [
+        "Guard that requires a specific number of Assets from a specific collection to be burned.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[writeable]` Address of the collection.",
+        "x. `[writeable]` Address of the Asset(s)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requiredCollection",
+            "type": "publicKey"
+          },
+          {
+            "name": "num",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
       "name": "AssetBurn",
       "docs": [
         "Guard that requires another Core Asset from a specific collection to be burned.",
@@ -573,6 +597,89 @@
           {
             "name": "requiredCollection",
             "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AssetMintLimit",
+      "docs": [
+        "Gaurd to set a limit of mints per wallet based on holding a specific Core Asset.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[writable]` Mint counter PDA. The PDA is derived",
+        "using the seed `[\"asset_mint_limit\", asset mint guard id, mint key,",
+        "candy guard pubkey, candy machine pubkey]`.",
+        "1. `[]` Address the Core Asset."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": [
+              "Unique identifier of the mint limit."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "limit",
+            "docs": [
+              "Limit of mints per individual mint address."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "requiredCollection",
+            "docs": [
+              "Required collection of the mint."
+            ],
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AssetMintCounter",
+      "docs": [
+        "PDA to track the number of mints for an individual address."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AssetPaymentMulti",
+      "docs": [
+        "Guard that requires a specific number of Assets from a specific collection to be used as payment.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[writeable]` Address of the collection.",
+        "1. `[writeable]` Address of the destination.",
+        "x. `[writeable]` Address of the Asset(s)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requiredCollection",
+            "type": "publicKey"
+          },
+          {
+            "name": "destination",
+            "type": "publicKey"
+          },
+          {
+            "name": "num",
+            "type": "u8"
           }
         ]
       }
@@ -1520,6 +1627,39 @@
                 "defined": "AssetBurn"
               }
             }
+          },
+          {
+            "name": "assetMintLimit",
+            "docs": [
+              "Asset mint limit guard (add a limit on the number of mints per asset)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetMintLimit"
+              }
+            }
+          },
+          {
+            "name": "assetBurnMulti",
+            "docs": [
+              "Asset Burn Multi (multi burn Assets)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetBurnMulti"
+              }
+            }
+          },
+          {
+            "name": "assetPaymentMulti",
+            "docs": [
+              "Asset Payment Multi (multi pay Assets)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetPaymentMulti"
+              }
+            }
           }
         ]
       }
@@ -1626,6 +1766,15 @@
           },
           {
             "name": "AssetBurn"
+          },
+          {
+            "name": "AssetMintLimit"
+          },
+          {
+            "name": "AssetBurnMulti"
+          },
+          {
+            "name": "AssetPaymentMulti"
           }
         ]
       }

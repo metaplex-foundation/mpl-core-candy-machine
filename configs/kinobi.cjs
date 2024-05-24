@@ -26,6 +26,7 @@ kinobi.update(
     "allowListProof",
     "allocationTracker",
     "nftMintCounter",
+    "assetMintCounter",
   ])
 );
 
@@ -122,6 +123,21 @@ kinobi.update(
           "A unique identifier in the context of a NFT mint/Candy Machine/Candy Guard combo"
         ),
         k.publicKeySeed("mint", "The address of the NFT mint"),
+        candyGuardSeed,
+        candyMachineSeed,
+      ],
+    },
+    assetMintCounter: {
+      size: 2,
+      discriminator: k.sizeAccountDiscriminator(),
+      seeds: [
+        k.stringConstantSeed("asset_mint_limit"),
+        k.variableSeed(
+          "id",
+          k.numberTypeNode("u8"),
+          "A unique identifier in the context of a Asset mint/Candy Machine/Candy Guard combo"
+        ),
+        k.publicKeySeed("asset", "The address of the Asset"),
         candyGuardSeed,
         candyMachineSeed,
       ],

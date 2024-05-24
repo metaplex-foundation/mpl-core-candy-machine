@@ -7,16 +7,16 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { createV1, fetchAssetV1 } from '@metaplex-foundation/mpl-core';
+import { fetchAssetV1 } from '@metaplex-foundation/mpl-core';
 import { mintV1 } from '../../src';
 import {
   assertBotTax,
   assertSuccessfulMint,
+  createAsset,
   createAssetWithCollection,
   createCollection,
   createUmi,
   createV2,
-  defaultAssetData,
 } from '../_setup';
 
 test('it transfers an Asset from the payer to the destination', async (t) => {
@@ -88,13 +88,10 @@ test('it allows minting even when the payer is different from the minter', async
 
   // And given a separate minter owns an Asset from that collection.
   const minter = generateSigner(umi);
-  const assetToSend = generateSigner(umi);
-  await createV1(umi, {
-    ...defaultAssetData(),
-    asset: assetToSend,
+  const assetToSend = await createAsset(umi, {
     collection: requiredCollection.publicKey,
     owner: minter.publicKey,
-  }).sendAndConfirm(umi);
+  });
 
   // When the minter mints from it using its Asset to pay.
   const mint = generateSigner(umi);
@@ -143,11 +140,7 @@ test('it fails if the payer does not own the right Asset', async (t) => {
   });
 
   // And given the identity owns an Asset this is not from that collection.
-  const wrongAsset = generateSigner(umi);
-  await createV1(umi, {
-    asset: wrongAsset,
-    ...defaultAssetData(),
-  }).sendAndConfirm(umi);
+  const wrongAsset = await createAsset(umi, {});
 
   // When the identity tries to mint from it using its Asset to pay.
   const mint = generateSigner(umi);
@@ -192,11 +185,7 @@ test('it charges a bot tax when trying to pay with the wrong Asset', async (t) =
   });
 
   // And given the identity owns an Asset this is not from that collection.
-  const wrongAsset = generateSigner(umi);
-  await createV1(umi, {
-    asset: wrongAsset,
-    ...defaultAssetData(),
-  }).sendAndConfirm(umi);
+  const wrongAsset = await createAsset(umi, {});
 
   // When the identity tries to mint from it using its Asset to pay.
   const mint = generateSigner(umi);
