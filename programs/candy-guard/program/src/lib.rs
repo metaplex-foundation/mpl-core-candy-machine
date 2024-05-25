@@ -12,6 +12,19 @@ pub mod utils;
 
 declare_id!("CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ");
 
+// START: Heap start
+// LENGTH: Heap length
+// MIN: Minimal allocation size
+// PAGE_SIZE: Allocation page size
+#[cfg(target_os = "solana")]
+#[global_allocator]
+static ALLOC: smalloc::Smalloc<
+    { solana_program::entrypoint::HEAP_START_ADDRESS as usize },
+    { solana_program::entrypoint::HEAP_LENGTH as usize },
+    16,
+    1024,
+> = smalloc::Smalloc::new();
+
 #[program]
 pub mod candy_guard {
     use super::*;
