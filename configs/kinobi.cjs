@@ -469,6 +469,17 @@ kinobi.update(
   })
 );
 
+// Render Rust.
+const crateDir = path.join(__dirname, "../programs/candy-machine-core");
+console.log(crateDir);
+const rustDir = path.join(clientDir, "rust", "src", "generated");
+kinobi.accept(
+  new k.RenderRustVisitor(rustDir, {
+    formatCode: true,
+    crateFolder: crateDir,
+  })
+);
+
 // Render JavaScript.
 const jsDir = path.join(clientDir, "js", "src", "generated");
 kinobi.accept(
