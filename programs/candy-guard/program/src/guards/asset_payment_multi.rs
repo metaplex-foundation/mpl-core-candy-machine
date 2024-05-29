@@ -22,7 +22,7 @@ impl Guard for AssetPaymentMulti {
     fn size() -> usize {
         32 // required_collection
         + 32 // destination
-        + 1 // num of assets to burn
+        + 1 // num of assets to pay
     }
 
     fn mask() -> u64 {
@@ -70,7 +70,7 @@ impl Condition for AssetPaymentMulti {
 
         ctx.account_cursor += usize::from(self.num);
 
-        ctx.indices.insert("asset_burn_multi_index", index);
+        ctx.indices.insert("asset_payment_multi_index", index);
 
         Ok(())
     }
@@ -81,7 +81,7 @@ impl Condition for AssetPaymentMulti {
         _guard_set: &GuardSet,
         _mint_args: &[u8],
     ) -> Result<()> {
-        let index = ctx.indices["asset_burn_multi_index"];
+        let index = ctx.indices["asset_payment_multi_index"];
         let collection_account = try_get_account_info(ctx.accounts.remaining, index)?;
         let destination_account = try_get_account_info(ctx.accounts.remaining, index + 1)?;
 

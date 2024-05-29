@@ -25,3 +25,7 @@ export * from './token2022Payment';
 export * from './edition';
 export * from './assetPayment';
 export * from './assetBurn';
+export * from './assetMintLimit';
+export * from './assetBurnMulti';
+export * from './assetPaymentMulti';
+
