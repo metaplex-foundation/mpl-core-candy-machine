@@ -254,8 +254,8 @@ impl CandyGuardData {
 
     pub fn active_set(data: &[u8], label: Option<String>) -> Result<Box<GuardSet>> {
         // default guard set
-        let (mut default, _) = GuardSet::from_data(data)?;
-        let mut cursor = default.size();
+        let mut default: Box<GuardSet> = Box::new(GuardSet::from_data(data)?.0);
+        let mut cursor = (*default).size();
 
         // number of groups
         let group_counter = u32::from_le_bytes(*arrayref::array_ref![data, cursor, 4]);
@@ -272,7 +272,7 @@ impl CandyGuardData {
                         let (guards, _) = GuardSet::from_data(&data[cursor..])?;
                         default.merge(guards);
                         // we found our group
-                        return Ok(Box::new(default));
+                        return Ok(default);
                     } else {
                         cursor += MAX_LABEL_SIZE;
                         let features = u64::from_le_bytes(*arrayref::array_ref![data, cursor, 8]);
@@ -287,7 +287,7 @@ impl CandyGuardData {
             return err!(CandyGuardError::GroupNotFound);
         }
 
-        Ok(Box::new(default))
+        Ok(default)
     }
 
     pub fn account_size(&self) -> usize {
