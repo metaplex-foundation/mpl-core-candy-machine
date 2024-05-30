@@ -58,6 +58,11 @@ pub struct CandyGuard {
     // 22) sol fixed fee
     // 23) nft mint limit
     // 24) edition
+    // 25) asset payment
+    // 26) asset burn
+    // 27) asset mint limit
+    // 28) asset burn multi
+    // 29) asset payment multi
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
@@ -125,6 +130,16 @@ pub struct GuardSet {
     pub nft_mint_limit: Option<NftMintLimit>,
     /// NFT mint limit guard (add a limit on the number of mints per NFT).
     pub edition: Option<Edition>,
+    /// Asset Payment (charge an Asset in order to mint).
+    pub asset_payment: Option<AssetPayment>,
+    /// Asset Burn (burn an Asset).
+    pub asset_burn: Option<AssetBurn>,
+    /// Asset mint limit guard (add a limit on the number of mints per asset).
+    pub asset_mint_limit: Option<AssetMintLimit>,
+    /// Asset Burn Multi (multi burn Assets).
+    pub asset_burn_multi: Option<AssetBurnMulti>,
+    /// Asset Payment Multi (multi pay Assets).
+    pub asset_payment_multi: Option<AssetPaymentMulti>,
 }
 
 /// Available guard types.
@@ -154,6 +169,11 @@ pub enum GuardType {
     SolFixedFee,
     NftMintLimit,
     Edition,
+    AssetPayment,
+    AssetBurn,
+    AssetMintLimit,
+    AssetBurnMulti,
+    AssetPaymentMulti,
 }
 
 impl GuardType {
@@ -234,8 +254,8 @@ impl CandyGuardData {
 
     pub fn active_set(data: &[u8], label: Option<String>) -> Result<Box<GuardSet>> {
         // default guard set
-        let (mut default, _) = GuardSet::from_data(data)?;
-        let mut cursor = default.size();
+        let mut default: Box<GuardSet> = Box::new(GuardSet::from_data(data)?.0);
+        let mut cursor = (*default).size();
 
         // number of groups
         let group_counter = u32::from_le_bytes(*arrayref::array_ref![data, cursor, 4]);
@@ -252,7 +272,7 @@ impl CandyGuardData {
                         let (guards, _) = GuardSet::from_data(&data[cursor..])?;
                         default.merge(guards);
                         // we found our group
-                        return Ok(Box::new(default));
+                        return Ok(default);
                     } else {
                         cursor += MAX_LABEL_SIZE;
                         let features = u64::from_le_bytes(*arrayref::array_ref![data, cursor, 8]);
@@ -267,7 +287,7 @@ impl CandyGuardData {
             return err!(CandyGuardError::GroupNotFound);
         }
 
-        Ok(Box::new(default))
+        Ok(default)
     }
 
     pub fn account_size(&self) -> usize {

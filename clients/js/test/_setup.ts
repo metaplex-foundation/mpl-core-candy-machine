@@ -10,6 +10,8 @@ import {
   AssetV1,
   fetchAssetV1,
   createCollectionV1 as baseCreateCollection,
+  createV1 as baseCreate,
+  Key,
 } from '@metaplex-foundation/mpl-core';
 import {
   createAssociatedToken,
@@ -85,6 +87,20 @@ export const createProgrammableNft = async (
   return mint;
 };
 
+export const createAsset = async (
+  umi: Umi,
+  input: Partial<Parameters<typeof baseCreate>[1]>
+): Promise<Signer> => {
+  const mint = generateSigner(umi);
+  await baseCreate(umi, {
+    asset: mint,
+    ...defaultAssetData(),
+    ...input,
+  }).sendAndConfirm(umi);
+
+  return mint;
+};
+
 export const createCollection = async (
   umi: Umi,
   input: Partial<Parameters<typeof baseCreateCollection>[1]> = {}
@@ -97,6 +113,12 @@ export const createCollection = async (
   }).sendAndConfirm(umi);
 
   return mint;
+};
+
+export const createAssetWithCollection = async (umi: Umi) => {
+  const collection = await createCollection(umi);
+  const asset = await createAsset(umi, { collection: collection.publicKey });
+  return [asset, collection];
 };
 
 export const createCollectionNft = async (
@@ -357,6 +379,18 @@ export const assertBurnedNft = async (
 
   t.false(await umi.rpc.accountExists(tokenAccount));
   t.false(await umi.rpc.accountExists(editionAccount));
+};
+
+export const assertBurnedAsset = async (
+  t: Assertions,
+  umi: Umi,
+  asset: Signer | PublicKey
+) => {
+  const account = await umi.rpc.getAccount(publicKey(asset));
+  t.true(account.exists);
+  assertAccountExists(account);
+  t.is(account.data.length, 1);
+  t.is(account.data[0], Key.Uninitialized);
 };
 
 export const yesterday = (): DateTime => now() - 3600n * 24n;

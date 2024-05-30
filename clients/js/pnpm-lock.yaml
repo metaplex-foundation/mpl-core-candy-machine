@@ -22,8 +22,8 @@ devDependencies:
     specifier: ^0.12.0
     version: 0.12.0
   '@metaplex-foundation/mpl-core':
-    specifier: ^0.4.5
-    version: 0.4.5(@metaplex-foundation/umi@0.8.2)(@noble/hashes@1.2.0)
+    specifier: ^0.4.7
+    version: 0.4.7(@metaplex-foundation/umi@0.8.2)(@noble/hashes@1.2.0)
   '@metaplex-foundation/mpl-token-auth-rules':
     specifier: ^1.2.0
     version: 1.2.0(fastestsmallesttextencoderdecoder@1.0.22)
@@ -2126,8 +2126,8 @@ packages:
     resolution: {integrity: sha512-S9RulC2fFCFOQraz61bij+5YCHhSO9llJegK8c8Y6731fSi6snUSQJdCUqYS8AIgR0TKbQvdvgSyIIdbDFZbBA==}
     dev: true
 
-  /@metaplex-foundation/mpl-core@0.4.5(@metaplex-foundation/umi@0.8.2)(@noble/hashes@1.2.0):
-    resolution: {integrity: sha512-/7aC9h9cMGduAqw8fntfdpR2dYzPad8q/6GkFULnQgr5lxw7clod/6+7jjuS3yqYNBf5RlAk1zat41B+mcGZ1g==}
+  /@metaplex-foundation/mpl-core@0.4.7(@metaplex-foundation/umi@0.8.2)(@noble/hashes@1.2.0):
+    resolution: {integrity: sha512-0PvzYp0u3NrstbUzAL6nsUkvSUJukUQCa5CRUx23jrNPsO0nejsgKpx8RqaqrCCYKt2lZnq8TRzHQPBqFkVQIg==}
     peerDependencies:
       '@metaplex-foundation/umi': '>=0.8.2 < 1'
       '@noble/hashes': ^1.3.1
