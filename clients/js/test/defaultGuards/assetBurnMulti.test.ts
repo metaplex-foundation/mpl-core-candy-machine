@@ -20,9 +20,10 @@ import {
 test('it burns multiple assets to allow minting', async (t) => {
   const umi = await createUmi();
   const requiredCollection = (await createCollection(umi)).publicKey;
+  const numAssets = 17;
 
   const assets = await Promise.all(
-    new Array(5)
+    new Array(numAssets)
       .fill(0)
       .map(() => createAsset(umi, { collection: requiredCollection }))
   );
@@ -33,14 +34,14 @@ test('it burns multiple assets to allow minting', async (t) => {
     collection,
     configLines: [{ name: 'Degen #1', uri: 'https://example.com/degen/1' }],
     guards: {
-      assetBurnMulti: some({ requiredCollection, num: 5 }),
+      assetBurnMulti: some({ requiredCollection, num: numAssets }),
     },
   });
 
   // When the identity mints from it using its Asset to burn.
   const mint = generateSigner(umi);
   await transactionBuilder()
-    .add(setComputeUnitLimit(umi, { units: 600_000 }))
+    .add(setComputeUnitLimit(umi, { units: 1_400_000 }))
     .add(
       mintV1(umi, {
         candyMachine,
