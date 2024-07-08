@@ -6,7 +6,12 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import test from 'ava';
-import { CandyMachine, createCandyMachine, fetchCandyMachine } from '../src';
+import {
+  CandyMachine,
+  createCandyMachine,
+  DEFAULT_CONFIG_LINE_SETTINGS,
+  fetchCandyMachine,
+} from '../src';
 import { createCollection, createUmi, defaultCandyMachineData } from './_setup';
 
 test('it can create a candy machine using config line settings', async (t) => {
@@ -109,14 +114,14 @@ test('it can create a candy machine using hidden settings', async (t) => {
   });
 });
 
-test('it cannot create a candy machine without hidden or config line settings', async (t) => {
+test('it can create a candy machine with defaulted config lines', async (t) => {
   // Given an existing collection NFT.
   const umi = await createUmi();
   const collection = (await createCollection(umi)).publicKey;
 
   // When we try to create a new candy machine without any settings.
   const candyMachine = generateSigner(umi);
-  const promise = transactionBuilder()
+  await transactionBuilder()
     .add(
       await createCandyMachine(umi, {
         ...defaultCandyMachineData(umi),
@@ -128,8 +133,25 @@ test('it cannot create a candy machine without hidden or config line settings', 
     )
     .sendAndConfirm(umi);
 
-  // Then we expect a program error.
-  await t.throwsAsync(promise, { message: /A raw constraint was violated/ });
+  const candyMachineAccount = await fetchCandyMachine(
+    umi,
+    candyMachine.publicKey
+  );
+
+  t.like(candyMachineAccount, <CandyMachine>{
+    publicKey: publicKey(candyMachine),
+    authority: publicKey(umi.identity),
+    mintAuthority: publicKey(umi.identity),
+    collectionMint: publicKey(collection),
+    itemsRedeemed: 0n,
+    data: {
+      itemsAvailable: 100n,
+      maxEditionSupply: 0n,
+      isMutable: true,
+      configLineSettings: some(DEFAULT_CONFIG_LINE_SETTINGS),
+      hiddenSettings: none(),
+    },
+  });
 });
 
 test('it can create a candy machine of Programmable NFTs', async (t) => {
