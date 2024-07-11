@@ -342,8 +342,8 @@ pub fn approve_asset_collection_delegate(
             }))
             .system_program(&accounts.system_program)
             .payer(&accounts.payer)
-            .invoke()?;
-        Ok(())
+            .invoke()
+            .map_err(|error| error.into())
     } else {
         Ok(())
     }
