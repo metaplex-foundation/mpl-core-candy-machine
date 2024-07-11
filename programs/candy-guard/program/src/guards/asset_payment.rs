@@ -50,8 +50,8 @@ impl Condition for AssetPayment {
         assert_keys_equal(&collection_info.key(), &self.required_collection)
             .map_err(|_| CandyGuardError::InvalidNftCollection)?;
 
-        let asset = Asset::try_from(asset_info)?;
-        assert_keys_equal(&asset.base.owner, ctx.accounts.minter.key)
+        let asset = BaseAssetV1::try_from(asset_info)?;
+        assert_keys_equal(&asset.owner, ctx.accounts.minter.key)
             .map_err(|_| CandyGuardError::IncorrectOwner)?;
 
         ctx.indices.insert("asset_payment_index", index);

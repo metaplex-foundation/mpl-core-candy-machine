@@ -4,8 +4,8 @@ use mpl_core::{
     accounts::BaseCollectionV1,
     fetch_plugin,
     instructions::{
-        AddCollectionPluginV1CpiBuilder, ApproveCollectionPluginAuthorityV1CpiBuilder,
-        RevokeCollectionPluginAuthorityV1CpiBuilder,
+        AddCollectionPluginV1CpiBuilder, RevokeCollectionPluginAuthorityV1CpiBuilder,
+        UpdateCollectionPluginV1CpiBuilder,
     },
     types::{Plugin, PluginAuthority, PluginType, UpdateDelegate},
 };
@@ -283,11 +283,16 @@ pub fn revoke_collection_authority_helper(
     }
 }
 
-pub fn assert_plugin_pubkey_authority(auth: &PluginAuthority, authority: &Pubkey) -> Result<()> {
+pub fn assert_plugin_pubkey_authority(
+    auth: &PluginAuthority,
+    plugin: &UpdateDelegate,
+    authority: &Pubkey,
+) -> Result<()> {
     if (*auth
         == PluginAuthority::Address {
             address: *authority,
         })
+        || plugin.additional_delegates.contains(authority)
     {
         Ok(())
     } else {
@@ -316,23 +321,29 @@ pub fn approve_asset_collection_delegate(
     }
 
     // add CM authority to collection if it doesn't exist
-    let (auth, _, _) = fetch_plugin::<BaseCollectionV1, UpdateDelegate>(
+    let (_, update_plugin, _) = fetch_plugin::<BaseCollectionV1, UpdateDelegate>(
         &accounts.collection,
         PluginType::UpdateDelegate,
     )?;
-    let auth_to_add = PluginAuthority::Address {
-        address: accounts.authority_pda.key(),
-    };
-    if auth_to_add != auth {
-        ApproveCollectionPluginAuthorityV1CpiBuilder::new(&accounts.mpl_core_program)
+
+    if !update_plugin
+        .additional_delegates
+        .contains(accounts.authority_pda.key)
+    {
+        // add CM authority as an additional delegate
+        let mut new_auths = update_plugin.additional_delegates.clone();
+        new_auths.push(accounts.authority_pda.key());
+
+        UpdateCollectionPluginV1CpiBuilder::new(&accounts.mpl_core_program)
             .collection(&accounts.collection)
             .authority(Some(&accounts.collection_update_authority))
-            .plugin_type(PluginType::UpdateDelegate)
-            .new_authority(auth_to_add)
+            .plugin(Plugin::UpdateDelegate(UpdateDelegate {
+                additional_delegates: new_auths,
+            }))
             .system_program(&accounts.system_program)
             .payer(&accounts.payer)
-            .invoke()
-            .map_err(|error| error.into())
+            .invoke()?;
+        Ok(())
     } else {
         Ok(())
     }
