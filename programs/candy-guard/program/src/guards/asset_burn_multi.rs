@@ -45,9 +45,9 @@ impl Condition for AssetBurnMulti {
         while i < usize::from(self.num) {
             asset_account = try_get_account_info(ctx.accounts.remaining, index + i + 1)?;
 
-            asset = Asset::try_from(asset_account)?;
+            asset = BaseAssetV1::try_from(asset_account)?;
 
-            match asset.base.update_authority {
+            match asset.update_authority {
                 UpdateAuthority::Collection(pubkey) => {
                     assert_keys_equal(&pubkey, collection_account.key)
                         .map_err(|_| CandyGuardError::InvalidNftCollection)?;
@@ -57,7 +57,7 @@ impl Condition for AssetBurnMulti {
 
             assert_keys_equal(collection_account.key, &self.required_collection)
                 .map_err(|_| CandyGuardError::InvalidNftCollection)?;
-            assert_keys_equal(&asset.base.owner, ctx.accounts.minter.key)
+            assert_keys_equal(&asset.owner, ctx.accounts.minter.key)
                 .map_err(|_| CandyGuardError::IncorrectOwner)?;
 
             i += 1;
