@@ -493,6 +493,19 @@ export class CmIncorrectPluginAuthorityError extends ProgramError {
 codeToErrorMap.set(0x178e, CmIncorrectPluginAuthorityError);
 nameToErrorMap.set('IncorrectPluginAuthority', CmIncorrectPluginAuthorityError);
 
+/** AssetMustBeInitialized: Asset must be initialized */
+export class CmAssetMustBeInitializedError extends ProgramError {
+  readonly name: string = 'AssetMustBeInitialized';
+
+  readonly code: number = 0x178f; // 6031
+
+  constructor(program: Program, cause?: Error) {
+    super('Asset must be initialized', program, cause);
+  }
+}
+codeToErrorMap.set(0x178f, CmAssetMustBeInitializedError);
+nameToErrorMap.set('AssetMustBeInitialized', CmAssetMustBeInitializedError);
+
 /**
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors

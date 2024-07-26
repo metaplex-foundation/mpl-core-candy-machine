@@ -81,6 +81,32 @@ pub mod candy_machine_core {
         instructions::mint_asset(ctx, args)
     }
 
+    /// Update an Asset.
+    ///
+    /// Only the candy machine mint authority is allowed to mint. This handler mints both
+    /// NFTs and Programmable NFTs.
+    ///
+    /// # Accounts
+    ///
+    ///   0. `[writable]` Candy Machine account (must be pre-allocated but zero content)
+    ///   1. `[writable]` Authority PDA (seeds `["candy_machine", candy machine id]`)
+    ///   2. `[signer]` Candy Machine mint authority
+    ///   3. `[signer]` Payer
+    ///   4. `[]` Asset Owner
+    ///   5. `[writable]` Asset account
+    ///   6. `[]` Collection
+    ///   7. `[]` Collection delegate or update authority
+    ///   8. `[]` Asset program
+    ///   9. `[]` System program
+    ///   10. `[optional]` Instructions sysvar account
+    ///   11. `[]` SlotHashes sysvar cluster data.
+    pub fn update_asset<'info>(
+        ctx: Context<'_, '_, '_, 'info, UpdateAsset<'info>>,
+        args: UpdateAssetArgs,
+    ) -> Result<()> {
+        instructions::update_asset(ctx, args)
+    }
+
     /// Set a new authority of the candy machine.
     ///
     /// # Accounts

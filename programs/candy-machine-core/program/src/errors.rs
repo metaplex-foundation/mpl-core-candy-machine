@@ -94,4 +94,7 @@ pub enum CandyError {
 
     #[msg("Invalid plugin authority")]
     IncorrectPluginAuthority,
+
+    #[msg("Asset must be initialized")]
+    AssetMustBeInitialized,
 }

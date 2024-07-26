@@ -16,5 +16,6 @@ export * from './setCandyMachineAuthority';
 export * from './setCollection';
 export * from './setMintAuthority';
 export * from './unwrap';
+export * from './updateAssetFromCandyMachine';
 export * from './updateCandyMachine';
 export * from './wrap';
