@@ -11,8 +11,8 @@ import {
 import { GuardManifest, noopParser } from '../guards';
 
 /**
- * The vanityMint guard determines the start date of the mint.
- * Before this date, minting is not allowed.
+ * The vanityMint guard verifies that the new asset
+ * address matches the provided regex.
  */
 export const vanityMintGuardManifest: GuardManifest<
   VanityMintArgs,
