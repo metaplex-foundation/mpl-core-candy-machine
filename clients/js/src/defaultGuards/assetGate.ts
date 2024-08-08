@@ -18,9 +18,7 @@ export const assetGateGuardManifest: GuardManifest<
   serializer: getAssetGateSerializer,
   mintParser: (context, mintContext, args) => ({
     data: new Uint8Array(),
-    remainingAccounts: [
-      { publicKey: args.asset, isWritable: false },
-    ],
+    remainingAccounts: [{ publicKey: args.asset, isWritable: false }],
   }),
   routeParser: noopParser,
 };

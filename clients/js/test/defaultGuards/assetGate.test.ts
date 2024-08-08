@@ -1,6 +1,4 @@
-import {
-  setComputeUnitLimit,
-} from '@metaplex-foundation/mpl-toolbox';
+import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox';
 import {
   generateSigner,
   sol,
