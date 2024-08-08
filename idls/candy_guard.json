@@ -602,6 +602,25 @@
       }
     },
     {
+      "name": "AssetGate",
+      "docs": [
+        "Guard that restricts the transaction to holders of a specified collection.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[]` Account of the Asset."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requiredCollection",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
       "name": "AssetMintLimit",
       "docs": [
         "Gaurd to set a limit of mints per wallet based on holding a specific Core Asset.",
@@ -1660,6 +1679,17 @@
                 "defined": "AssetPaymentMulti"
               }
             }
+          },
+          {
+            "name": "assetGate",
+            "docs": [
+              "Asset Gate (restrict access to holders of a specific asset)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetGate"
+              }
+            }
           }
         ]
       }
@@ -1775,6 +1805,9 @@
           },
           {
             "name": "AssetPaymentMulti"
+          },
+          {
+            "name": "AssetGate"
           }
         ]
       }
