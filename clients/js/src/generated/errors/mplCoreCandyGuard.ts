@@ -731,6 +731,49 @@ export class CgInvalidAccountVersionError extends ProgramError {
 codeToErrorMap.set(0x17a3, CgInvalidAccountVersionError);
 nameToErrorMap.set('InvalidAccountVersion', CgInvalidAccountVersionError);
 
+/** ExceededRegexLength: Exceeded the maximum length of a regex that can be used */
+export class CgExceededRegexLengthError extends ProgramError {
+  readonly name: string = 'ExceededRegexLength';
+
+  readonly code: number = 0x17a4; // 6052
+
+  constructor(program: Program, cause?: Error) {
+    super(
+      'Exceeded the maximum length of a regex that can be used',
+      program,
+      cause
+    );
+  }
+}
+codeToErrorMap.set(0x17a4, CgExceededRegexLengthError);
+nameToErrorMap.set('ExceededRegexLength', CgExceededRegexLengthError);
+
+/** InvalidVanityAddress: Invalid vanity address */
+export class CgInvalidVanityAddressError extends ProgramError {
+  readonly name: string = 'InvalidVanityAddress';
+
+  readonly code: number = 0x17a5; // 6053
+
+  constructor(program: Program, cause?: Error) {
+    super('Invalid vanity address', program, cause);
+  }
+}
+codeToErrorMap.set(0x17a5, CgInvalidVanityAddressError);
+nameToErrorMap.set('InvalidVanityAddress', CgInvalidVanityAddressError);
+
+/** InvalidRegex: Invalid regex */
+export class CgInvalidRegexError extends ProgramError {
+  readonly name: string = 'InvalidRegex';
+
+  readonly code: number = 0x17a6; // 6054
+
+  constructor(program: Program, cause?: Error) {
+    super('Invalid regex', program, cause);
+  }
+}
+codeToErrorMap.set(0x17a6, CgInvalidRegexError);
+nameToErrorMap.set('InvalidRegex', CgInvalidRegexError);
+
 /**
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors

@@ -1281,6 +1281,21 @@
       }
     },
     {
+      "name": "VanityMint",
+      "docs": [
+        "Guard that sets a specific start date for the mint."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "regex",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "name": "RouteArgs",
       "docs": [
         "Arguments for a route transaction."
@@ -1690,6 +1705,17 @@
                 "defined": "AssetGate"
               }
             }
+          },
+          {
+            "name": "vanityMint",
+            "docs": [
+              "Vanity Mint (the address of the new asset must match a pattern)."
+            ],
+            "type": {
+              "option": {
+                "defined": "VanityMint"
+              }
+            }
           }
         ]
       }
@@ -1808,6 +1834,9 @@
           },
           {
             "name": "AssetGate"
+          },
+          {
+            "name": "VanityMint"
           }
         ]
       }
@@ -2073,6 +2102,21 @@
       "code": 6051,
       "name": "InvalidAccountVersion",
       "msg": "Invalid account version"
+    },
+    {
+      "code": 6052,
+      "name": "ExceededRegexLength",
+      "msg": "Exceeded the maximum length of a regex that can be used"
+    },
+    {
+      "code": 6053,
+      "name": "InvalidVanityAddress",
+      "msg": "Invalid vanity address"
+    },
+    {
+      "code": 6054,
+      "name": "InvalidRegex",
+      "msg": "Invalid regex"
     }
   ],
   "metadata": {
