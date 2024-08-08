@@ -157,4 +157,13 @@ pub enum CandyGuardError {
 
     #[msg("Invalid account version")]
     InvalidAccountVersion,
+
+    #[msg("Exceeded the maximum length of a regex that can be used")]
+    ExceededRegexLength,
+
+    #[msg("Invalid vanity address")]
+    InvalidVanityAddress,
+
+    #[msg("Invalid regex")]
+    InvalidRegex,
 }

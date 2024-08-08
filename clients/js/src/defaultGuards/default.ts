@@ -60,6 +60,8 @@ import {
   TokenGateArgs,
   TokenPayment,
   TokenPaymentArgs,
+  VanityMint,
+  VanityMintArgs,
 } from '../generated';
 import {
   GuardSet,
@@ -131,6 +133,7 @@ export type DefaultGuardSetArgs = GuardSetArgs & {
   assetBurnMulti: OptionOrNullable<AssetBurnMultiArgs>;
   assetPaymentMulti: OptionOrNullable<AssetPaymentMultiArgs>;
   assetGate: OptionOrNullable<AssetGateArgs>;
+  vanityMint: OptionOrNullable<VanityMintArgs>;
 };
 
 /**
@@ -167,6 +170,7 @@ export type DefaultGuardSet = GuardSet & {
   assetBurnMulti: Option<AssetBurnMulti>;
   assetPaymentMulti: Option<AssetPaymentMulti>;
   assetGate: Option<AssetGate>;
+  vanityMint: Option<VanityMint>;
 };
 
 /**
@@ -264,6 +268,7 @@ export const defaultCandyGuardNames: string[] = [
   'assetBurnMulti',
   'assetPaymentMulti',
   'assetGate',
+  'vanityMint',
 ];
 
 /** @internal */

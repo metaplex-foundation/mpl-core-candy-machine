@@ -40,6 +40,7 @@ export enum GuardType {
   AssetBurnMulti,
   AssetPaymentMulti,
   AssetGate,
+  VanityMint,
 }
 
 export type GuardTypeArgs = GuardType;
