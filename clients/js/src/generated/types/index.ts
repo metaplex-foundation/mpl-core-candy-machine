@@ -11,6 +11,7 @@ export * from './allocation';
 export * from './allowList';
 export * from './assetBurn';
 export * from './assetBurnMulti';
+export * from './assetGate';
 export * from './assetMintLimit';
 export * from './assetPayment';
 export * from './assetPaymentMulti';
