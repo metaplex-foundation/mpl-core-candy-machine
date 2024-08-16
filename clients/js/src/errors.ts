@@ -161,3 +161,14 @@ export class MaximumOfFiveAdditionalProgramsError extends CandyMachineError {
     super(message);
   }
 }
+
+export class ExceededRegexLengthError extends CandyMachineError {
+  readonly name: string = 'ExceededRegexLengthError';
+
+  constructor() {
+    const message =
+      `The maximum length of a regex that can be used is 100 characters. ` +
+      'Please reduce the length of the regex to <= 100.';
+    super(message);
+  }
+}

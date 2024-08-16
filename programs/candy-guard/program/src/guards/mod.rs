@@ -18,6 +18,7 @@ pub use allocation::Allocation;
 pub use allow_list::AllowList;
 pub use asset_burn::AssetBurn;
 pub use asset_burn_multi::AssetBurnMulti;
+pub use asset_gate::AssetGate;
 pub use asset_mint_limit::AssetMintLimit;
 pub use asset_payment::AssetPayment;
 pub use asset_payment_multi::AssetPaymentMulti;
@@ -42,12 +43,14 @@ pub use token2022_payment::Token2022Payment;
 pub use token_burn::TokenBurn;
 pub use token_gate::TokenGate;
 pub use token_payment::TokenPayment;
+pub use vanity_mint::VanityMint;
 
 mod address_gate;
 mod allocation;
 mod allow_list;
 mod asset_burn;
 mod asset_burn_multi;
+mod asset_gate;
 mod asset_mint_limit;
 mod asset_payment;
 mod asset_payment_multi;
@@ -72,6 +75,7 @@ mod token2022_payment;
 mod token_burn;
 mod token_gate;
 mod token_payment;
+mod vanity_mint;
 
 pub trait Condition {
     /// Validate the condition of the guard. When the guard condition is

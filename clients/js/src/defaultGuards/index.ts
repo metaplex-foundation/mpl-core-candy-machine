@@ -28,3 +28,5 @@ export * from './assetBurn';
 export * from './assetMintLimit';
 export * from './assetBurnMulti';
 export * from './assetPaymentMulti';
+export * from './assetGate';
+export * from './vanityMint';
