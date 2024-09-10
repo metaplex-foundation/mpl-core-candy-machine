@@ -19,20 +19,14 @@ on:
         options:
           - devnet
           - mainnet-beta
-      publish_crate:
-        description: Release cargo crate
+          - sonic-devnet
+          - sonic-testnet
+          - eclipse-mainnet
+          - eclipse-devnet
+      git_ref:
+        description: Release tag (release/1.x.x) or commit to deploy
         required: true
-        type: boolean
-        default: false
-      bump:
-        description: Version bump
-        required: true
-        default: patch
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
+        type: string
 
 env:
   CACHE: true
@@ -42,6 +36,8 @@ jobs:
     name: Programs
     uses: ./.github/workflows/build-programs.yml
     secrets: inherit
+    with:
+      git_ref: ${{ inputs.git_ref }}
 
   test_js:
     name: JS client
@@ -57,7 +53,9 @@ jobs:
       contents: write
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.git_ref }}
 
       - name: Load environment variables
         run: cat .github/.env >> $GITHUB_ENV
@@ -87,10 +85,21 @@ jobs:
 
       - name: Set RPC
         run: |
+          # We do this if waterfall because github actions does not allow dynamic access to secrets
           if [ "${{ inputs.cluster }}" == "devnet" ]; then
             echo RPC=${{ secrets.DEVNET_RPC }} >> $GITHUB_ENV
-          else
+          else if [ "${{ inputs.cluster }}" == "mainnet-beta" ]; then
             echo RPC=${{ secrets.MAINNET_RPC }} >> $GITHUB_ENV
+          else if [ "${{ inputs.cluster }}" == "sonic-devnet" ]; then
+            echo RPC=${{ secrets.SONIC_DEVNET_RPC }} >> $GITHUB_ENV
+          else if [ "${{ inputs.cluster }}" == "sonic-testnet" ]; then
+            echo RPC=${{ secrets.SONIC_TESTNET_RPC }} >> $GITHUB_ENV
+          else if [ "${{ inputs.cluster }}" == "eclipse-devnet" ]; then
+            echo RPC=${{ secrets.ECLIPSE_DEVNET_RPC }} >> $GITHUB_ENV
+          else if [ "${{ inputs.cluster }}" == "eclipse-testnet" ]; then
+            echo RPC=${{ secrets.ECLIPSE_TESTNET_RPC }} >> $GITHUB_ENV
+          else if [ "${{ inputs.cluster }}" == "eclipse-mainnet" ]; then
+            echo RPC=${{ secrets.ECLIPSE_MAINNET_RPC }} >> $GITHUB_ENV
           fi
 
       - name: Identify Program
@@ -105,26 +114,11 @@ jobs:
             echo PROGRAM_NAME="mpl_core_candy_machine_core" >> $GITHUB_ENV
           fi
 
-      - name: Bump Program Version
+      - name: Get Version
         run: |
           IDL_NAME=`echo "${{ inputs.program }}" | tr - _`
-          VERSION=`jq '.version' ./idls/${IDL_NAME}.json | sed 's/"//g'`
-          MAJOR=`echo ${VERSION} | cut -d. -f1`
-          MINOR=`echo ${VERSION} | cut -d. -f2`
-          PATCH=`echo ${VERSION} | cut -d. -f3`
-
-          if [ "${{ inputs.bump }}" == "major" ]; then
-             MAJOR=$((MAJOR + 1))
-             MINOR=0
-             PATCH=0
-          elif [ "${{ inputs.bump }}" == "minor" ]; then
-             MINOR=$((MINOR + 1))
-             PATCH=0
-          else
-             PATCH=$((PATCH + 1))
-          fi
-
-          PROGRAM_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          git fetch --tags --all
+          PROGRAM_VERSION=`git tag -l --sort -version:refname "release/${{ inputs.program }}/*" | head -n 1 | sed 's|release/||'`
 
           cp ./idls/${IDL_NAME}.json ./idls/${IDL_NAME}-previous.json
           jq ".version = \"${PROGRAM_VERSION}\"" ./idls/${IDL_NAME}-previous.json > ./idls/${IDL_NAME}.json
@@ -135,7 +129,7 @@ jobs:
       - name: Download Program Builds
         uses: actions/download-artifact@v4
         with:
-          name: program-builds
+          name: program-builds-${{ inputs.git_ref }}
 
       - name: Deploy Program
         run: |
@@ -182,3 +176,6 @@ jobs:
         with:
           commit_message: Deploy mpl-${{ inputs.program }} program v${{ env.PROGRAM_VERSION }}
           tagging_message: mpl-${{ inputs.program }}@v${{ env.PROGRAM_VERSION }}
+
+
+    # create tag for the env that was just deployed to
