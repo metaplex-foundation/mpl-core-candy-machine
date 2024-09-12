@@ -1,4 +1,4 @@
-name: Tag release
+name: Create release
 
 on:
   workflow_dispatch:
@@ -59,7 +59,7 @@ jobs:
     - name: Bump Program Version
       run: |
         git fetch --tags --all
-        VERSION=`git tag -l --sort -version:refname "release/${{ inputs.program }}/*" | head -n 1 | sed 's|release/||'`
+        VERSION=`git tag -l --sort -version:refname "release/${{ inputs.program }}/*" | head -n 1 | sed 's|release/${{ inputs.program }}/||'`
         MAJOR=`echo ${VERSION} | cut -d. -f1`
         MINOR=`echo ${VERSION} | cut -d. -f2`
         PATCH=`echo ${VERSION} | cut -d. -f3`
