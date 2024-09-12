@@ -27,6 +27,12 @@ on:
         description: Release tag (release/1.x.x) or commit to deploy
         required: true
         type: string
+        default: release/1.0.0
+      dry_run:
+        description: Dry run
+        required: false
+        type: boolean
+        default: false
 
 env:
   CACHE: true
@@ -44,6 +50,8 @@ jobs:
     needs: build_programs
     uses: ./.github/workflows/test-js.yml
     secrets: inherit
+    with:
+      git_ref: ${{ inputs.git_ref }}
 
   deploy_program:
     name: Program / Deploy
@@ -69,12 +77,6 @@ jobs:
         uses: metaplex-foundation/actions/install-solana@v1
         with:
           version: ${{ env.DEPLOY_SOLANA_VERSION }}
-          cache: ${{ env.CACHE }}
-
-      - name: Install Anchor CLI
-        uses: metaplex-foundation/actions/install-anchor-cli@v1
-        with:
-          version: ${{ env.ANCHOR_VERSION }}
           cache: ${{ env.CACHE }}
 
       - name: Install cargo-release
@@ -104,27 +106,24 @@ jobs:
 
       - name: Identify Program
         run: |
+          if [[ "${{ inputs.cluster }}" == "sonic"* ]]; then
+            echo ${{ secrets.CORE_CANDY_MACHINE_SONIC_DEPLOY_KEY }} > ./deploy-key.json
+          else if [[ "${{ inputs.cluster }}" == "eclipse"* ]]; then
+            echo ${{ secrets.CORE_CANDY_MACHINE_ECLIPSE_DEPLOY_KEY }} > ./deploy-key.json
+          fi
           if [ "${{ inputs.program }}" == "candy-guard" ]; then
-            echo ${{ secrets.CORE_CANDY_GUARD_DEPLOY_KEY }} > ./deploy-key.json 
+            if [ ! -e "./deploy-key.json" ]; then
+              echo ${{ secrets.CORE_CANDY_GUARD_DEPLOY_KEY }} > ./deploy-key.json
+            fi
             echo ${{ secrets.CORE_CANDY_GUARD_ID }} > ./program-id.json
             echo PROGRAM_NAME="mpl_core_candy_guard" >> $GITHUB_ENV
           else
-            echo ${{ secrets.CORE_CANDY_MACHINE_CORE_DEPLOY_KEY }} > ./deploy-key.json
+            if [ ! -e "./deploy-key.json" ]; then
+              echo ${{ secrets.CORE_CANDY_MACHINE_CORE_DEPLOY_KEY }} > ./deploy-key.json
+            fi
             echo ${{ secrets.CORE_CANDY_MACHINE_CORE_ID }} > ./program-id.json
             echo PROGRAM_NAME="mpl_core_candy_machine_core" >> $GITHUB_ENV
           fi
-
-      - name: Get Version
-        run: |
-          IDL_NAME=`echo "${{ inputs.program }}" | tr - _`
-          git fetch --tags --all
-          PROGRAM_VERSION=`git tag -l --sort -version:refname "release/${{ inputs.program }}/*" | head -n 1 | sed 's|release/||'`
-
-          cp ./idls/${IDL_NAME}.json ./idls/${IDL_NAME}-previous.json
-          jq ".version = \"${PROGRAM_VERSION}\"" ./idls/${IDL_NAME}-previous.json > ./idls/${IDL_NAME}.json
-          rm ./idls/${IDL_NAME}-previous.json
-
-          echo PROGRAM_VERSION="${PROGRAM_VERSION}" >> $GITHUB_ENV
 
       - name: Download Program Builds
         uses: actions/download-artifact@v4
@@ -132,6 +131,7 @@ jobs:
           name: program-builds-${{ inputs.git_ref }}
 
       - name: Deploy Program
+        if: !github.event.inputs.dry_run
         run: |
           echo "Deploying ${{ inputs.program }} to ${{ inputs.cluster }}"
 
@@ -141,20 +141,6 @@ jobs:
             -k ./deploy-key.json \
             --max-sign-attempts 100 \
             --use-rpc
-
-      - name: Upgrade IDL
-        working-directory: ./programs/${{ inputs.program }}
-        run: |
-          jq 'del(.metadata?) | del(.. | .docs?)' ../../idls/`echo "${{ inputs.program }}" | tr - _`.json > ./idl.json
-
-          anchor idl upgrade -f ./idl.json \
-            --provider.cluster ${{ env.RPC }} \
-            --provider.wallet ../../deploy-key.json \
-            `solana address -k ../../program-id.json`
-
-          rm ../../deploy-key.json
-          rm ../../program-id.json
-          rm ./idl.json
 
       - name: Publish crate
         working-directory: ./programs/${{ inputs.program }}/program
@@ -170,12 +156,13 @@ jobs:
           git reset --soft HEAD~1
           git stash pop
 
-      - name: Commit and tag new version
-        uses: stefanzweifel/git-auto-commit-action@v4
-        if: github.event.inputs.publish_crate == 'true' && github.event.inputs.cluster == 'mainnet-beta'
+      - name: Create tag
+        uses: actions/github-script@v5
         with:
-          commit_message: Deploy mpl-${{ inputs.program }} program v${{ env.PROGRAM_VERSION }}
-          tagging_message: mpl-${{ inputs.program }}@v${{ env.PROGRAM_VERSION }}
-
-
-    # create tag for the env that was just deployed to
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ inputs.program }}-${{ inputs.cluster }}',
+              sha: '${{ inputs.git_ref }}'
+            });
