@@ -131,7 +131,7 @@ jobs:
           name: program-builds-${{ inputs.git_ref }}
 
       - name: Deploy Program
-        if: !github.event.inputs.dry_run
+        if: github.event.inputs.dry_run == 'false'
         run: |
           echo "Deploying ${{ inputs.program }} to ${{ inputs.cluster }}"
 
