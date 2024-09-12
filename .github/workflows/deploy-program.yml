@@ -24,10 +24,10 @@ on:
           - eclipse-mainnet
           - eclipse-devnet
       git_ref:
-        description: Release tag (release/1.x.x) or commit to deploy
+        description: Release tag (release/candy-machine-core@0.2.1) or (release/candy-guard@0.2.1) or commit to deploy
         required: true
         type: string
-        default: release/1.0.0
+        default: release/candy-guard@0.2.1
       dry_run:
         description: Dry run
         required: false
@@ -63,7 +63,7 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.git_ref }}
+          ref: ${{ inputs.git_ref }}
 
       - name: Load environment variables
         run: cat .github/.env >> $GITHUB_ENV

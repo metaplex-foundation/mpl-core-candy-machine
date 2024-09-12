@@ -60,7 +60,7 @@ jobs:
     - name: Bump Program Version
       run: |
         git fetch --tags --all
-        VERSION=`git tag -l --sort -version:refname "release/${{ inputs.program }}/*" | head -n 1 | sed 's|release/${{ inputs.program }}/||'`
+        VERSION=`git tag -l --sort -version:refname "release/${{ inputs.program }}@*" | head -n 1 | sed 's|release/${{ inputs.program }}@||'`
         MAJOR=`echo ${VERSION} | cut -d. -f1`
         MINOR=`echo ${VERSION} | cut -d. -f2`
         PATCH=`echo ${VERSION} | cut -d. -f3`
@@ -99,8 +99,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: release/${{ inputs.program }}/${{ env.PROGRAM_VERSION }}
-        release_name: Release ${{ inputs.program }} v${{ env.PROGRAM_VERSION }}
+        tag_name: release/${{ inputs.program }}@${{ env.PROGRAM_VERSION }}
+        release_name: ${{ inputs.program }} v${{ env.PROGRAM_VERSION }}
         body: |
           Release ${{ inputs.program }} v${{ env.PROGRAM_VERSION }}
         draft: false
