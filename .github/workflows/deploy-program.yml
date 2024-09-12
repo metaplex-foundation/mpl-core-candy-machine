@@ -47,13 +47,13 @@ jobs:
     - name: Check tag
       id: set_program
       run: |
-        if [[ "${{ inputs.git_ref }}" == "release/candy-guard@*" ]]; then
+        if [[ "${{ inputs.git_ref }}" =~ ^release/candy-guard@* ]]; then
           echo program="candy-guard" >> $GITHUB_OUTPUT
           echo type="release" >> $GITHUB_OUTPUT
-        else if [[ "${{ inputs.git_ref }}" == "release/candy-machine-core@*" ]]; then
+        elif [[ "${{ inputs.git_ref }}" =~ ^release/candy-machine-core@* ]]; then
           echo program="candy-machine-core" >> $GITHUB_OUTPUT
           echo type="relase" >> $GITHUB_OUTPUT
-        else if [[ "${{ inputs.git_ref }}" == "candy-machine-core" || "${{ inputs.git_ref }}" == "candy-guard" ]]; then
+        elif [[ "${{ inputs.git_ref }}" == "candy-machine-core" || "${{ inputs.git_ref }}" == "candy-guard" ]]; then
           echo program="${{ inputs.program }}" >> $GITHUB_OUTPUT
           echo type="ref" >> $GITHUB_OUTPUT
         else
@@ -115,17 +115,17 @@ jobs:
           # We do this if waterfall because github actions does not allow dynamic access to secrets
           if [ "${{ inputs.cluster }}" == "devnet" ]; then
             echo RPC=${{ secrets.DEVNET_RPC }} >> $GITHUB_ENV
-          else if [ "${{ inputs.cluster }}" == "mainnet-beta" ]; then
+          elif [ "${{ inputs.cluster }}" == "mainnet-beta" ]; then
             echo RPC=${{ secrets.MAINNET_RPC }} >> $GITHUB_ENV
-          else if [ "${{ inputs.cluster }}" == "sonic-devnet" ]; then
+          elif [ "${{ inputs.cluster }}" == "sonic-devnet" ]; then
             echo RPC=${{ secrets.SONIC_DEVNET_RPC }} >> $GITHUB_ENV
-          else if [ "${{ inputs.cluster }}" == "sonic-testnet" ]; then
+          elif [ "${{ inputs.cluster }}" == "sonic-testnet" ]; then
             echo RPC=${{ secrets.SONIC_TESTNET_RPC }} >> $GITHUB_ENV
-          else if [ "${{ inputs.cluster }}" == "eclipse-devnet" ]; then
+          elif [ "${{ inputs.cluster }}" == "eclipse-devnet" ]; then
             echo RPC=${{ secrets.ECLIPSE_DEVNET_RPC }} >> $GITHUB_ENV
-          else if [ "${{ inputs.cluster }}" == "eclipse-testnet" ]; then
+          elif [ "${{ inputs.cluster }}" == "eclipse-testnet" ]; then
             echo RPC=${{ secrets.ECLIPSE_TESTNET_RPC }} >> $GITHUB_ENV
-          else if [ "${{ inputs.cluster }}" == "eclipse-mainnet" ]; then
+          elif [ "${{ inputs.cluster }}" == "eclipse-mainnet" ]; then
             echo RPC=${{ secrets.ECLIPSE_MAINNET_RPC }} >> $GITHUB_ENV
           fi
 
@@ -133,7 +133,7 @@ jobs:
         run: |
           if [[ "${{ inputs.cluster }}" == "sonic"* ]]; then
             echo ${{ secrets.CORE_CANDY_MACHINE_SONIC_DEPLOY_KEY }} > ./deploy-key.json
-          else if [[ "${{ inputs.cluster }}" == "eclipse"* ]]; then
+          elif [[ "${{ inputs.cluster }}" == "eclipse"* ]]; then
             echo ${{ secrets.CORE_CANDY_MACHINE_ECLIPSE_DEPLOY_KEY }} > ./deploy-key.json
           fi
           if [ "${{ needs.check_tag.outputs.program }}" == "candy-guard" ]; then
