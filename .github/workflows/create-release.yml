@@ -115,3 +115,14 @@ jobs:
         asset_path: ./programs/.bin/${{ env.PROGRAM_NAME }}.so
         asset_name: ${{ inputs.program }}.so
         asset_content_type: application/octet-stream
+
+    - name: Update latest tag
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/release/${{ inputs.program }}@latest',
+            sha: '${{ inputs.git_ref }}'
+          });

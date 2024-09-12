@@ -3,10 +3,14 @@ name: Deploy Program
 on:
   workflow_dispatch:
     inputs:
-      program:
-        description: Program
+      git_ref:
+        description: Release tag (e.g. release/candy-machine-core@latest , release/candy-guard@0.2.1) or commit to deploy
         required: true
-        default: candy-guard
+        type: string
+        default: release/candy-guard@latest
+      program:
+        description: Program (required if not a release tag)
+        required: false
         type: choice
         options:
           - candy-guard
@@ -23,11 +27,6 @@ on:
           - sonic-testnet
           - eclipse-mainnet
           - eclipse-devnet
-      git_ref:
-        description: Release tag (release/candy-machine-core@0.2.1) or (release/candy-guard@0.2.1) or commit to deploy
-        required: true
-        type: string
-        default: release/candy-guard@0.2.1
       dry_run:
         description: Dry run
         required: false
@@ -38,10 +37,36 @@ env:
   CACHE: true
 
 jobs:
+  check_tag:
+    name: 'Check tag'
+    runs-on: ubuntu-latest
+    outputs:
+      program: ${{ steps.set_program.outputs.program }}
+      type: ${{ steps.set_program.outputs.type }}
+    steps:
+    - name: Check tag
+      id: set_program
+      run: |
+        if [[ "${{ inputs.git_ref }}" == "release/candy-guard@*" ]]; then
+          echo program="candy-guard" >> $GITHUB_OUTPUT
+          echo type="release" >> $GITHUB_OUTPUT
+        else if [[ "${{ inputs.git_ref }}" == "release/candy-machine-core@*" ]]; then
+          echo program="candy-machine-core" >> $GITHUB_OUTPUT
+          echo type="relase" >> $GITHUB_OUTPUT
+        else if [[ "${{ inputs.git_ref }}" == "candy-machine-core" || "${{ inputs.git_ref }}" == "candy-guard" ]]; then
+          echo program="${{ inputs.program }}" >> $GITHUB_OUTPUT
+          echo type="ref" >> $GITHUB_OUTPUT
+        else
+          echo "Non-release tag and program not specified"
+          exit 1;
+        fi
+
   build_programs:
     name: Programs
     uses: ./.github/workflows/build-programs.yml
     secrets: inherit
+    needs: check_tag
+    if: needs.check_tag.outputs.type == 'ref'
     with:
       git_ref: ${{ inputs.git_ref }}
 
@@ -56,7 +81,7 @@ jobs:
   deploy_program:
     name: Program / Deploy
     runs-on: ubuntu-latest
-    needs: test_js
+    needs: [test_js, check_tag]
     permissions:
       contents: write
     steps:
@@ -111,7 +136,7 @@ jobs:
           else if [[ "${{ inputs.cluster }}" == "eclipse"* ]]; then
             echo ${{ secrets.CORE_CANDY_MACHINE_ECLIPSE_DEPLOY_KEY }} > ./deploy-key.json
           fi
-          if [ "${{ inputs.program }}" == "candy-guard" ]; then
+          if [ "${{ needs.check_tag.outputs.program }}" == "candy-guard" ]; then
             if [ ! -e "./deploy-key.json" ]; then
               echo ${{ secrets.CORE_CANDY_GUARD_DEPLOY_KEY }} > ./deploy-key.json
             fi
@@ -133,7 +158,7 @@ jobs:
       - name: Deploy Program
         if: github.event.inputs.dry_run == 'false'
         run: |
-          echo "Deploying ${{ inputs.program }} to ${{ inputs.cluster }}"
+          echo "Deploying ${{ needs.check_tag.outputs.program }} to ${{ inputs.cluster }}"
 
           solana -v program deploy ./programs/.bin/${{ env.PROGRAM_NAME }}.so \
             -u ${{ env.RPC }} \
@@ -143,7 +168,7 @@ jobs:
             --use-rpc
 
       - name: Publish crate
-        working-directory: ./programs/${{ inputs.program }}/program
+        working-directory: ./programs/${{ needs.check_tag.outputs.program }}/program
         if: github.event.inputs.publish_crate == 'true' && github.event.inputs.cluster == 'mainnet-beta'
         run: |
           git stash
@@ -163,6 +188,6 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/${{ inputs.program }}-${{ inputs.cluster }}',
+              ref: 'refs/tags/${{ needs.check_tag.outputs.program }}-${{ inputs.cluster }}',
               sha: '${{ inputs.git_ref }}'
             });
