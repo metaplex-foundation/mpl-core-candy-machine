@@ -124,5 +124,5 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: 'refs/tags/release/${{ inputs.program }}@latest',
-            sha: '${{ inputs.git_ref }}'
+            sha: '${{ github.sha }}'
           });

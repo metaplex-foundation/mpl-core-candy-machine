@@ -189,5 +189,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: 'refs/tags/${{ needs.check_tag.outputs.program }}-${{ inputs.cluster }}',
-              sha: '${{ inputs.git_ref }}'
+              sha: '${{ github.sha }}'
             });
