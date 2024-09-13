@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       git_ref:
-        description: Release tag (e.g. release/candy-machine-core@latest , release/candy-guard@0.2.1) or commit to deploy
+        description: Release tag (release/candy-machine-core@0.2.2 or release/candy-guard@0.2.1) or commit to deploy
         required: true
         type: string
-        default: release/candy-guard@latest
+        default: release/candy-guard@0.2.2
       program:
         description: Program (required if not a release tag)
         required: false
@@ -192,7 +192,7 @@ jobs:
         if: needs.check_tag.outputs.type == 'release'
         run: |
           mkdir -p ${{ github.workspace }}/programs/.bin
-          curl -L -o ${{ github.workspace }}/programs/.bin/${{ steps.get_release.outputs.asset_name }} \
+          curl -L -o ${{ github.workspace }}/programs/.bin/${{ env.PROGRAM_NAME }}.so \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/octet-stream" \
             "${{ steps.get_release.outputs.download_url }}"
