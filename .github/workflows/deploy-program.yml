@@ -162,7 +162,7 @@ jobs:
         if: needs.check_tag.outputs.type == 'release'
         with:
           repo: ${{ github.repository }}
-          version: ${{ inputs.git_ref }}
+          version: 'tags/${{ inputs.git_ref }}'
           target: './programs/.bin/${{ env.PROGRAM_NAME }}.so' 
           file: ${{ env.PROGRAM_NAME }}.so
           token: ${{ secrets.GITHUB_TOKEN }}
