@@ -82,7 +82,7 @@ jobs:
     name: Program / Deploy
     runs-on: ubuntu-latest
     needs: [test_js, check_tag]
-    if: needs.test_js.result == 'success' || (needs.check_tag.result == 'success' && needs.check_tag.outputs.type == 'release')
+    if: always() && (needs.test_js.result == 'success' || needs.test_js.result == 'skipped')
     permissions:
       contents: write
     steps:
