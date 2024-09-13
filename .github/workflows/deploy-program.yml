@@ -183,6 +183,8 @@ jobs:
               throw new Error(`Asset ${assetName} not found in release tagged ${tag}`);
             }
 
+            console.log(asset);
+
             return {
               download_url: asset.url,
               asset_name: asset.name
