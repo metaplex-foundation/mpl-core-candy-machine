@@ -163,7 +163,6 @@ jobs:
         if: needs.check_tag.outputs.type == 'release'
         with:
           script: |
-            const core = require('@actions/core');
             const tag = "${{ inputs.git_ref }}";
             const assetName = "${{ env.PROGRAM_NAME }}.so";
 
