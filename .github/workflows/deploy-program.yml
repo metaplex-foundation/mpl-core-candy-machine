@@ -156,16 +156,46 @@ jobs:
         if: needs.check_tag.outputs.type == 'ref'
         with:
           name: program-builds-${{ inputs.git_ref }}
-
+      
       - name: Download release asset
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: actions/github-script@v5
+        id: get_release
         if: needs.check_tag.outputs.type == 'release'
         with:
-          repo: ${{ github.repository }}
-          version: 'tags/${{ inputs.git_ref }}'
-          target: './programs/.bin/${{ env.PROGRAM_NAME }}.so' 
-          file: ${{ env.PROGRAM_NAME }}.so
-          token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const tag = ${{ inputs.git_ref }};
+            const assetName = ${{ env.PROGRAM_NAME }}.so;
+
+            // Fetch the release associated with the tag
+            const release = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tag
+            });
+            
+            if (release.status !== 200) {
+              throw new Error(`Failed to fetch release for tag ${tag}`);
+            }
+            
+            // Find the specific asset by name
+            const asset = release.data.assets.find(asset => asset.name === assetName);
+            if (!asset) {
+              throw new Error(`Asset ${assetName} not found in release tagged ${tag}`);
+            }
+
+            return {
+              download_url: asset.url,
+              asset_name: asset.name
+            };
+
+      - name: Download the Selected Asset
+        if: needs.check_tag.outputs.type == 'release'
+        run: |
+          mkdir -p ${{ github.workspace }}/programs/.bin
+          curl -L -o ${{ github.workspace }}/programs/.bin/${{ steps.get_release.outputs.asset_name }} \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/octet-stream" \
+            "${{ steps.get_release.outputs.download_url }}"
 
       - name: Deploy Program
         if: github.event.inputs.dry_run == 'false'
