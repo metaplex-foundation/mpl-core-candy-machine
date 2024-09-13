@@ -163,8 +163,8 @@ jobs:
         if: needs.check_tag.outputs.type == 'release'
         with:
           script: |
-            const tag = ${{ inputs.git_ref }};
-            const assetName = ${{ env.PROGRAM_NAME }}.so;
+            const tag = "${{ inputs.git_ref }}";
+            const assetName = "${{ env.PROGRAM_NAME }}.so";
 
             // Fetch the release associated with the tag
             const release = await github.rest.repos.getReleaseByTag({
