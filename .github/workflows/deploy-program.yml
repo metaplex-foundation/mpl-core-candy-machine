@@ -219,13 +219,21 @@ jobs:
           git reset --soft HEAD~1
           git stash pop
 
-      - name: Create tag
+      - name: Create env tag
         uses: actions/github-script@v5
         with:
           script: |
+            const refData = await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'tags/${{ inputs.git_ref }}'
+            });
+            if (refData.status !== 200) {
+              throw new Error('Failed to fetch existing tag');
+            }
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: 'refs/tags/${{ needs.check_tag.outputs.program }}-${{ inputs.cluster }}',
-              sha: '${{ github.sha }}'
+              sha: refData.data.object.sha
             });
