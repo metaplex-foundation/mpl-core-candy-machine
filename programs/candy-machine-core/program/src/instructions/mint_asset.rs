@@ -47,7 +47,7 @@ pub fn mint_asset<'info>(
     process_mint_asset(
         &mut ctx.accounts.candy_machine,
         accounts,
-        ctx.bumps["authority_pda"],
+        ctx.bumps.authority_pda,
         &mint_args,
     )
 }
