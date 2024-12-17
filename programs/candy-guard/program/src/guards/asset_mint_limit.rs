@@ -78,8 +78,8 @@ impl Condition for AssetMintLimit {
         // verifies that we got the correct Core Asset
         verify_core_collection(asset_account, &self.required_collection)?;
 
-        let asset = Asset::try_from(asset_account)?;
-        if assert_keys_equal(&asset.base.owner, ctx.accounts.minter.key).is_err() {
+        let asset = BaseAssetV1::try_from(asset_account)?;
+        if assert_keys_equal(&asset.owner, ctx.accounts.minter.key).is_err() {
             return err!(CandyGuardError::IncorrectOwner);
         }
 

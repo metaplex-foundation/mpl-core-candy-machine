@@ -602,6 +602,25 @@
       }
     },
     {
+      "name": "AssetGate",
+      "docs": [
+        "Guard that restricts the transaction to holders of a specified collection.",
+        "",
+        "List of accounts required:",
+        "",
+        "0. `[]` Account of the Asset."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requiredCollection",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
       "name": "AssetMintLimit",
       "docs": [
         "Gaurd to set a limit of mints per wallet based on holding a specific Core Asset.",
@@ -1262,6 +1281,21 @@
       }
     },
     {
+      "name": "VanityMint",
+      "docs": [
+        "Guard that sets a specific start date for the mint."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "regex",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "name": "RouteArgs",
       "docs": [
         "Arguments for a route transaction."
@@ -1660,6 +1694,28 @@
                 "defined": "AssetPaymentMulti"
               }
             }
+          },
+          {
+            "name": "assetGate",
+            "docs": [
+              "Asset Gate (restrict access to holders of a specific asset)."
+            ],
+            "type": {
+              "option": {
+                "defined": "AssetGate"
+              }
+            }
+          },
+          {
+            "name": "vanityMint",
+            "docs": [
+              "Vanity Mint (the address of the new asset must match a pattern)."
+            ],
+            "type": {
+              "option": {
+                "defined": "VanityMint"
+              }
+            }
           }
         ]
       }
@@ -1775,6 +1831,12 @@
           },
           {
             "name": "AssetPaymentMulti"
+          },
+          {
+            "name": "AssetGate"
+          },
+          {
+            "name": "VanityMint"
           }
         ]
       }
@@ -2040,6 +2102,21 @@
       "code": 6051,
       "name": "InvalidAccountVersion",
       "msg": "Invalid account version"
+    },
+    {
+      "code": 6052,
+      "name": "ExceededRegexLength",
+      "msg": "Exceeded the maximum length of a regex that can be used"
+    },
+    {
+      "code": 6053,
+      "name": "InvalidVanityAddress",
+      "msg": "Invalid vanity address"
+    },
+    {
+      "code": 6054,
+      "name": "InvalidRegex",
+      "msg": "Invalid regex"
     }
   ],
   "metadata": {

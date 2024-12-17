@@ -10,6 +10,8 @@ import {
   AssetBurnArgs,
   AssetBurnMulti,
   AssetBurnMultiArgs,
+  AssetGate,
+  AssetGateArgs,
   AssetMintLimit,
   AssetMintLimitArgs,
   AssetPayment,
@@ -58,6 +60,8 @@ import {
   TokenGateArgs,
   TokenPayment,
   TokenPaymentArgs,
+  VanityMint,
+  VanityMintArgs,
 } from '../generated';
 import {
   GuardSet,
@@ -93,6 +97,7 @@ import { AssetBurnMintArgs } from './assetBurn';
 import { AssetMintLimitMintArgs } from './assetMintLimit';
 import { AssetBurnMultiMintArgs } from './assetBurnMulti';
 import { AssetPaymentMultiMintArgs } from './assetPaymentMulti';
+import { AssetGateMintArgs } from './assetGate';
 
 /**
  * The arguments for all default Candy Machine guards.
@@ -127,6 +132,8 @@ export type DefaultGuardSetArgs = GuardSetArgs & {
   assetMintLimit: OptionOrNullable<AssetMintLimitArgs>;
   assetBurnMulti: OptionOrNullable<AssetBurnMultiArgs>;
   assetPaymentMulti: OptionOrNullable<AssetPaymentMultiArgs>;
+  assetGate: OptionOrNullable<AssetGateArgs>;
+  vanityMint: OptionOrNullable<VanityMintArgs>;
 };
 
 /**
@@ -162,6 +169,8 @@ export type DefaultGuardSet = GuardSet & {
   assetMintLimit: Option<AssetMintLimit>;
   assetBurnMulti: Option<AssetBurnMulti>;
   assetPaymentMulti: Option<AssetPaymentMulti>;
+  assetGate: Option<AssetGate>;
+  vanityMint: Option<VanityMint>;
 };
 
 /**
@@ -197,6 +206,7 @@ export type DefaultGuardSetMintArgs = GuardSetMintArgs & {
   assetMintLimit: OptionOrNullable<AssetMintLimitMintArgs>;
   assetBurnMulti: OptionOrNullable<AssetBurnMultiMintArgs>;
   assetPaymentMulti: OptionOrNullable<AssetPaymentMultiMintArgs>;
+  assetGate: OptionOrNullable<AssetGateMintArgs>;
 };
 
 /**
@@ -257,6 +267,8 @@ export const defaultCandyGuardNames: string[] = [
   'assetMintLimit',
   'assetBurnMulti',
   'assetPaymentMulti',
+  'assetGate',
+  'vanityMint',
 ];
 
 /** @internal */

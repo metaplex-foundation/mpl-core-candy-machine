@@ -31,6 +31,8 @@ import {
   assetMintLimitGuardManifest,
   assetBurnMultiGuardManifest,
   assetPaymentMultiGuardManifest,
+  assetGateGuardManifest,
+  vanityMintGuardManifest,
 } from './defaultGuards';
 import {
   createMplCoreCandyGuardProgram,
@@ -93,7 +95,9 @@ export const mplCandyMachine = (): UmiPlugin => ({
       assetBurnGuardManifest,
       assetMintLimitGuardManifest,
       assetBurnMultiGuardManifest,
-      assetPaymentMultiGuardManifest
+      assetPaymentMultiGuardManifest,
+      assetGateGuardManifest,
+      vanityMintGuardManifest
     );
   },
 });

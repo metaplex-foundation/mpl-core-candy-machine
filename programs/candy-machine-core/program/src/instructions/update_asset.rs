@@ -5,7 +5,7 @@ use mpl_core::{
     accounts::{BaseAssetV1, BaseCollectionV1},
     fetch_plugin,
     instructions::{
-        AddPluginV1Cpi, AddPluginV1CpiAccounts, AddPluginV1InstructionArgs, UpdateV1CpiBuilder,
+        AddPluginV1Cpi, AddPluginV1CpiAccounts, AddPluginV1InstructionArgs, UpdateV2CpiBuilder,
     },
     types::{PluginAuthorityPair, PluginType, UpdateDelegate},
 };
@@ -92,12 +92,12 @@ pub(crate) fn process_update_asset(
         return err!(CandyError::IncorrectOwner);
     }
 
-    let (auth, _, _) = fetch_plugin::<BaseCollectionV1, UpdateDelegate>(
+    let (auth, update_delegate, _) = fetch_plugin::<BaseCollectionV1, UpdateDelegate>(
         &accounts.collection,
         PluginType::UpdateDelegate,
     )?;
 
-    assert_plugin_pubkey_authority(&auth, &accounts.authority_pda.key())?;
+    assert_plugin_pubkey_authority(&auth, &update_delegate, &accounts.authority_pda.key())?;
 
     // (2) selecting an item to mint
 

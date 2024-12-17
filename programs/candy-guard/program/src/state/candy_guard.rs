@@ -140,6 +140,10 @@ pub struct GuardSet {
     pub asset_burn_multi: Option<AssetBurnMulti>,
     /// Asset Payment Multi (multi pay Assets).
     pub asset_payment_multi: Option<AssetPaymentMulti>,
+    /// Asset Gate (restrict access to holders of a specific asset).
+    pub asset_gate: Option<AssetGate>,
+    /// Vanity Mint (the address of the new asset must match a pattern).
+    pub vanity_mint: Option<VanityMint>,
 }
 
 /// Available guard types.
@@ -174,6 +178,8 @@ pub enum GuardType {
     AssetMintLimit,
     AssetBurnMulti,
     AssetPaymentMulti,
+    AssetGate,
+    VanityMint,
 }
 
 impl GuardType {
