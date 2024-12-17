@@ -248,7 +248,7 @@ fn update(
         .asset(&accounts.asset)
         .new_name(config_line.name)
         .new_uri(config_line.uri)
-        .collection(Some(&accounts.collection))
+        .new_collection(Some(&accounts.collection))
         .authority(Some(&accounts.authority_pda))
         .system_program(&accounts.system_program)
         .invoke_signed(&[&authority_seeds])

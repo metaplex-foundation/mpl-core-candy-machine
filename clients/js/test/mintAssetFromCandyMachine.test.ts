@@ -1,5 +1,5 @@
 import {
-  createMintWithAssociatedToken,
+  // createMintWithAssociatedToken,
   setComputeUnitLimit,
 } from '@metaplex-foundation/mpl-toolbox';
 import { generateSigner, transactionBuilder } from '@metaplex-foundation/umi';
@@ -76,12 +76,11 @@ test('it cannot mint directly from a candy machine if we are not the mint author
   const mint = generateSigner(umi);
   const owner = generateSigner(umi).publicKey;
   const promise = transactionBuilder()
-    .add(createMintWithAssociatedToken(umi, { mint, owner, amount: 1 }))
     .add(
       mintAssetFromCandyMachine(umi, {
         candyMachine,
         mintAuthority: mintAuthorityB,
-        asset: mint.publicKey,
+        asset: mint,
         assetOwner: owner,
         collection: collection.publicKey,
       })

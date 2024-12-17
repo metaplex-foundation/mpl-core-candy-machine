@@ -1,12 +1,13 @@
 import {
-  createMintWithAssociatedToken,
   setComputeUnitLimit,
 } from '@metaplex-foundation/mpl-toolbox';
-import { generateSigner, transactionBuilder } from '@metaplex-foundation/umi';
+import { generateSigner, publicKey, transactionBuilder } from '@metaplex-foundation/umi';
 import test from 'ava';
+import { AssetV1, fetchAssetV1 } from '@metaplex-foundation/mpl-core';
 import {
   CandyMachine,
   fetchCandyMachine,
+  findCandyMachineAuthorityPda,
   updateAssetFromCandyMachine,
 } from '../src';
 import {
@@ -25,14 +26,26 @@ test('it can update directly from a candy machine as the mint authority', async 
     collection,
     configLines: [
       { name: 'Degen #1', uri: 'https://example.com/degen/1' },
-      { name: 'Degen #2', uri: 'https://example.com/degen/2' },
+      // { name: 'Degen #2', uri: 'https://example.com/degen/2' },
     ],
   });
   const candyMachine = candyMachineSigner.publicKey;
 
   // When we mint a new NFT directly from the candy machine as the mint authority.
   const owner = generateSigner(umi).publicKey;
-  const mint = await createAsset(umi, { owner });
+  const authorityPda = findCandyMachineAuthorityPda(umi, { candyMachine: candyMachineSigner.publicKey });
+  const mint = await createAsset(umi, {
+    owner,
+    plugins: [
+      {
+        plugin: {
+          __kind: 'UpdateDelegate',
+          fields: [{ additionalDelegates: [publicKey(authorityPda)] }],
+        },
+        authority: null,
+      },
+    ],
+  });
   await transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: 400000 }))
     .add(
@@ -52,6 +65,10 @@ test('it can update directly from a candy machine as the mint authority', async 
   // And the candy machine was updated.
   const candyMachineAccount = await fetchCandyMachine(umi, candyMachine);
   t.like(candyMachineAccount, <CandyMachine>{ itemsRedeemed: 1n });
+
+  // And the asset was updated.
+  const assetAccount = await fetchAssetV1(umi, mint.publicKey);
+  t.like(assetAccount, <AssetV1>{ name: 'Degen #1', uri: 'https://example.com/degen/1' });
 });
 
 test('it cannot update directly from a candy machine if we are not the mint authority', async (t) => {
@@ -74,10 +91,21 @@ test('it cannot update directly from a candy machine if we are not the mint auth
 
   // When we try to mint directly from the candy machine as mint authority B.
   const mintAuthorityB = generateSigner(umi);
-  const mint = await createAsset(umi, {});
+  const authorityPda = findCandyMachineAuthorityPda(umi, { candyMachine: candyMachineSigner.publicKey });
   const owner = generateSigner(umi).publicKey;
+  const mint = await createAsset(umi, {
+    owner,
+    plugins: [
+      {
+        plugin: {
+          __kind: 'UpdateDelegate',
+          fields: [{ additionalDelegates: [publicKey(authorityPda)] }],
+        },
+        authority: null,
+      },
+    ],
+  });
   const promise = transactionBuilder()
-    .add(createMintWithAssociatedToken(umi, { mint, owner, amount: 1 }))
     .add(
       updateAssetFromCandyMachine(umi, {
         candyMachine,
