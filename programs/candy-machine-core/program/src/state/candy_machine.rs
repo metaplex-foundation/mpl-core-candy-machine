@@ -40,3 +40,8 @@ pub struct ConfigLine {
 pub struct MintAssetArgs {
     pub plugins: Vec<PluginAuthorityPair>,
 }
+
+#[derive(AnchorSerialize, AnchorDeserialize, Eq, PartialEq, Clone, Debug)]
+pub struct UpdateAssetArgs {
+    pub plugins: Vec<PluginAuthorityPair>,
+}

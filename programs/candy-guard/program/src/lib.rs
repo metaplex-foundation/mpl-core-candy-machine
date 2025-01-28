@@ -30,6 +30,15 @@ pub mod candy_guard {
         instructions::mint_v1(ctx, mint_args, label)
     }
 
+    /// Update an NFT from a candy machine wrapped in the candy guard.
+    pub fn update_asset_v1<'info>(
+        ctx: Context<'_, '_, '_, 'info, UpdateAssetV1<'info>>,
+        update_args: Vec<u8>,
+        label: Option<String>,
+    ) -> Result<()> {
+        instructions::update_asset_v1(ctx, update_args, label)
+    }
+
     /// Route the transaction to a guard instruction.
     pub fn route<'info>(
         ctx: Context<'_, '_, '_, 'info, Route<'info>>,

@@ -386,6 +386,24 @@ kinobi.update(
         },
       },
     },
+    "mplCoreCandyMachineCore.updateAsset": {
+      name: "updateAssetFromCandyMachine",
+      args: {
+        plugins: {
+          defaultsTo: k.valueDefault(k.vList([]))
+        }
+      },
+      accounts: {
+        mplCoreProgram: {
+          defaultsTo: defaultsToMplCoreProgram(),
+        },
+        sysvarInstructions: {
+          defaultsTo: k.publicKeyDefault(
+            "Sysvar1nstructions1111111111111111111111111"
+          ),
+        },
+      },
+    },
     "mplCoreCandyGuard.wrap": {
       accounts: {
         candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
@@ -397,6 +415,20 @@ kinobi.update(
       }
     },
     "mplCoreCandyGuard.mintV1": {
+      internal: true,
+      args: {
+        label: { name: "group" },
+      },
+      accounts: {
+        candyGuard: { defaultsTo: defaultsToCandyGuardPda("candyMachine") },
+        asset: { isSigner: "either" },
+        minter: { defaultsTo: k.identityDefault() },
+
+        splAtaProgram: { defaultsTo: defaultsToSplAssociatedTokenProgram() },
+        candyMachineProgram: { defaultsTo: defaultsToCandyMachineAssetProgram() },
+      },
+    },
+    "mplCoreCandyGuard.updateAssetV1": {
       internal: true,
       args: {
         label: { name: "group" },

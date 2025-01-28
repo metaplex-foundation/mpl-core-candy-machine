@@ -6,6 +6,7 @@ pub use route::*;
 pub use set_authority::*;
 pub use unwrap::*;
 pub use update::*;
+pub use update_asset_v1::*;
 pub use withdraw::*;
 pub use wrap::*;
 
@@ -17,6 +18,7 @@ pub mod route;
 pub mod set_authority;
 pub mod unwrap;
 pub mod update;
+pub mod update_asset_v1;
 pub mod withdraw;
 pub mod wrap;
 

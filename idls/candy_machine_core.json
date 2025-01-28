@@ -289,6 +289,136 @@
       ]
     },
     {
+      "name": "updateAsset",
+      "docs": [
+        "Update an Asset.",
+        "",
+        "Only the candy machine mint authority is allowed to mint. This handler mints both",
+        "NFTs and Programmable NFTs.",
+        "",
+        "# Accounts",
+        "",
+        "0. `[writable]` Candy Machine account (must be pre-allocated but zero content)",
+        "1. `[writable]` Authority PDA (seeds `[\"candy_machine\", candy machine id]`)",
+        "2. `[signer]` Candy Machine mint authority",
+        "3. `[signer]` Payer",
+        "4. `[]` Asset Owner",
+        "5. `[writable]` Asset account",
+        "6. `[]` Collection",
+        "7. `[]` Collection delegate or update authority",
+        "8. `[]` Asset program",
+        "9. `[]` System program",
+        "10. `[optional]` Instructions sysvar account",
+        "11. `[]` SlotHashes sysvar cluster data."
+      ],
+      "accounts": [
+        {
+          "name": "candyMachine",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Candy machine account."
+          ]
+        },
+        {
+          "name": "authorityPda",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Candy machine authority account. This is the account that holds a delegate",
+            "to verify an item into the collection.",
+            ""
+          ]
+        },
+        {
+          "name": "mintAuthority",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "Candy machine mint authority (mint only allowed for the mint_authority)."
+          ]
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "Payer for the transaction and account allocation (rent)."
+          ]
+        },
+        {
+          "name": "assetOwner",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "NFT account owner.",
+            ""
+          ]
+        },
+        {
+          "name": "asset",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Mint account of the NFT. The account will be initialized if necessary.",
+            ""
+          ]
+        },
+        {
+          "name": "collection",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Mint account of the collection NFT.",
+            ""
+          ]
+        },
+        {
+          "name": "mplCoreProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Token Metadata program.",
+            ""
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "System program."
+          ]
+        },
+        {
+          "name": "sysvarInstructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions sysvar account.",
+            ""
+          ]
+        },
+        {
+          "name": "recentSlothashes",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "SlotHashes sysvar cluster data.",
+            ""
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "UpdateAssetArgs"
+          }
+        }
+      ]
+    },
+    {
       "name": "setAuthority",
       "docs": [
         "Set a new authority of the candy machine.",
@@ -783,6 +913,22 @@
           }
         ]
       }
+    },
+    {
+      "name": "UpdateAssetArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "plugins",
+            "type": {
+              "vec": {
+                "defined": "PluginAuthorityPair"
+              }
+            }
+          }
+        ]
+      }
     }
   ],
   "errors": [
@@ -940,6 +1086,11 @@
       "code": 6030,
       "name": "IncorrectPluginAuthority",
       "msg": "Invalid plugin authority"
+    },
+    {
+      "code": 6031,
+      "name": "AssetMustBeInitialized",
+      "msg": "Asset must be initialized"
     }
   ],
   "metadata": {

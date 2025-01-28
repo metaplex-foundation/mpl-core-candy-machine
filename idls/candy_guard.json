@@ -180,6 +180,144 @@
       ]
     },
     {
+      "name": "updateAssetV1",
+      "docs": [
+        "Update an NFT from a candy machine wrapped in the candy guard."
+      ],
+      "accounts": [
+        {
+          "name": "candyGuard",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Candy Guard account."
+          ]
+        },
+        {
+          "name": "candyMachineProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Candy Machine program account.",
+            ""
+          ]
+        },
+        {
+          "name": "candyMachine",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Candy machine account."
+          ]
+        },
+        {
+          "name": "candyMachineAuthorityPda",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Candy Machine authority account.",
+            ""
+          ]
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "Payer for the mint (SOL) fees."
+          ]
+        },
+        {
+          "name": "minter",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "Minter account for validation and non-SOL fees."
+          ]
+        },
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Optionally mint to different owner"
+          ]
+        },
+        {
+          "name": "asset",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Mint account of the NFT. The account will be initialized if necessary.",
+            "",
+            "Must be a signer if:",
+            "* the nft_mint account does not exist.",
+            ""
+          ]
+        },
+        {
+          "name": "collection",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Mint account of the collection NFT.",
+            ""
+          ]
+        },
+        {
+          "name": "mplCoreProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Token Metadata program.",
+            "",
+            "Token Metadata program.",
+            ""
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "SPL Token program.",
+            "System program."
+          ]
+        },
+        {
+          "name": "sysvarInstructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions sysvar account.",
+            ""
+          ]
+        },
+        {
+          "name": "recentSlothashes",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "SlotHashes sysvar cluster data.",
+            ""
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "updateArgs",
+          "type": "bytes"
+        },
+        {
+          "name": "label",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
       "name": "route",
       "docs": [
         "Route the transaction to a guard instruction."
