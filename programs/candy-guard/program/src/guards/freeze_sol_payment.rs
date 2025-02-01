@@ -58,11 +58,14 @@ impl Guard for FreezeSolPayment {
     ///  * initialize
     ///  * thaw
     ///  * unlock funds
-    fn instruction<'info>(
-        ctx: &Context<'_, '_, '_, 'info, Route<'info>>,
+    fn instruction<'c, 'info>(
+        ctx: &Context<'_, '_, 'c, 'info, Route<'info>>,
         route_context: RouteContext<'info>,
         data: Vec<u8>,
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        'c: 'info,
+    {
         // determines the instruction to execute
         let instruction: FreezeInstruction =
             if let Ok(instruction) = FreezeInstruction::try_from_slice(&data[0..1]) {
@@ -132,7 +135,7 @@ impl Guard for FreezeSolPayment {
 }
 
 impl Condition for FreezeSolPayment {
-    fn validate<'info>(
+    fn validate<'c, 'info>(
         &self,
         ctx: &mut EvaluationContext,
         _guard_set: &GuardSet,
@@ -200,12 +203,15 @@ impl Condition for FreezeSolPayment {
         Ok(())
     }
 
-    fn post_actions<'info>(
+    fn post_actions<'c, 'info>(
         &self,
-        ctx: &mut EvaluationContext,
+        ctx: &mut EvaluationContext<'_, 'c, 'info>,
         _guard_set: &GuardSet,
         _mint_args: &[u8],
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        'c: 'info,
+    {
         // freezes the nft
         freeze_nft(ctx, ctx.indices["freeze_sol_payment"], &self.destination)
     }
@@ -297,11 +303,14 @@ pub enum FreezeInstruction {
 }
 
 /// Helper function to freeze an nft.
-pub fn freeze_nft(
-    ctx: &EvaluationContext,
+pub fn freeze_nft<'c, 'info>(
+    ctx: &EvaluationContext<'_, 'c, 'info>,
     account_index: usize,
     destination: &Pubkey,
-) -> Result<()> {
+) -> Result<()>
+where
+    'c: 'info,
+{
     let freeze_pda = try_get_account_info(ctx.accounts.remaining, account_index)?;
 
     let mut freeze_escrow: Account<FreezeEscrow> = Account::try_from(freeze_pda)?;
@@ -350,12 +359,15 @@ pub fn freeze_nft(
 }
 
 /// Helper function to initialize the freeze pda.
-pub fn initialize_freeze<'info>(
-    ctx: &Context<'_, '_, '_, 'info, Route<'info>>,
+pub fn initialize_freeze<'c, 'info>(
+    ctx: &Context<'_, '_, 'c, 'info, Route<'info>>,
     route_context: RouteContext,
     data: Vec<u8>,
     destination: Pubkey,
-) -> Result<()> {
+) -> Result<()>
+where
+    'c: 'info,
+{
     let candy_guard_key = &ctx.accounts.candy_guard.key();
     let candy_machine_key = &ctx.accounts.candy_machine.key();
 
@@ -452,11 +464,14 @@ pub fn initialize_freeze<'info>(
 }
 
 /// Helper function to thaw an nft.
-pub fn thaw_nft<'info>(
-    ctx: &Context<'_, '_, '_, 'info, Route<'info>>,
+pub fn thaw_nft<'c, 'info>(
+    ctx: &Context<'_, '_, 'c, 'info, Route<'info>>,
     route_context: RouteContext,
     _data: Vec<u8>,
-) -> Result<()> {
+) -> Result<()>
+where
+    'c: 'info,
+{
     let current_timestamp = Clock::get()?.unix_timestamp;
 
     let freeze_pda = try_get_account_info(ctx.remaining_accounts, 0)?;
@@ -557,11 +572,14 @@ pub fn thaw_nft<'info>(
 }
 
 /// Helper function to unlock funds.
-fn unlock_funds<'info>(
-    ctx: &Context<'_, '_, '_, 'info, Route<'info>>,
+fn unlock_funds<'c, 'info>(
+    ctx: &Context<'_, '_, 'c, 'info, Route<'info>>,
     route_context: RouteContext,
     _data: Vec<u8>,
-) -> Result<()> {
+) -> Result<()>
+where
+    'c: 'info,
+{
     let candy_guard_key = &ctx.accounts.candy_guard.key();
     let candy_machine_key = &ctx.accounts.candy_machine.key();
 

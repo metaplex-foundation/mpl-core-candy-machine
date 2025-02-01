@@ -55,11 +55,14 @@ impl Guard for FreezeTokenPayment {
     ///  * initialize
     ///  * thaw
     ///  * unlock funds
-    fn instruction<'info>(
-        ctx: &Context<'_, '_, '_, 'info, Route<'info>>,
+    fn instruction<'c, 'info>(
+        ctx: &Context<'_, '_, 'c, 'info, Route<'info>>,
         route_context: RouteContext<'info>,
         data: Vec<u8>,
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        'c: 'info,
+    {
         // determines the instruction to execute
         let instruction: FreezeInstruction =
             if let Ok(instruction) = FreezeInstruction::try_from_slice(&data[0..1]) {
@@ -284,12 +287,15 @@ impl Condition for FreezeTokenPayment {
         Ok(())
     }
 
-    fn post_actions<'info>(
+    fn post_actions<'c, 'info>(
         &self,
-        ctx: &mut EvaluationContext,
+        ctx: &mut EvaluationContext<'_, 'c, 'info>,
         _guard_set: &GuardSet,
         _mint_args: &[u8],
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        'c: 'info,
+    {
         // freezes the nft
         freeze_nft(
             ctx,
@@ -300,10 +306,13 @@ impl Condition for FreezeTokenPayment {
 }
 
 // Helper function to unlocks frozen funds.
-fn unlock_funds<'info>(
-    ctx: &Context<'_, '_, '_, 'info, Route<'info>>,
+fn unlock_funds<'c, 'info>(
+    ctx: &Context<'_, '_, 'c, 'info, Route<'info>>,
     route_context: RouteContext<'info>,
-) -> Result<()> {
+) -> Result<()>
+where
+    'c: 'info,
+{
     let candy_guard_key = &ctx.accounts.candy_guard.key();
     let candy_machine_key = &ctx.accounts.candy_machine.key();
 

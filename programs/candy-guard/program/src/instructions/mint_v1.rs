@@ -12,11 +12,14 @@ use crate::{
 
 use super::MintAccounts;
 
-pub fn mint_v1<'info>(
-    ctx: Context<'_, '_, '_, 'info, MintV1<'info>>,
+pub fn mint_v1<'c, 'info>(
+    ctx: Context<'_, '_, 'c, 'info, MintV1<'info>>,
     mint_args: Vec<u8>,
     label: Option<String>,
-) -> Result<()> {
+) -> Result<()>
+where
+    'c: 'info,
+{
     let owner_info = if let Some(owner) = ctx.accounts.owner.as_ref() {
         owner.to_account_info()
     } else {
@@ -52,11 +55,14 @@ pub fn mint_v1<'info>(
     process_mint(&mut ctx, mint_args, label)
 }
 
-pub fn process_mint(
-    ctx: &mut EvaluationContext<'_, '_, '_>,
+pub fn process_mint<'c, 'info>(
+    ctx: &mut EvaluationContext<'_, 'c, 'info>,
     mint_args: Vec<u8>,
     label: Option<String>,
-) -> Result<()> {
+) -> Result<()>
+where
+    'c: 'info,
+{
     let account_info = ctx.accounts.candy_guard.to_account_info();
     let account_data = account_info.data.borrow();
     // loads the active guard set

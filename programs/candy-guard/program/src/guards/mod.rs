@@ -111,12 +111,15 @@ pub trait Condition {
     ///
     /// This function only gets called when all guards have been successfuly validated.
     /// Any error generated will make the transaction to fail.
-    fn post_actions(
+    fn post_actions<'c, 'info>(
         &self,
-        _ctx: &mut EvaluationContext,
+        _ctx: &mut EvaluationContext<'_, 'c, 'info>,
         _guard_set: &GuardSet,
         _mint_args: &[u8],
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        'c: 'info,
+    {
         Ok(())
     }
 }
@@ -130,11 +133,14 @@ pub trait Guard: Condition + AnchorSerialize + AnchorDeserialize {
 
     /// Executes an instruction. This function is called from the `route` instruction
     /// handler.
-    fn instruction<'info>(
-        _ctx: &Context<'_, '_, '_, 'info, Route<'info>>,
+    fn instruction<'c, 'info>(
+        _ctx: &Context<'_, '_, 'c, 'info, Route<'info>>,
         _route_context: RouteContext<'info>,
         _data: Vec<u8>,
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        'c: 'info,
+    {
         err!(CandyGuardError::InstructionNotFound)
     }
 

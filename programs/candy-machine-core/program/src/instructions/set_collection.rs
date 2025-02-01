@@ -37,7 +37,7 @@ pub fn set_collection(ctx: Context<SetCollection>) -> Result<()> {
     revoke_asset_collection_delegate(
         revoke_accounts,
         candy_machine.key(),
-        *ctx.bumps.get("authority_pda").unwrap(),
+        ctx.bumps.authority_pda,
     )?;
 
     let delegate_accounts = ApproveAssetDelegateHelperAccounts {
