@@ -54,6 +54,7 @@ export const createCandyMachine = async (
   return transactionBuilder()
     .add(
       createAccount(context, {
+        payer: newInput.payer ?? context.payer,
         newAccount: newInput.candyMachine,
         lamports,
         space,
