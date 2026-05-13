@@ -12,6 +12,19 @@ pub mod utils;
 
 declare_id!("CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ");
 
+#[cfg(not(feature = "no-entrypoint"))]
+solana_security_txt::security_txt! {
+    // Required fields
+    name: "Mpl Core Candy Guard",
+    project_url: "https://metaplex.com",
+    contacts: "link:https://github.com/metaplex-foundation/mpl-core-candy-machine/security/advisories/new,email:contact@metaplex.com",
+    policy: "Report suspected vulnerabilities privately before public disclosure: https://github.com/metaplex-foundation/mpl-core-candy-machine/security/advisories/new",
+
+    // Optional fields
+    preferred_languages: "en",
+    source_code: "https://github.com/metaplex-foundation/mpl-core-candy-machine"
+}
+
 #[program]
 pub mod candy_guard {
     use super::*;
