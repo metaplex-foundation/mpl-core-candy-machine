@@ -20,8 +20,8 @@ solana_security_txt::security_txt! {
     // Required fields
     name: "Mpl Core Candy Machine Core",
     project_url: "https://metaplex.com",
-    contacts: "link:https://github.com/metaplex-foundation/mpl-core-candy-machine/security/advisories/new,email:contact@metaplex.com",
-    policy: "Report suspected vulnerabilities privately before public disclosure: https://github.com/metaplex-foundation/mpl-core-candy-machine/security/advisories/new",
+    contacts: "email:security@metaplex.foundation",
+    policy: "Report suspected vulnerabilities privately by emailing security@metaplex.foundation before public disclosure.",
 
     // Optional fields
     preferred_languages: "en",
