@@ -1,27 +1,67 @@
 {
-  "version": "0.2.1",
-  "name": "candy_guard",
+  "address": "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
+  "metadata": {
+    "name": "candy_guard",
+    "version": "0.2.1",
+    "spec": "0.1.0",
+    "description": "Metaplex Candy Guard: programmatic access control for Candy Machine.",
+    "repository": "https://github.com/metaplex-foundation/mpl-candy-machine-asset",
+    "address": "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
+    "origin": "anchor",
+    "binaryVersion": "0.30.1",
+    "libVersion": "0.30.1"
+  },
   "instructions": [
     {
       "name": "initialize",
       "docs": [
         "Create a new candy guard account."
       ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
       "accounts": [
         {
-          "name": "candyGuard",
-          "isMut": true,
-          "isSigner": false
+          "name": "candy_guard",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  110,
+                  100,
+                  121,
+                  95,
+                  103,
+                  117,
+                  97,
+                  114,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "base"
+              }
+            ]
+          },
+          "isMut": true
         },
         {
           "name": "base",
-          "isMut": false,
           "isSigner": true
         },
         {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": false
+          "name": "authority"
         },
         {
           "name": "payer",
@@ -29,9 +69,8 @@
           "isSigner": true
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
@@ -42,133 +81,155 @@
       ]
     },
     {
-      "name": "mintV1",
+      "name": "mint_v1",
       "docs": [
         "Mint an NFT from a candy machine wrapped in the candy guard."
       ],
+      "discriminator": [
+        145,
+        98,
+        192,
+        118,
+        184,
+        147,
+        118,
+        104
+      ],
       "accounts": [
         {
-          "name": "candyGuard",
-          "isMut": false,
-          "isSigner": false,
+          "name": "candy_guard",
           "docs": [
             "Candy Guard account."
-          ]
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  110,
+                  100,
+                  121,
+                  95,
+                  103,
+                  117,
+                  97,
+                  114,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "candy_guard.base",
+                "account": "CandyGuard"
+              }
+            ]
+          }
         },
         {
-          "name": "candyMachineProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "candy_machine_program",
           "docs": [
             "Candy Machine program account.",
             ""
-          ]
+          ],
+          "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
         },
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy machine account."
-          ]
+          ],
+          "isMut": true
         },
         {
-          "name": "candyMachineAuthorityPda",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine_authority_pda",
           "docs": [
             "Candy Machine authority account.",
             ""
-          ]
+          ],
+          "isMut": true
         },
         {
           "name": "payer",
-          "isMut": true,
-          "isSigner": true,
           "docs": [
             "Payer for the mint (SOL) fees."
-          ]
+          ],
+          "isMut": true,
+          "isSigner": true
         },
         {
           "name": "minter",
-          "isMut": true,
-          "isSigner": true,
           "docs": [
             "Minter account for validation and non-SOL fees."
-          ]
+          ],
+          "isMut": true,
+          "isSigner": true
         },
         {
           "name": "owner",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
           "docs": [
             "Optionally mint to different owner"
-          ]
+          ],
+          "isOptional": true
         },
         {
           "name": "asset",
-          "isMut": true,
-          "isSigner": false,
           "docs": [
             "Mint account of the NFT. The account will be initialized if necessary.",
             "",
             "Must be a signer if:",
             "* the nft_mint account does not exist.",
             ""
-          ]
+          ],
+          "isMut": true
         },
         {
           "name": "collection",
-          "isMut": true,
-          "isSigner": false,
           "docs": [
             "Mint account of the collection NFT.",
             ""
-          ]
+          ],
+          "isMut": true
         },
         {
-          "name": "mplCoreProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "mpl_core_program",
           "docs": [
             "Token Metadata program.",
             "",
             "Token Metadata program.",
             ""
-          ]
+          ],
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "system_program",
           "docs": [
             "SPL Token program.",
             "System program."
-          ]
+          ],
+          "address": "11111111111111111111111111111111"
         },
         {
-          "name": "sysvarInstructions",
-          "isMut": false,
-          "isSigner": false,
+          "name": "sysvar_instructions",
           "docs": [
             "Instructions sysvar account.",
             ""
-          ]
+          ],
+          "address": "Sysvar1nstructions1111111111111111111111111"
         },
         {
-          "name": "recentSlothashes",
-          "isMut": false,
-          "isSigner": false,
+          "name": "recent_slothashes",
           "docs": [
             "SlotHashes sysvar cluster data.",
             ""
-          ]
+          ],
+          "address": "SysvarS1otHashes111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "mintArgs",
+          "name": "mint_args",
           "type": "bytes"
         },
         {
@@ -184,16 +245,23 @@
       "docs": [
         "Route the transaction to a guard instruction."
       ],
+      "discriminator": [
+        229,
+        23,
+        203,
+        151,
+        122,
+        227,
+        173,
+        42
+      ],
       "accounts": [
         {
-          "name": "candyGuard",
-          "isMut": false,
-          "isSigner": false
+          "name": "candy_guard"
         },
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false
+          "name": "candy_machine",
+          "isMut": true
         },
         {
           "name": "payer",
@@ -217,25 +285,36 @@
       ]
     },
     {
-      "name": "setAuthority",
+      "name": "set_authority",
       "docs": [
         "Set a new authority of the candy guard."
       ],
+      "discriminator": [
+        133,
+        250,
+        37,
+        21,
+        110,
+        163,
+        26,
+        121
+      ],
       "accounts": [
         {
-          "name": "candyGuard",
-          "isMut": true,
-          "isSigner": false
+          "name": "candy_guard",
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": false,
+          "relations": [
+            "candy_guard"
+          ],
           "isSigner": true
         }
       ],
       "args": [
         {
-          "name": "newAuthority",
+          "name": "new_authority",
           "type": "publicKey"
         }
       ]
@@ -246,31 +325,38 @@
         "Remove a candy guard from a candy machine, setting the authority to the",
         "candy guard authority."
       ],
+      "discriminator": [
+        126,
+        175,
+        198,
+        14,
+        212,
+        69,
+        50,
+        44
+      ],
       "accounts": [
         {
-          "name": "candyGuard",
-          "isMut": false,
-          "isSigner": false
+          "name": "candy_guard"
         },
         {
           "name": "authority",
-          "isMut": false,
+          "relations": [
+            "candy_guard"
+          ],
           "isSigner": true
         },
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false
+          "name": "candy_machine",
+          "isMut": true
         },
         {
-          "name": "candyMachineAuthority",
-          "isMut": false,
+          "name": "candy_machine_authority",
           "isSigner": true
         },
         {
-          "name": "candyMachineProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "candy_machine_program",
+          "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
         }
       ],
       "args": []
@@ -280,26 +366,60 @@
       "docs": [
         "Update the candy guard configuration."
       ],
+      "discriminator": [
+        219,
+        200,
+        88,
+        176,
+        158,
+        63,
+        253,
+        127
+      ],
       "accounts": [
         {
-          "name": "candyGuard",
-          "isMut": true,
-          "isSigner": false
+          "name": "candy_guard",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  110,
+                  100,
+                  121,
+                  95,
+                  103,
+                  117,
+                  97,
+                  114,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "candy_guard.base",
+                "account": "CandyGuard"
+              }
+            ]
+          },
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": false,
+          "relations": [
+            "candy_guard"
+          ],
           "isSigner": true
         },
         {
           "name": "payer",
-          "isMut": false,
           "isSigner": true
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
@@ -314,14 +434,26 @@
       "docs": [
         "Withdraw the rent SOL from the candy guard account."
       ],
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
       "accounts": [
         {
-          "name": "candyGuard",
-          "isMut": true,
-          "isSigner": false
+          "name": "candy_guard",
+          "isMut": true
         },
         {
           "name": "authority",
+          "relations": [
+            "candy_guard"
+          ],
           "isMut": true,
           "isSigner": true
         }
@@ -334,30 +466,37 @@
         "Add a candy guard to a candy machine. After the guard is added, mint",
         "is only allowed through the candy guard."
       ],
+      "discriminator": [
+        178,
+        40,
+        10,
+        189,
+        228,
+        129,
+        186,
+        140
+      ],
       "accounts": [
         {
-          "name": "candyGuard",
-          "isMut": false,
-          "isSigner": false
+          "name": "candy_guard"
         },
         {
           "name": "authority",
-          "isMut": false,
+          "relations": [
+            "candy_guard"
+          ],
           "isSigner": true
         },
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false
+          "name": "candy_machine",
+          "isMut": true
         },
         {
-          "name": "candyMachineProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "candy_machine_program",
+          "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
         },
         {
-          "name": "candyMachineAuthority",
-          "isMut": false,
+          "name": "candy_machine_authority",
           "isSigner": true
         }
       ],
@@ -365,6 +504,27 @@
     }
   ],
   "accounts": [
+    {
+      "name": "CandyGuard",
+      "docs": [],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "base",
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
     {
       "name": "FreezeEscrow",
       "docs": [
@@ -430,29 +590,554 @@
           }
         ]
       }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAccountSize",
+      "msg": "Could not save guard to account"
     },
     {
-      "name": "CandyGuard",
+      "code": 6001,
+      "name": "DeserializationError",
+      "msg": "Could not deserialize guard"
+    },
+    {
+      "code": 6002,
+      "name": "PublicKeyMismatch",
+      "msg": "Public key mismatch"
+    },
+    {
+      "code": 6003,
+      "name": "DataIncrementLimitExceeded",
+      "msg": "Exceeded account increase limit"
+    },
+    {
+      "code": 6004,
+      "name": "IncorrectOwner",
+      "msg": "Account does not have correct owner"
+    },
+    {
+      "code": 6005,
+      "name": "Uninitialized",
+      "msg": "Account is not initialized"
+    },
+    {
+      "code": 6006,
+      "name": "MissingRemainingAccount",
+      "msg": "Missing expected remaining account"
+    },
+    {
+      "code": 6007,
+      "name": "NumericalOverflowError",
+      "msg": "Numerical overflow error"
+    },
+    {
+      "code": 6008,
+      "name": "RequiredGroupLabelNotFound",
+      "msg": "Missing required group label"
+    },
+    {
+      "code": 6009,
+      "name": "GroupNotFound",
+      "msg": "Group not found"
+    },
+    {
+      "code": 6010,
+      "name": "ExceededLength",
+      "msg": "Value exceeded maximum length"
+    },
+    {
+      "code": 6011,
+      "name": "CandyMachineEmpty",
+      "msg": "Candy machine is empty"
+    },
+    {
+      "code": 6012,
+      "name": "InstructionNotFound",
+      "msg": "No instruction was found"
+    },
+    {
+      "code": 6013,
+      "name": "CollectionKeyMismatch",
+      "msg": "Collection public key mismatch"
+    },
+    {
+      "code": 6014,
+      "name": "MissingCollectionAccounts",
+      "msg": "Missing collection accounts"
+    },
+    {
+      "code": 6015,
+      "name": "CollectionUpdateAuthorityKeyMismatch",
+      "msg": "Collection update authority public key mismatch"
+    },
+    {
+      "code": 6016,
+      "name": "MintNotLastTransaction",
+      "msg": "Mint must be the last instructions of the transaction"
+    },
+    {
+      "code": 6017,
+      "name": "MintNotLive",
+      "msg": "Mint is not live"
+    },
+    {
+      "code": 6018,
+      "name": "NotEnoughSOL",
+      "msg": "Not enough SOL to pay for the mint"
+    },
+    {
+      "code": 6019,
+      "name": "TokenBurnFailed",
+      "msg": "Token burn failed"
+    },
+    {
+      "code": 6020,
+      "name": "NotEnoughTokens",
+      "msg": "Not enough tokens on the account"
+    },
+    {
+      "code": 6021,
+      "name": "TokenTransferFailed",
+      "msg": "Token transfer failed"
+    },
+    {
+      "code": 6022,
+      "name": "MissingRequiredSignature",
+      "msg": "A signature was required but not found"
+    },
+    {
+      "code": 6023,
+      "name": "GatewayTokenInvalid",
+      "msg": "Gateway token is not valid"
+    },
+    {
+      "code": 6024,
+      "name": "AfterEndDate",
+      "msg": "Current time is after the set end date"
+    },
+    {
+      "code": 6025,
+      "name": "InvalidMintTime",
+      "msg": "Current time is not within the allowed mint time"
+    },
+    {
+      "code": 6026,
+      "name": "AddressNotFoundInAllowedList",
+      "msg": "Address not found on the allowed list"
+    },
+    {
+      "code": 6027,
+      "name": "MissingAllowedListProof",
+      "msg": "Missing allowed list proof"
+    },
+    {
+      "code": 6028,
+      "name": "AllowedListNotEnabled",
+      "msg": "Allow list guard is not enabled"
+    },
+    {
+      "code": 6029,
+      "name": "AllowedMintLimitReached",
+      "msg": "The maximum number of allowed mints was reached"
+    },
+    {
+      "code": 6030,
+      "name": "InvalidNftCollection",
+      "msg": "Invalid NFT collection"
+    },
+    {
+      "code": 6031,
+      "name": "MissingNft",
+      "msg": "Missing NFT on the account"
+    },
+    {
+      "code": 6032,
+      "name": "MaximumRedeemedAmount",
+      "msg": "Current redemeed items is at the set maximum amount"
+    },
+    {
+      "code": 6033,
+      "name": "AddressNotAuthorized",
+      "msg": "Address not authorized"
+    },
+    {
+      "code": 6034,
+      "name": "MissingFreezeInstruction",
+      "msg": "Missing freeze instruction data"
+    },
+    {
+      "code": 6035,
+      "name": "FreezeGuardNotEnabled",
+      "msg": "Freeze guard must be enabled"
+    },
+    {
+      "code": 6036,
+      "name": "FreezeNotInitialized",
+      "msg": "Freeze must be initialized"
+    },
+    {
+      "code": 6037,
+      "name": "MissingFreezePeriod",
+      "msg": "Missing freeze period"
+    },
+    {
+      "code": 6038,
+      "name": "FreezeEscrowAlreadyExists",
+      "msg": "The freeze escrow account already exists"
+    },
+    {
+      "code": 6039,
+      "name": "ExceededMaximumFreezePeriod",
+      "msg": "Maximum freeze period exceeded"
+    },
+    {
+      "code": 6040,
+      "name": "ThawNotEnabled",
+      "msg": "Thaw is not enabled"
+    },
+    {
+      "code": 6041,
+      "name": "UnlockNotEnabled",
+      "msg": "Unlock is not enabled (not all NFTs are thawed)"
+    },
+    {
+      "code": 6042,
+      "name": "DuplicatedGroupLabel",
+      "msg": "Duplicated group label"
+    },
+    {
+      "code": 6043,
+      "name": "DuplicatedMintLimitId",
+      "msg": "Duplicated mint limit id"
+    },
+    {
+      "code": 6044,
+      "name": "UnauthorizedProgramFound",
+      "msg": "An unauthorized program was found in the transaction"
+    },
+    {
+      "code": 6045,
+      "name": "ExceededProgramListSize",
+      "msg": "Exceeded the maximum number of programs in the additional list"
+    },
+    {
+      "code": 6046,
+      "name": "AllocationNotInitialized",
+      "msg": "Allocation PDA not initialized"
+    },
+    {
+      "code": 6047,
+      "name": "AllocationLimitReached",
+      "msg": "Allocation limit was reached"
+    },
+    {
+      "code": 6048,
+      "name": "AllocationGuardNotEnabled",
+      "msg": "Allocation guard must be enabled"
+    },
+    {
+      "code": 6049,
+      "name": "InvalidMintAuthority",
+      "msg": "Candy machine has an invalid mint authority"
+    },
+    {
+      "code": 6050,
+      "name": "InstructionBuilderFailed",
+      "msg": "Instruction could not be created"
+    },
+    {
+      "code": 6051,
+      "name": "InvalidAccountVersion",
+      "msg": "Invalid account version"
+    },
+    {
+      "code": 6052,
+      "name": "ExceededRegexLength",
+      "msg": "Exceeded the maximum length of a regex that can be used"
+    },
+    {
+      "code": 6053,
+      "name": "InvalidVanityAddress",
+      "msg": "Invalid vanity address"
+    },
+    {
+      "code": 6054,
+      "name": "InvalidRegex",
+      "msg": "Invalid regex"
+    }
+  ],
+  "types": [
+    {
+      "name": "CandyMachineData",
+      "docs": [
+        "Candy machine configuration data."
+      ],
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "base",
-            "type": "publicKey"
+            "name": "items_available",
+            "docs": [
+              "Number of assets available"
+            ],
+            "type": "u64"
           },
           {
-            "name": "bump",
-            "type": "u8"
+            "name": "max_supply",
+            "docs": [
+              "Max supply of each individual asset (default 0)"
+            ],
+            "type": "u64"
           },
           {
-            "name": "authority",
-            "type": "publicKey"
+            "name": "is_mutable",
+            "docs": [
+              "Indicates if the asset is mutable or not (default yes)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "config_line_settings",
+            "docs": [
+              "Config line settings"
+            ],
+            "type": {
+              "option": {
+                "defined": "ConfigLineSettings"
+              }
+            }
+          },
+          {
+            "name": "hidden_settings",
+            "docs": [
+              "Hidden setttings"
+            ],
+            "type": {
+              "option": {
+                "defined": "HiddenSettings"
+              }
+            }
           }
         ]
       }
-    }
-  ],
-  "types": [
+    },
+    {
+      "name": "ConfigLineSettings",
+      "docs": [
+        "Config line settings to allocate space for individual name + URI."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "prefix_name",
+            "docs": [
+              "Common name prefix"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "name_length",
+            "docs": [
+              "Length of the remaining part of the name"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "prefix_uri",
+            "docs": [
+              "Common URI prefix"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri_length",
+            "docs": [
+              "Length of the remaining part of the URI"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "is_sequential",
+            "docs": [
+              "Indicates whether to use a senquential index generator or not"
+            ],
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GuardType",
+      "docs": [
+        "Available guard types."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "BotTax"
+          },
+          {
+            "name": "SolPayment"
+          },
+          {
+            "name": "TokenPayment"
+          },
+          {
+            "name": "StartDate"
+          },
+          {
+            "name": "ThirdPartySigner"
+          },
+          {
+            "name": "TokenGate"
+          },
+          {
+            "name": "Gatekeeper"
+          },
+          {
+            "name": "EndDate"
+          },
+          {
+            "name": "AllowList"
+          },
+          {
+            "name": "MintLimit"
+          },
+          {
+            "name": "NftPayment"
+          },
+          {
+            "name": "RedeemedAmount"
+          },
+          {
+            "name": "AddressGate"
+          },
+          {
+            "name": "NftGate"
+          },
+          {
+            "name": "NftBurn"
+          },
+          {
+            "name": "TokenBurn"
+          },
+          {
+            "name": "FreezeSolPayment"
+          },
+          {
+            "name": "FreezeTokenPayment"
+          },
+          {
+            "name": "ProgramGate"
+          },
+          {
+            "name": "Allocation"
+          },
+          {
+            "name": "Token2022Payment"
+          },
+          {
+            "name": "SolFixedFee"
+          },
+          {
+            "name": "NftMintLimit"
+          },
+          {
+            "name": "Edition"
+          },
+          {
+            "name": "AssetPayment"
+          },
+          {
+            "name": "AssetBurn"
+          },
+          {
+            "name": "AssetMintLimit"
+          },
+          {
+            "name": "AssetBurnMulti"
+          },
+          {
+            "name": "AssetPaymentMulti"
+          },
+          {
+            "name": "AssetGate"
+          },
+          {
+            "name": "VanityMint"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HiddenSettings",
+      "docs": [
+        "Hidden settings for large mints used with off-chain data."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "docs": [
+              "Asset prefix name"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "Shared URI"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "hash",
+            "docs": [
+              "Hash of the hidden settings file"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RouteArgs",
+      "docs": [
+        "Arguments for a route transaction."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "guard",
+            "docs": [
+              "The target guard type."
+            ],
+            "type": {
+              "defined": "GuardType"
+            }
+          },
+          {
+            "name": "data",
+            "docs": [
+              "Arguments for the guard instruction."
+            ],
+            "type": "bytes"
+          }
+        ]
+      }
+    },
     {
       "name": "AddressGate",
       "docs": [
@@ -1296,33 +1981,6 @@
       }
     },
     {
-      "name": "RouteArgs",
-      "docs": [
-        "Arguments for a route transaction."
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "guard",
-            "docs": [
-              "The target guard type."
-            ],
-            "type": {
-              "defined": "GuardType"
-            }
-          },
-          {
-            "name": "data",
-            "docs": [
-              "Arguments for the guard instruction."
-            ],
-            "type": "bytes"
-          }
-        ]
-      }
-    },
-    {
       "name": "CandyGuardData",
       "type": {
         "kind": "struct",
@@ -1736,393 +2394,8 @@
           }
         ]
       }
-    },
-    {
-      "name": "GuardType",
-      "docs": [
-        "Available guard types."
-      ],
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "BotTax"
-          },
-          {
-            "name": "SolPayment"
-          },
-          {
-            "name": "TokenPayment"
-          },
-          {
-            "name": "StartDate"
-          },
-          {
-            "name": "ThirdPartySigner"
-          },
-          {
-            "name": "TokenGate"
-          },
-          {
-            "name": "Gatekeeper"
-          },
-          {
-            "name": "EndDate"
-          },
-          {
-            "name": "AllowList"
-          },
-          {
-            "name": "MintLimit"
-          },
-          {
-            "name": "NftPayment"
-          },
-          {
-            "name": "RedeemedAmount"
-          },
-          {
-            "name": "AddressGate"
-          },
-          {
-            "name": "NftGate"
-          },
-          {
-            "name": "NftBurn"
-          },
-          {
-            "name": "TokenBurn"
-          },
-          {
-            "name": "FreezeSolPayment"
-          },
-          {
-            "name": "FreezeTokenPayment"
-          },
-          {
-            "name": "ProgramGate"
-          },
-          {
-            "name": "Allocation"
-          },
-          {
-            "name": "Token2022Payment"
-          },
-          {
-            "name": "SolFixedFee"
-          },
-          {
-            "name": "NftMintLimit"
-          },
-          {
-            "name": "Edition"
-          },
-          {
-            "name": "AssetPayment"
-          },
-          {
-            "name": "AssetBurn"
-          },
-          {
-            "name": "AssetMintLimit"
-          },
-          {
-            "name": "AssetBurnMulti"
-          },
-          {
-            "name": "AssetPaymentMulti"
-          },
-          {
-            "name": "AssetGate"
-          },
-          {
-            "name": "VanityMint"
-          }
-        ]
-      }
     }
   ],
-  "errors": [
-    {
-      "code": 6000,
-      "name": "InvalidAccountSize",
-      "msg": "Could not save guard to account"
-    },
-    {
-      "code": 6001,
-      "name": "DeserializationError",
-      "msg": "Could not deserialize guard"
-    },
-    {
-      "code": 6002,
-      "name": "PublicKeyMismatch",
-      "msg": "Public key mismatch"
-    },
-    {
-      "code": 6003,
-      "name": "DataIncrementLimitExceeded",
-      "msg": "Exceeded account increase limit"
-    },
-    {
-      "code": 6004,
-      "name": "IncorrectOwner",
-      "msg": "Account does not have correct owner"
-    },
-    {
-      "code": 6005,
-      "name": "Uninitialized",
-      "msg": "Account is not initialized"
-    },
-    {
-      "code": 6006,
-      "name": "MissingRemainingAccount",
-      "msg": "Missing expected remaining account"
-    },
-    {
-      "code": 6007,
-      "name": "NumericalOverflowError",
-      "msg": "Numerical overflow error"
-    },
-    {
-      "code": 6008,
-      "name": "RequiredGroupLabelNotFound",
-      "msg": "Missing required group label"
-    },
-    {
-      "code": 6009,
-      "name": "GroupNotFound",
-      "msg": "Group not found"
-    },
-    {
-      "code": 6010,
-      "name": "ExceededLength",
-      "msg": "Value exceeded maximum length"
-    },
-    {
-      "code": 6011,
-      "name": "CandyMachineEmpty",
-      "msg": "Candy machine is empty"
-    },
-    {
-      "code": 6012,
-      "name": "InstructionNotFound",
-      "msg": "No instruction was found"
-    },
-    {
-      "code": 6013,
-      "name": "CollectionKeyMismatch",
-      "msg": "Collection public key mismatch"
-    },
-    {
-      "code": 6014,
-      "name": "MissingCollectionAccounts",
-      "msg": "Missing collection accounts"
-    },
-    {
-      "code": 6015,
-      "name": "CollectionUpdateAuthorityKeyMismatch",
-      "msg": "Collection update authority public key mismatch"
-    },
-    {
-      "code": 6016,
-      "name": "MintNotLastTransaction",
-      "msg": "Mint must be the last instructions of the transaction"
-    },
-    {
-      "code": 6017,
-      "name": "MintNotLive",
-      "msg": "Mint is not live"
-    },
-    {
-      "code": 6018,
-      "name": "NotEnoughSOL",
-      "msg": "Not enough SOL to pay for the mint"
-    },
-    {
-      "code": 6019,
-      "name": "TokenBurnFailed",
-      "msg": "Token burn failed"
-    },
-    {
-      "code": 6020,
-      "name": "NotEnoughTokens",
-      "msg": "Not enough tokens on the account"
-    },
-    {
-      "code": 6021,
-      "name": "TokenTransferFailed",
-      "msg": "Token transfer failed"
-    },
-    {
-      "code": 6022,
-      "name": "MissingRequiredSignature",
-      "msg": "A signature was required but not found"
-    },
-    {
-      "code": 6023,
-      "name": "GatewayTokenInvalid",
-      "msg": "Gateway token is not valid"
-    },
-    {
-      "code": 6024,
-      "name": "AfterEndDate",
-      "msg": "Current time is after the set end date"
-    },
-    {
-      "code": 6025,
-      "name": "InvalidMintTime",
-      "msg": "Current time is not within the allowed mint time"
-    },
-    {
-      "code": 6026,
-      "name": "AddressNotFoundInAllowedList",
-      "msg": "Address not found on the allowed list"
-    },
-    {
-      "code": 6027,
-      "name": "MissingAllowedListProof",
-      "msg": "Missing allowed list proof"
-    },
-    {
-      "code": 6028,
-      "name": "AllowedListNotEnabled",
-      "msg": "Allow list guard is not enabled"
-    },
-    {
-      "code": 6029,
-      "name": "AllowedMintLimitReached",
-      "msg": "The maximum number of allowed mints was reached"
-    },
-    {
-      "code": 6030,
-      "name": "InvalidNftCollection",
-      "msg": "Invalid NFT collection"
-    },
-    {
-      "code": 6031,
-      "name": "MissingNft",
-      "msg": "Missing NFT on the account"
-    },
-    {
-      "code": 6032,
-      "name": "MaximumRedeemedAmount",
-      "msg": "Current redemeed items is at the set maximum amount"
-    },
-    {
-      "code": 6033,
-      "name": "AddressNotAuthorized",
-      "msg": "Address not authorized"
-    },
-    {
-      "code": 6034,
-      "name": "MissingFreezeInstruction",
-      "msg": "Missing freeze instruction data"
-    },
-    {
-      "code": 6035,
-      "name": "FreezeGuardNotEnabled",
-      "msg": "Freeze guard must be enabled"
-    },
-    {
-      "code": 6036,
-      "name": "FreezeNotInitialized",
-      "msg": "Freeze must be initialized"
-    },
-    {
-      "code": 6037,
-      "name": "MissingFreezePeriod",
-      "msg": "Missing freeze period"
-    },
-    {
-      "code": 6038,
-      "name": "FreezeEscrowAlreadyExists",
-      "msg": "The freeze escrow account already exists"
-    },
-    {
-      "code": 6039,
-      "name": "ExceededMaximumFreezePeriod",
-      "msg": "Maximum freeze period exceeded"
-    },
-    {
-      "code": 6040,
-      "name": "ThawNotEnabled",
-      "msg": "Thaw is not enabled"
-    },
-    {
-      "code": 6041,
-      "name": "UnlockNotEnabled",
-      "msg": "Unlock is not enabled (not all NFTs are thawed)"
-    },
-    {
-      "code": 6042,
-      "name": "DuplicatedGroupLabel",
-      "msg": "Duplicated group label"
-    },
-    {
-      "code": 6043,
-      "name": "DuplicatedMintLimitId",
-      "msg": "Duplicated mint limit id"
-    },
-    {
-      "code": 6044,
-      "name": "UnauthorizedProgramFound",
-      "msg": "An unauthorized program was found in the transaction"
-    },
-    {
-      "code": 6045,
-      "name": "ExceededProgramListSize",
-      "msg": "Exceeded the maximum number of programs in the additional list"
-    },
-    {
-      "code": 6046,
-      "name": "AllocationNotInitialized",
-      "msg": "Allocation PDA not initialized"
-    },
-    {
-      "code": 6047,
-      "name": "AllocationLimitReached",
-      "msg": "Allocation limit was reached"
-    },
-    {
-      "code": 6048,
-      "name": "AllocationGuardNotEnabled",
-      "msg": "Allocation guard must be enabled"
-    },
-    {
-      "code": 6049,
-      "name": "InvalidMintAuthority",
-      "msg": "Candy machine has an invalid mint authority"
-    },
-    {
-      "code": 6050,
-      "name": "InstructionBuilderFailed",
-      "msg": "Instruction could not be created"
-    },
-    {
-      "code": 6051,
-      "name": "InvalidAccountVersion",
-      "msg": "Invalid account version"
-    },
-    {
-      "code": 6052,
-      "name": "ExceededRegexLength",
-      "msg": "Exceeded the maximum length of a regex that can be used"
-    },
-    {
-      "code": 6053,
-      "name": "InvalidVanityAddress",
-      "msg": "Invalid vanity address"
-    },
-    {
-      "code": 6054,
-      "name": "InvalidRegex",
-      "msg": "Invalid regex"
-    }
-  ],
-  "metadata": {
-    "address": "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
-    "origin": "anchor",
-    "binaryVersion": "0.27.0",
-    "libVersion": "0.28.0"
-  }
+  "name": "candy_guard",
+  "version": "0.2.1"
 }

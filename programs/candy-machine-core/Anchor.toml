@@ -1,6 +1,9 @@
 [registry]
 url = "https://anchor.projectserum.com"
 
+[programs.devnet]
+candy_machine_core = "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
+
 [provider]
 cluster = "devnet"
 wallet = "~/wallet.json"
