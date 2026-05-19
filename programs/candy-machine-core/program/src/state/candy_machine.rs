@@ -1,5 +1,5 @@
-use anchor_lang::prelude::*;
 use anchor_lang::prelude::borsh::{BorshDeserialize, BorshSerialize};
+use anchor_lang::prelude::*;
 use mpl_core::types::PluginAuthorityPair;
 
 use super::candy_machine_data::CandyMachineData;
