@@ -1582,9 +1582,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.94"
+version = "1.0.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a31971752e70b8b2686d7e46ec17fb38dad4051d94024c88df49b667caea9c84"
+checksum = "f139b0662de085916d1fb67d2b4169d1addddda1919e696f3252b740b629986e"
 dependencies = [
  "unicode-ident",
 ]

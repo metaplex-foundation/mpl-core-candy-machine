@@ -100,13 +100,6 @@ jobs:
         if: env.CACHE == 'true'
         uses: metaplex-foundation/actions/cache-idl-generators@v1
 
-      - name: Ensure Anchor CLI is installed
-        shell: bash
-        run: |
-          if [ ! -x "./.crates/bin/anchor" ]; then
-            cargo install --root ./.crates --locked anchor-cli@0.30.1
-          fi
-
       - name: Generate IDLs and clients
         run: pnpm generate
 

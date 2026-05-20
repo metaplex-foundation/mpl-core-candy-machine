@@ -1,17 +1,39 @@
 const path = require("path");
 const fs = require("fs");
+const { execFileSync } = require("child_process");
 const { generateIdl } = require("@metaplex-foundation/shank-js");
 
 const idlDir = path.join(__dirname, "..", "idls");
 const binaryInstallDir = path.join(__dirname, "..", ".crates");
 const programDir = path.join(__dirname, "..", "programs");
+const programs = [
+  {
+    name: "candy_machine_core",
+    id: "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
+    path: path.join(programDir, "candy-machine-core", "program"),
+  },
+  {
+    name: "candy_guard",
+    id: "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
+    path: path.join(programDir, "candy-guard", "program"),
+  },
+];
 
-// Anchor 0.30's IDL build relies on nightly-only proc macro span APIs.
+function ensureAnchorCli() {
+  const anchorPath = path.join(binaryInstallDir, "bin", "anchor");
+  if (!fs.existsSync(anchorPath)) {
+    execFileSync("cargo", ["install", "--root", binaryInstallDir, "--locked", "anchor-cli@0.30.1"], {
+      stdio: "inherit",
+    });
+  }
+}
+
+ensureAnchorCli();
 process.env.RUSTUP_TOOLCHAIN ??= "nightly-2024-06-01";
 
-function normalizeDefinedTypes(value) {
+function normalizeIdlTypes(value) {
   if (Array.isArray(value)) {
-    return value.map(normalizeDefinedTypes);
+    return value.map(normalizeIdlTypes);
   }
 
   if (value === "pubkey") {
@@ -32,10 +54,7 @@ function normalizeDefinedTypes(value) {
     }
 
     const normalized = Object.fromEntries(
-      Object.entries(value).map(([key, child]) => [
-        key,
-        normalizeDefinedTypes(child),
-      ])
+      Object.entries(value).map(([key, child]) => [key, normalizeIdlTypes(child)])
     );
 
     if ("writable" in normalized) {
@@ -61,18 +80,14 @@ function normalizeDefinedTypes(value) {
 
 function readIdl(programName) {
   const idlPath = path.join(idlDir, `${programName}.json`);
-  if (!fs.existsSync(idlPath)) {
-    return undefined;
-  }
-
-  return JSON.parse(fs.readFileSync(idlPath, "utf8"));
+  return fs.existsSync(idlPath)
+    ? JSON.parse(fs.readFileSync(idlPath, "utf8"))
+    : undefined;
 }
 
-function mergeLegacyAccountDefinitions(idl, previousIdl) {
+function normalizeAccounts(idl, previousIdl) {
   const typesByName = new Map((idl.types ?? []).map((type) => [type.name, type]));
-  const previousAccountsByName = new Map(
-    (previousIdl?.accounts ?? []).map((account) => [account.name, account])
-  );
+  const previousAccountNames = new Set((previousIdl?.accounts ?? []).map((account) => account.name));
 
   const accounts = (idl.accounts ?? [])
     .map((account) => {
@@ -88,22 +103,19 @@ function mergeLegacyAccountDefinitions(idl, previousIdl) {
         type: type.type,
       };
     })
-    .filter(
-      (account) =>
-        previousAccountsByName.size === 0 || previousAccountsByName.has(account.name)
-    );
+    .filter((account) => previousAccountNames.size === 0 || previousAccountNames.has(account.name));
 
-  const accountsByName = new Map(accounts.map((account) => [account.name, account]));
-  for (const [name, account] of previousAccountsByName) {
-    if (!accountsByName.has(name)) {
+  const accountNames = new Set(accounts.map((account) => account.name));
+  for (const account of previousIdl?.accounts ?? []) {
+    if (!accountNames.has(account.name)) {
       accounts.push(account);
     }
   }
 
   const types = Array.from(typesByName.values());
-  const typesByNameAfterAccounts = new Map(types.map((type) => [type.name, type]));
+  const typeNames = new Set(types.map((type) => type.name));
   for (const type of previousIdl?.types ?? []) {
-    if (!typesByNameAfterAccounts.has(type.name)) {
+    if (!typeNames.has(type.name)) {
       types.push(type);
     }
   }
@@ -120,47 +132,29 @@ function normalizeIdl(programName, previousIdl) {
   const idl = JSON.parse(fs.readFileSync(idlPath, "utf8"));
   idl.name ??= idl.metadata?.name;
   idl.version ??= idl.metadata?.version;
-  const normalizedIdl = mergeLegacyAccountDefinitions(
-    normalizeDefinedTypes(idl),
-    previousIdl
-  );
   fs.writeFileSync(
     idlPath,
-    `${JSON.stringify(normalizedIdl, null, 2)}\n`
+    `${JSON.stringify(normalizeAccounts(normalizeIdlTypes(idl), previousIdl), null, 2)}\n`
   );
 }
 
 async function main() {
-  const previousCandyMachineCoreIdl = readIdl("candy_machine_core");
-  const previousCandyGuardIdl = readIdl("candy_guard");
-
-  await generateIdl({
-    generator: "anchor",
-    programName: "candy_machine_core",
-    programId: "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
-    idlDir,
-    binaryInstallDir,
-    programDir: path.join(programDir, "candy-machine-core", "program"),
-    rustbin: {
-      locked: true,
-      versionRangeFallback: "0.27.0",
-    },
-  });
-  normalizeIdl("candy_machine_core", previousCandyMachineCoreIdl);
-
-  await generateIdl({
-    generator: "anchor",
-    programName: "candy_guard",
-    programId: "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
-    idlDir,
-    binaryInstallDir,
-    programDir: path.join(programDir, "candy-guard", "program"),
-    rustbin: {
-      locked: true,
-      versionRangeFallback: "0.27.0",
-    },
-  });
-  normalizeIdl("candy_guard", previousCandyGuardIdl);
+  for (const program of programs) {
+    const previousIdl = readIdl(program.name);
+    await generateIdl({
+      generator: "anchor",
+      programName: program.name,
+      programId: program.id,
+      idlDir,
+      binaryInstallDir,
+      programDir: program.path,
+      rustbin: {
+        locked: true,
+        versionRangeFallback: "0.27.0",
+      },
+    });
+    normalizeIdl(program.name, previousIdl);
+  }
 }
 
 main().catch((error) => {
