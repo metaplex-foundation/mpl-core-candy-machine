@@ -1,3 +1,4 @@
+use anchor_lang::prelude::borsh::{BorshDeserialize, BorshSerialize};
 use anchor_lang::prelude::*;
 use mpl_core::types::PluginAuthorityPair;
 
@@ -36,7 +37,34 @@ pub struct ConfigLine {
     pub uri: String,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Eq, PartialEq, Clone, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Eq, PartialEq, Clone, Debug)]
 pub struct MintAssetArgs {
     pub plugins: Vec<PluginAuthorityPair>,
+}
+
+#[cfg(feature = "idl-build")]
+impl IdlBuild for MintAssetArgs {
+    fn create_type() -> Option<anchor_lang::idl::types::IdlTypeDef> {
+        use anchor_lang::idl::types::{
+            IdlDefinedFields, IdlField, IdlSerialization, IdlType, IdlTypeDef, IdlTypeDefTy,
+        };
+
+        Some(IdlTypeDef {
+            name: "MintAssetArgs".into(),
+            docs: Vec::new(),
+            serialization: IdlSerialization::Borsh,
+            repr: None,
+            generics: Vec::new(),
+            ty: IdlTypeDefTy::Struct {
+                fields: Some(IdlDefinedFields::Named(vec![IdlField {
+                    name: "plugins".into(),
+                    docs: Vec::new(),
+                    ty: IdlType::Vec(Box::new(IdlType::Defined {
+                        name: "PluginAuthorityPair".into(),
+                        generics: Vec::new(),
+                    })),
+                }])),
+            },
+        })
+    }
 }

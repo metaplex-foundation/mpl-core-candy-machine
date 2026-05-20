@@ -1,9 +1,19 @@
 {
-  "version": "0.2.1",
-  "name": "candy_machine_core",
+  "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
+  "metadata": {
+    "name": "candy_machine_core",
+    "version": "0.2.1",
+    "spec": "0.1.0",
+    "description": "NFT Candy Machine Core: programmatic and trustless NFT drops.",
+    "repository": "https://github.com/metaplex-foundation/mpl-candy-machine-asset",
+    "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
+    "origin": "anchor",
+    "binaryVersion": "0.30.1",
+    "libVersion": "0.30.1"
+  },
   "instructions": [
     {
-      "name": "addConfigLines",
+      "name": "add_config_lines",
       "docs": [
         "Add the configuration (name + uri) of each NFT to the account data.",
         "",
@@ -12,22 +22,33 @@
         "0. `[writable]` Candy Machine account",
         "1. `[signer]` Candy Machine authority"
       ],
+      "discriminator": [
+        223,
+        50,
+        224,
+        227,
+        151,
+        8,
+        115,
+        106
+      ],
       "accounts": [
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy Machine account."
-          ]
+          ],
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": false,
-          "isSigner": true,
           "docs": [
             "Autority of the candy machine."
-          ]
+          ],
+          "relations": [
+            "candy_machine"
+          ],
+          "isSigner": true
         }
       ],
       "args": [
@@ -36,7 +57,7 @@
           "type": "u32"
         },
         {
-          "name": "configLines",
+          "name": "config_lines",
           "type": {
             "vec": {
               "defined": "ConfigLine"
@@ -67,30 +88,62 @@
         "12. `[optional]` Token Authorization Rules program",
         "13. `[optional]` Token authorization rules account"
       ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
       "accounts": [
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy Machine account. The account space must be allocated to allow accounts larger",
             "than 10kb.",
             ""
-          ]
+          ],
+          "isMut": true
         },
         {
-          "name": "authorityPda",
-          "isMut": true,
-          "isSigner": false,
+          "name": "authority_pda",
           "docs": [
             "Authority PDA used to verify minted NFTs to the collection.",
             ""
-          ]
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  110,
+                  100,
+                  121,
+                  95,
+                  109,
+                  97,
+                  99,
+                  104,
+                  105,
+                  110,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "candy_machine"
+              }
+            ]
+          },
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": false,
-          "isSigner": false,
           "docs": [
             "Candy Machine authority. This is the address that controls the upate of the candy machine.",
             ""
@@ -98,55 +151,51 @@
         },
         {
           "name": "payer",
-          "isMut": true,
-          "isSigner": true,
           "docs": [
             "Payer of the transaction."
-          ]
+          ],
+          "isMut": true,
+          "isSigner": true
         },
         {
           "name": "collection",
-          "isMut": true,
-          "isSigner": false,
           "docs": [
             "Mint account of the collection.",
             ""
-          ]
+          ],
+          "isMut": true
         },
         {
-          "name": "collectionUpdateAuthority",
-          "isMut": true,
-          "isSigner": true,
+          "name": "collection_update_authority",
           "docs": [
             "Update authority of the collection. This needs to be a signer so the candy",
             "machine can approve a delegate to verify minted NFTs to the collection."
-          ]
+          ],
+          "isMut": true,
+          "isSigner": true
         },
         {
-          "name": "mplCoreProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "mpl_core_program",
           "docs": [
             "Token Metadata program.",
             ""
-          ]
+          ],
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "system_program",
           "docs": [
             "System program."
-          ]
+          ],
+          "address": "11111111111111111111111111111111"
         },
         {
-          "name": "sysvarInstructions",
-          "isMut": false,
-          "isSigner": false,
+          "name": "sysvar_instructions",
           "docs": [
             "Instructions sysvar account.",
             ""
-          ]
+          ],
+          "address": "Sysvar1nstructions1111111111111111111111111"
         }
       ],
       "args": [
@@ -159,7 +208,7 @@
       ]
     },
     {
-      "name": "mintAsset",
+      "name": "mint_asset",
       "docs": [
         "Mint an NFT.",
         "",
@@ -181,45 +230,79 @@
         "10. `[optional]` Instructions sysvar account",
         "11. `[]` SlotHashes sysvar cluster data."
       ],
+      "discriminator": [
+        84,
+        175,
+        211,
+        156,
+        56,
+        250,
+        104,
+        118
+      ],
       "accounts": [
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy machine account."
-          ]
+          ],
+          "isMut": true
         },
         {
-          "name": "authorityPda",
-          "isMut": true,
-          "isSigner": false,
+          "name": "authority_pda",
           "docs": [
             "Candy machine authority account. This is the account that holds a delegate",
             "to verify an item into the collection.",
             ""
-          ]
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  110,
+                  100,
+                  121,
+                  95,
+                  109,
+                  97,
+                  99,
+                  104,
+                  105,
+                  110,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "candy_machine"
+              }
+            ]
+          },
+          "isMut": true
         },
         {
-          "name": "mintAuthority",
-          "isMut": false,
-          "isSigner": true,
+          "name": "mint_authority",
           "docs": [
             "Candy machine mint authority (mint only allowed for the mint_authority)."
-          ]
+          ],
+          "relations": [
+            "candy_machine"
+          ],
+          "isSigner": true
         },
         {
           "name": "payer",
-          "isMut": true,
-          "isSigner": true,
           "docs": [
             "Payer for the transaction and account allocation (rent)."
-          ]
+          ],
+          "isMut": true,
+          "isSigner": true
         },
         {
-          "name": "assetOwner",
-          "isMut": false,
-          "isSigner": false,
+          "name": "asset_owner",
           "docs": [
             "NFT account owner.",
             ""
@@ -227,56 +310,51 @@
         },
         {
           "name": "asset",
-          "isMut": true,
-          "isSigner": true,
           "docs": [
             "Mint account of the NFT. The account will be initialized if necessary.",
             ""
-          ]
+          ],
+          "isMut": true,
+          "isSigner": true
         },
         {
           "name": "collection",
-          "isMut": true,
-          "isSigner": false,
           "docs": [
             "Mint account of the collection NFT.",
             ""
-          ]
+          ],
+          "isMut": true
         },
         {
-          "name": "mplCoreProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "mpl_core_program",
           "docs": [
             "Token Metadata program.",
             ""
-          ]
+          ],
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "system_program",
           "docs": [
             "System program."
-          ]
+          ],
+          "address": "11111111111111111111111111111111"
         },
         {
-          "name": "sysvarInstructions",
-          "isMut": false,
-          "isSigner": false,
+          "name": "sysvar_instructions",
           "docs": [
             "Instructions sysvar account.",
             ""
-          ]
+          ],
+          "address": "Sysvar1nstructions1111111111111111111111111"
         },
         {
-          "name": "recentSlothashes",
-          "isMut": false,
-          "isSigner": false,
+          "name": "recent_slothashes",
           "docs": [
             "SlotHashes sysvar cluster data.",
             ""
-          ]
+          ],
+          "address": "SysvarS1otHashes111111111111111111111111111"
         }
       ],
       "args": [
@@ -289,7 +367,7 @@
       ]
     },
     {
-      "name": "setAuthority",
+      "name": "set_authority",
       "docs": [
         "Set a new authority of the candy machine.",
         "",
@@ -298,33 +376,44 @@
         "0. `[writable]` Candy Machine account",
         "1. `[signer]` Candy Machine authority"
       ],
+      "discriminator": [
+        133,
+        250,
+        37,
+        21,
+        110,
+        163,
+        26,
+        121
+      ],
       "accounts": [
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy Machine account."
-          ]
+          ],
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": false,
-          "isSigner": true,
           "docs": [
             "Autority of the candy machine."
-          ]
+          ],
+          "relations": [
+            "candy_machine"
+          ],
+          "isSigner": true
         }
       ],
       "args": [
         {
-          "name": "newAuthority",
+          "name": "new_authority",
           "type": "publicKey"
         }
       ]
     },
     {
-      "name": "setCollection",
+      "name": "set_collection",
       "docs": [
         "Set the collection mint for the candy machine.",
         "",
@@ -350,44 +439,78 @@
         "17. `[optional]` Token Authorization Rules program",
         "18. `[optional]` Token authorization rules account"
       ],
+      "discriminator": [
+        192,
+        254,
+        206,
+        76,
+        168,
+        182,
+        59,
+        223
+      ],
       "accounts": [
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy Machine account."
-          ]
+          ],
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": false,
-          "isSigner": true,
           "docs": [
             "Candy Machine authority."
-          ]
+          ],
+          "relations": [
+            "candy_machine"
+          ],
+          "isSigner": true
         },
         {
-          "name": "authorityPda",
-          "isMut": true,
-          "isSigner": false,
+          "name": "authority_pda",
           "docs": [
             "Authority PDA.",
             ""
-          ]
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  110,
+                  100,
+                  121,
+                  95,
+                  109,
+                  97,
+                  99,
+                  104,
+                  105,
+                  110,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "candy_machine"
+              }
+            ]
+          },
+          "isMut": true
         },
         {
           "name": "payer",
-          "isMut": true,
-          "isSigner": true,
           "docs": [
             "Payer of the transaction."
-          ]
+          ],
+          "isMut": true,
+          "isSigner": true
         },
         {
-          "name": "collectionUpdateAuthority",
-          "isMut": false,
-          "isSigner": false,
+          "name": "collection_update_authority",
           "docs": [
             "Update authority of the collection.",
             ""
@@ -395,61 +518,55 @@
         },
         {
           "name": "collection",
-          "isMut": true,
-          "isSigner": false,
           "docs": [
             "Mint account of the collection.",
             ""
-          ]
+          ],
+          "isMut": true
         },
         {
-          "name": "newCollectionUpdateAuthority",
-          "isMut": false,
-          "isSigner": true,
+          "name": "new_collection_update_authority",
           "docs": [
             "Update authority of the new collection NFT."
-          ]
+          ],
+          "isSigner": true
         },
         {
-          "name": "newCollection",
-          "isMut": true,
-          "isSigner": false,
+          "name": "new_collection",
           "docs": [
             "New collection mint.",
             ""
-          ]
+          ],
+          "isMut": true
         },
         {
-          "name": "mplCoreProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "mpl_core_program",
           "docs": [
             "Token Metadata program.",
             ""
-          ]
+          ],
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false,
+          "name": "system_program",
           "docs": [
             "System program."
-          ]
+          ],
+          "address": "11111111111111111111111111111111"
         },
         {
-          "name": "sysvarInstructions",
-          "isMut": false,
-          "isSigner": false,
+          "name": "sysvar_instructions",
           "docs": [
             "Instructions sysvar account.",
             ""
-          ]
+          ],
+          "address": "Sysvar1nstructions1111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "setMintAuthority",
+      "name": "set_mint_authority",
       "docs": [
         "Set a new mint authority of the candy machine.",
         "",
@@ -459,30 +576,40 @@
         "1. `[signer]` Candy Machine authority",
         "1. `[signer]` New candy machine authority"
       ],
+      "discriminator": [
+        67,
+        127,
+        155,
+        187,
+        100,
+        174,
+        103,
+        121
+      ],
       "accounts": [
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy Machine account."
-          ]
+          ],
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": false,
-          "isSigner": true,
           "docs": [
             "Candy Machine authority"
-          ]
+          ],
+          "relations": [
+            "candy_machine"
+          ],
+          "isSigner": true
         },
         {
-          "name": "mintAuthority",
-          "isMut": false,
-          "isSigner": true,
+          "name": "mint_authority",
           "docs": [
             "New candy machine authority"
-          ]
+          ],
+          "isSigner": true
         }
       ],
       "args": []
@@ -497,22 +624,33 @@
         "0. `[writable]` Candy Machine account",
         "1. `[signer]` Candy Machine authority"
       ],
+      "discriminator": [
+        219,
+        200,
+        88,
+        176,
+        158,
+        63,
+        253,
+        127
+      ],
       "accounts": [
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy Machine account."
-          ]
+          ],
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": false,
-          "isSigner": true,
           "docs": [
             "Authority of the candy machine."
-          ]
+          ],
+          "relations": [
+            "candy_machine"
+          ],
+          "isSigner": true
         }
       ],
       "args": [
@@ -534,22 +672,34 @@
         "0. `[writable]` Candy Machine account",
         "1. `[signer]` Candy Machine authority"
       ],
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
       "accounts": [
         {
-          "name": "candyMachine",
-          "isMut": true,
-          "isSigner": false,
+          "name": "candy_machine",
           "docs": [
             "Candy Machine acccount."
-          ]
+          ],
+          "isMut": true
         },
         {
           "name": "authority",
-          "isMut": true,
-          "isSigner": true,
           "docs": [
             "Authority of the candy machine."
-          ]
+          ],
+          "relations": [
+            "candy_machine"
+          ],
+          "isMut": true,
+          "isSigner": true
         }
       ],
       "args": []
@@ -572,21 +722,21 @@
             "type": "publicKey"
           },
           {
-            "name": "mintAuthority",
+            "name": "mint_authority",
             "docs": [
               "Authority address allowed to mint from the candy machine."
             ],
             "type": "publicKey"
           },
           {
-            "name": "collectionMint",
+            "name": "collection_mint",
             "docs": [
               "The collection mint for the candy machine."
             ],
             "type": "publicKey"
           },
           {
-            "name": "itemsRedeemed",
+            "name": "items_redeemed",
             "docs": [
               "Number of assets redeemed."
             ],
@@ -599,186 +749,6 @@
             ],
             "type": {
               "defined": "CandyMachineData"
-            }
-          }
-        ]
-      }
-    }
-  ],
-  "types": [
-    {
-      "name": "CandyMachineData",
-      "docs": [
-        "Candy machine configuration data."
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "itemsAvailable",
-            "docs": [
-              "Number of assets available"
-            ],
-            "type": "u64"
-          },
-          {
-            "name": "maxSupply",
-            "docs": [
-              "Max supply of each individual asset (default 0)"
-            ],
-            "type": "u64"
-          },
-          {
-            "name": "isMutable",
-            "docs": [
-              "Indicates if the asset is mutable or not (default yes)"
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "configLineSettings",
-            "docs": [
-              "Config line settings"
-            ],
-            "type": {
-              "option": {
-                "defined": "ConfigLineSettings"
-              }
-            }
-          },
-          {
-            "name": "hiddenSettings",
-            "docs": [
-              "Hidden setttings"
-            ],
-            "type": {
-              "option": {
-                "defined": "HiddenSettings"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "HiddenSettings",
-      "docs": [
-        "Hidden settings for large mints used with off-chain data."
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "name",
-            "docs": [
-              "Asset prefix name"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "uri",
-            "docs": [
-              "Shared URI"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "hash",
-            "docs": [
-              "Hash of the hidden settings file"
-            ],
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "ConfigLineSettings",
-      "docs": [
-        "Config line settings to allocate space for individual name + URI."
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "prefixName",
-            "docs": [
-              "Common name prefix"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "nameLength",
-            "docs": [
-              "Length of the remaining part of the name"
-            ],
-            "type": "u32"
-          },
-          {
-            "name": "prefixUri",
-            "docs": [
-              "Common URI prefix"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "uriLength",
-            "docs": [
-              "Length of the remaining part of the URI"
-            ],
-            "type": "u32"
-          },
-          {
-            "name": "isSequential",
-            "docs": [
-              "Indicates whether to use a senquential index generator or not"
-            ],
-            "type": "bool"
-          }
-        ]
-      }
-    },
-    {
-      "name": "ConfigLine",
-      "docs": [
-        "Config line struct for storing asset (NFT) data pre-mint."
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "name",
-            "docs": [
-              "Name of the asset."
-            ],
-            "type": "string"
-          },
-          {
-            "name": "uri",
-            "docs": [
-              "URI to JSON metadata."
-            ],
-            "type": "string"
-          }
-        ]
-      }
-    },
-    {
-      "name": "MintAssetArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "plugins",
-            "type": {
-              "vec": {
-                "defined": "PluginAuthorityPair"
-              }
             }
           }
         ]
@@ -942,10 +912,186 @@
       "msg": "Invalid plugin authority"
     }
   ],
-  "metadata": {
-    "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
-    "origin": "anchor",
-    "binaryVersion": "0.27.0",
-    "libVersion": "0.28.0"
-  }
+  "types": [
+    {
+      "name": "CandyMachineData",
+      "docs": [
+        "Candy machine configuration data."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "items_available",
+            "docs": [
+              "Number of assets available"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_supply",
+            "docs": [
+              "Max supply of each individual asset (default 0)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "is_mutable",
+            "docs": [
+              "Indicates if the asset is mutable or not (default yes)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "config_line_settings",
+            "docs": [
+              "Config line settings"
+            ],
+            "type": {
+              "option": {
+                "defined": "ConfigLineSettings"
+              }
+            }
+          },
+          {
+            "name": "hidden_settings",
+            "docs": [
+              "Hidden setttings"
+            ],
+            "type": {
+              "option": {
+                "defined": "HiddenSettings"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigLine",
+      "docs": [
+        "Config line struct for storing asset (NFT) data pre-mint."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "docs": [
+              "Name of the asset."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "URI to JSON metadata."
+            ],
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigLineSettings",
+      "docs": [
+        "Config line settings to allocate space for individual name + URI."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "prefix_name",
+            "docs": [
+              "Common name prefix"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "name_length",
+            "docs": [
+              "Length of the remaining part of the name"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "prefix_uri",
+            "docs": [
+              "Common URI prefix"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri_length",
+            "docs": [
+              "Length of the remaining part of the URI"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "is_sequential",
+            "docs": [
+              "Indicates whether to use a senquential index generator or not"
+            ],
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HiddenSettings",
+      "docs": [
+        "Hidden settings for large mints used with off-chain data."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "docs": [
+              "Asset prefix name"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "Shared URI"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "hash",
+            "docs": [
+              "Hash of the hidden settings file"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintAssetArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "plugins",
+            "type": {
+              "vec": {
+                "defined": "PluginAuthorityPair"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "name": "candy_machine_core",
+  "version": "0.2.1"
 }
