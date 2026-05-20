@@ -16,6 +16,7 @@ jobs:
     outputs:
       any: ${{ steps.changes.outputs.any }}
       programs: ${{ steps.changes.outputs.programs }}
+      security_metadata_only: ${{ steps.security_metadata_only.outputs.value }}
       program_matrix: ${{ steps.program_matrix.outputs.matrix }}
     steps:
       - name: Git checkout
@@ -29,6 +30,20 @@ jobs:
         id: changes
         with:
           filters: .github/file-filters.yml
+          list-files: shell
+
+      - name: Detect security metadata-only changes
+        id: security_metadata_only
+        shell: bash
+        run: |
+          security_metadata_only=true
+          for file in ${{ steps.changes.outputs.any_files }}; do
+            case "$file" in
+              .github/workflows/main.yml|programs/candy-guard/Cargo.lock|programs/candy-guard/program/Cargo.toml|programs/candy-guard/program/src/lib.rs|programs/candy-machine-core/Cargo.lock|programs/candy-machine-core/program/Cargo.toml|programs/candy-machine-core/program/src/lib.rs) ;;
+              *) security_metadata_only=false ;;
+            esac
+          done
+          echo "value=${security_metadata_only}" >> "$GITHUB_OUTPUT"
 
       - name: Filter program matrix
         id: program_matrix
@@ -56,7 +71,7 @@ jobs:
 
   generate_clients:
     name: Generate clients
-    if: ${{ needs.changes.outputs.any == 'true' }}
+    if: ${{ needs.changes.outputs.any == 'true' && needs.changes.outputs.security_metadata_only != 'true' }}
     needs: build_programs
     runs-on: ubuntu-latest-8-cores
     outputs:
@@ -99,13 +114,6 @@ jobs:
       - name: Cache IDL generators
         if: env.CACHE == 'true'
         uses: metaplex-foundation/actions/cache-idl-generators@v1
-
-      - name: Ensure Anchor CLI is installed
-        shell: bash
-        run: |
-          if [ ! -x "./.crates/bin/anchor" ]; then
-            cargo install --root ./.crates --locked anchor-cli@0.30.1
-          fi
 
       - name: Generate IDLs and clients
         run: pnpm generate
