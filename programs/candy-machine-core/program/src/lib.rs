@@ -13,7 +13,7 @@ mod instructions;
 mod state;
 mod utils;
 
-declare_id!("CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J");
+declare_id!("F8FnAZFh3UU8YpUrtb5A3xXPYmYVn63ooMqedWX7y3SS");
 
 #[cfg(not(feature = "no-entrypoint"))]
 solana_security_txt::security_txt! {

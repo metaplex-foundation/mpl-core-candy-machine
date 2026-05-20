@@ -1,5 +1,5 @@
 {
-  "address": "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
+  "address": "678oZidn7LYw43rjxX6BJz5sDCAKtRyibF922GQTgnvG",
   "metadata": {
     "name": "candy_guard",
     "version": "0.2.1",
@@ -133,7 +133,7 @@
             "Candy Machine program account.",
             ""
           ],
-          "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
+          "address": "F8FnAZFh3UU8YpUrtb5A3xXPYmYVn63ooMqedWX7y3SS"
         },
         {
           "name": "candy_machine",
@@ -356,7 +356,7 @@
         },
         {
           "name": "candy_machine_program",
-          "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
+          "address": "F8FnAZFh3UU8YpUrtb5A3xXPYmYVn63ooMqedWX7y3SS"
         }
       ],
       "args": []
@@ -493,7 +493,7 @@
         },
         {
           "name": "candy_machine_program",
-          "address": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J"
+          "address": "F8FnAZFh3UU8YpUrtb5A3xXPYmYVn63ooMqedWX7y3SS"
         },
         {
           "name": "candy_machine_authority",
