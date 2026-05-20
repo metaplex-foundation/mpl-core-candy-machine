@@ -8,11 +8,12 @@ on:
         required: true
         type: string
       program:
-        description: Program
+        description: Which program(s) to verify
         required: true
-        default: candy-guard
+        default: all
         type: choice
         options:
+          - all
           - candy-guard
           - candy-machine-core
       cluster:
@@ -27,11 +28,30 @@ env:
   CACHE: true
 
 jobs:
+  prepare_matrix:
+    name: Prepare matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Compute matrix
+        id: matrix
+        run: |
+          if [ "${{ inputs.program }}" = "all" ]; then
+            printf 'matrix=%s\n' '{"program":["candy-guard","candy-machine-core"]}' >> "$GITHUB_OUTPUT"
+          else
+            printf 'matrix={"program":["%s"]}\n' "${{ inputs.program }}" >> "$GITHUB_OUTPUT"
+          fi
+
   verify_program:
-    name: Program / Verify
+    name: Program / Verify (${{ matrix.program }})
+    needs: prepare_matrix
     runs-on: ubuntu-latest-16-cores
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare_matrix.outputs.matrix) }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -82,16 +102,14 @@ jobs:
           CORE_CANDY_MACHINE_CORE_ID: ${{ secrets.CORE_CANDY_MACHINE_CORE_ID }}
           CORE_CANDY_MACHINE_CORE_DEPLOY_KEY: ${{ secrets.CORE_CANDY_MACHINE_CORE_DEPLOY_KEY }}
         run: |
-          if [ "${{ inputs.program }}" == "candy-guard" ]; then
+          if [ "${{ matrix.program }}" == "candy-guard" ]; then
             printf 'PROGRAM_NAME=%s\n' "mpl_core_candy_guard" >> "$GITHUB_ENV"
             printf 'PROGRAM_PACKAGE=%s\n' "mpl-core-candy-guard" >> "$GITHUB_ENV"
-            printf 'PROGRAM_DIR=%s\n' "programs/candy-guard" >> "$GITHUB_ENV"
             printf '%s' "$CORE_CANDY_GUARD_ID" > ./program-id.json
             printf '%s' "$CORE_CANDY_GUARD_DEPLOY_KEY" > ./deploy-key.json
           else
             printf 'PROGRAM_NAME=%s\n' "mpl_core_candy_machine_core" >> "$GITHUB_ENV"
             printf 'PROGRAM_PACKAGE=%s\n' "mpl-core-candy-machine-core" >> "$GITHUB_ENV"
-            printf 'PROGRAM_DIR=%s\n' "programs/candy-machine-core" >> "$GITHUB_ENV"
             printf '%s' "$CORE_CANDY_MACHINE_CORE_ID" > ./program-id.json
             printf '%s' "$CORE_CANDY_MACHINE_CORE_DEPLOY_KEY" > ./deploy-key.json
           fi
@@ -117,7 +135,7 @@ jobs:
             --keypair ./deploy-key.json \
             --base-image "${SOLANA_VERIFY_BASE_IMAGE}" \
             --library-name "${PROGRAM_NAME}" \
-            --mount-path "${PROGRAM_DIR}" \
+            --mount-path programs \
             --commit-hash "${COMMIT_HASH}" \
             --skip-prompt \
             https://github.com/metaplex-foundation/mpl-core-candy-machine.git \

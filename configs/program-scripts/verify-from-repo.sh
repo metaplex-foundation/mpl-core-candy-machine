@@ -13,9 +13,9 @@
 #   --program       : candy-guard
 #   --library-name  : derived from --program (mpl_core_candy_guard /
 #                     mpl_core_candy_machine_core)
-#   --mount-path    : programs/<program> (solana-verify 0.4.15 expects the
-#                     mounted workspace to contain Cargo.lock; each program in
-#                     this repo is its own workspace)
+#   --mount-path    : programs (the unified workspace root; candy-guard has a
+#                     path dependency on candy-machine-core so both must be
+#                     mounted together for the docker build to resolve them)
 #   --workspace-path: omitted by default, so solana-verify uses --mount-path
 #   --repo-url      : derived from `git remote get-url origin`, normalized to
 #                     https://
@@ -148,7 +148,7 @@ if [ -z "${LIBRARY_NAME}" ]; then
 fi
 
 if [ -z "${MOUNT_PATH}" ]; then
-    MOUNT_PATH="programs/${PROGRAM}"
+    MOUNT_PATH="programs"
 fi
 
 # Resolve repo URL from git remote when the caller did not supply one. We

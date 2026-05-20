@@ -57,13 +57,13 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: fmt
-          args: --manifest-path ./programs/${{ matrix.program }}/Cargo.toml --all -- --check
+          args: --manifest-path ./programs/Cargo.toml -p mpl-core-${{ matrix.program }} -- --check
 
       - name: Run cargo clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --all-targets --all-features --no-deps --manifest-path ./programs/${{ matrix.program }}/Cargo.toml
+          args: --all-targets --all-features --no-deps --manifest-path ./programs/Cargo.toml -p mpl-core-${{ matrix.program }}
 
       - name: Run tests
         shell: bash

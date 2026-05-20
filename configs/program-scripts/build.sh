@@ -44,6 +44,7 @@ mkdir -p "${OUTPUT}"
 "${SCRIPT_DIR}/dump.sh" "${OUTPUT}"
 
 WORKING_DIR=$(pwd)
+PROGRAMS_DIR="${WORKING_DIR}/programs"
 BASE_IMAGE_ARGS=()
 
 if [ -n "${SOLANA_VERIFY_BASE_IMAGE:-}" ]; then
@@ -106,8 +107,7 @@ resolve_package_name() {
 }
 
 for p in "${PROGRAM_LIST[@]}"; do
-    PROGRAM_WORKSPACE="${WORKING_DIR}/programs/${p}"
-    PROGRAM_CARGO_TOML="${PROGRAM_WORKSPACE}/program/Cargo.toml"
+    PROGRAM_CARGO_TOML="${PROGRAMS_DIR}/${p}/program/Cargo.toml"
 
     if [ ! -f "${PROGRAM_CARGO_TOML}" ]; then
         echo "error: ${PROGRAM_CARGO_TOML} not found" >&2
@@ -126,15 +126,15 @@ for p in "${PROGRAM_LIST[@]}"; do
 
     # `solana-verify build` runs the build inside a deterministic docker image
     # so the resulting .so hash matches a remote verification of the same
-    # source. Each program in this repo is its own workspace, so we invoke
-    # solana-verify from the program's workspace root; the output lands at
-    # <workspace>/target/deploy/<lib>.so.
+    # source. We invoke it from the unified `programs/` workspace so that
+    # path dependencies (e.g. candy-guard -> candy-machine-core) resolve
+    # inside the mount. The output lands at programs/target/deploy/<lib>.so.
     # ${ARGS[@]+"${ARGS[@]}"} guards against empty-array expansion under
     # `set -u` on Bash < 4.4.
     (
-        cd "${PROGRAM_WORKSPACE}"
+        cd "${PROGRAMS_DIR}"
         solana-verify build "${BASE_IMAGE_ARGS[@]}" --library-name "${LIB_NAME}" -- --package "${PACKAGE_NAME}" ${ARGS[@]+"${ARGS[@]}"}
     )
 
-    cp "${PROGRAM_WORKSPACE}/target/deploy/${LIB_NAME}.so" "${WORKING_DIR}/${OUTPUT}/${LIB_NAME}.so"
+    cp "${PROGRAMS_DIR}/target/deploy/${LIB_NAME}.so" "${WORKING_DIR}/${OUTPUT}/${LIB_NAME}.so"
 done
