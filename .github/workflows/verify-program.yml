@@ -4,16 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       git_ref:
-        description: Release tag, commit hash, or branch that was deployed
+        description: Release tag (release/candy-machine-core@0.2.2 or release/candy-guard@0.2.1) or commit to verify
         required: true
         type: string
+        default: release/candy-guard@0.2.2
       program:
-        description: Which program(s) to verify
-        required: true
-        default: all
+        description: Program (required if not a release tag)
+        required: false
         type: choice
         options:
-          - all
           - candy-guard
           - candy-machine-core
       cluster:
@@ -28,30 +27,36 @@ env:
   CACHE: true
 
 jobs:
-  prepare_matrix:
-    name: Prepare matrix
+  check_tag:
+    name: 'Check tag'
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.matrix.outputs.matrix }}
+      program: ${{ steps.set_program.outputs.program }}
+      type: ${{ steps.set_program.outputs.type }}
     steps:
-      - name: Compute matrix
-        id: matrix
-        run: |
-          if [ "${{ inputs.program }}" = "all" ]; then
-            printf 'matrix=%s\n' '{"program":["candy-guard","candy-machine-core"]}' >> "$GITHUB_OUTPUT"
-          else
-            printf 'matrix={"program":["%s"]}\n' "${{ inputs.program }}" >> "$GITHUB_OUTPUT"
-          fi
+    - name: Check tag
+      id: set_program
+      run: |
+        if [[ "${{ inputs.git_ref }}" =~ ^release/candy-guard@* ]]; then
+          echo program="candy-guard" >> $GITHUB_OUTPUT
+          echo type="release" >> $GITHUB_OUTPUT
+        elif [[ "${{ inputs.git_ref }}" =~ ^release/candy-machine-core@* ]]; then
+          echo program="candy-machine-core" >> $GITHUB_OUTPUT
+          echo type="release" >> $GITHUB_OUTPUT
+        elif [[ "${{ inputs.git_ref }}" == "candy-machine-core" || "${{ inputs.git_ref }}" == "candy-guard" ]]; then
+          echo program="${{ inputs.program }}" >> $GITHUB_OUTPUT
+          echo type="ref" >> $GITHUB_OUTPUT
+        else
+          echo "Non-release tag and program not specified"
+          exit 1;
+        fi
 
   verify_program:
-    name: Program / Verify (${{ matrix.program }})
-    needs: prepare_matrix
+    name: Program / Verify
+    needs: check_tag
     runs-on: ubuntu-latest-16-cores
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.prepare_matrix.outputs.matrix) }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -102,7 +107,7 @@ jobs:
           CORE_CANDY_MACHINE_CORE_ID: ${{ secrets.CORE_CANDY_MACHINE_CORE_ID }}
           CORE_CANDY_MACHINE_CORE_DEPLOY_KEY: ${{ secrets.CORE_CANDY_MACHINE_CORE_DEPLOY_KEY }}
         run: |
-          if [ "${{ matrix.program }}" == "candy-guard" ]; then
+          if [ "${{ needs.check_tag.outputs.program }}" == "candy-guard" ]; then
             printf 'PROGRAM_NAME=%s\n' "mpl_core_candy_guard" >> "$GITHUB_ENV"
             printf 'PROGRAM_PACKAGE=%s\n' "mpl-core-candy-guard" >> "$GITHUB_ENV"
             printf '%s' "$CORE_CANDY_GUARD_ID" > ./program-id.json
