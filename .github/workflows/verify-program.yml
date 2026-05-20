@@ -30,22 +30,30 @@ jobs:
   check_tag:
     name: 'Check tag'
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
       program: ${{ steps.set_program.outputs.program }}
       type: ${{ steps.set_program.outputs.type }}
     steps:
+    # `inputs.git_ref` and `inputs.program` are workflow_dispatch strings that a
+    # caller can craft freely; piping them through step `env:` avoids GitHub
+    # Actions template expansion into the shell, which would otherwise let a
+    # malicious dispatch inject arbitrary commands into this job.
     - name: Check tag
       id: set_program
+      env:
+        GIT_REF: ${{ inputs.git_ref }}
+        INPUT_PROGRAM: ${{ inputs.program }}
       run: |
-        if [[ "${{ inputs.git_ref }}" =~ ^release/candy-guard@* ]]; then
-          echo program="candy-guard" >> $GITHUB_OUTPUT
-          echo type="release" >> $GITHUB_OUTPUT
-        elif [[ "${{ inputs.git_ref }}" =~ ^release/candy-machine-core@* ]]; then
-          echo program="candy-machine-core" >> $GITHUB_OUTPUT
-          echo type="release" >> $GITHUB_OUTPUT
-        elif [[ "${{ inputs.git_ref }}" == "candy-machine-core" || "${{ inputs.git_ref }}" == "candy-guard" ]]; then
-          echo program="${{ inputs.program }}" >> $GITHUB_OUTPUT
-          echo type="ref" >> $GITHUB_OUTPUT
+        if [[ "${GIT_REF}" =~ ^release/candy-guard@* ]]; then
+          echo program="candy-guard" >> "$GITHUB_OUTPUT"
+          echo type="release" >> "$GITHUB_OUTPUT"
+        elif [[ "${GIT_REF}" =~ ^release/candy-machine-core@* ]]; then
+          echo program="candy-machine-core" >> "$GITHUB_OUTPUT"
+          echo type="release" >> "$GITHUB_OUTPUT"
+        elif [[ "${GIT_REF}" == "candy-machine-core" || "${GIT_REF}" == "candy-guard" ]]; then
+          echo program="${INPUT_PROGRAM}" >> "$GITHUB_OUTPUT"
+          echo type="ref" >> "$GITHUB_OUTPUT"
         else
           echo "Non-release tag and program not specified"
           exit 1;
@@ -62,6 +70,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.git_ref }}
+          # No git push/fetch happens after this step in this workflow, so
+          # don't leave GITHUB_TOKEN in .git/config where a later step (or a
+          # compromised third-party action in this job) could read it.
+          persist-credentials: false
 
       - name: Load environment variables
         id: env_vars
