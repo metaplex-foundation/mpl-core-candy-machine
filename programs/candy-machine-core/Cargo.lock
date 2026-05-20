@@ -1316,6 +1316,7 @@ dependencies = [
  "mpl-token-metadata",
  "mpl-utils",
  "solana-program",
+ "solana-security-txt",
  "spl-associated-token-account",
  "spl-token",
 ]

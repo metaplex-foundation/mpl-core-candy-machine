@@ -15,6 +15,19 @@ mod utils;
 
 declare_id!("CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J");
 
+#[cfg(not(feature = "no-entrypoint"))]
+solana_security_txt::security_txt! {
+    // Required fields
+    name: "Mpl Core Candy Machine Core",
+    project_url: "https://metaplex.com",
+    contacts: "email:security@metaplex.foundation",
+    policy: "Report suspected vulnerabilities privately by emailing security@metaplex.foundation before public disclosure.",
+
+    // Optional fields
+    preferred_languages: "en",
+    source_code: "https://github.com/metaplex-foundation/mpl-core-candy-machine"
+}
+
 #[program]
 pub mod candy_machine_core {
     use super::*;
