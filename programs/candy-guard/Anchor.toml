@@ -4,7 +4,7 @@ seeds = false
 [registry]
 url = "https://anchor.projectserum.com"
 
-[programs.devnet]
+[programs.localnet]
 candy_guard = "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ"
 
 [provider]

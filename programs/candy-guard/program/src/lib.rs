@@ -10,7 +10,7 @@ pub mod instructions;
 pub mod state;
 pub mod utils;
 
-declare_id!("678oZidn7LYw43rjxX6BJz5sDCAKtRyibF922GQTgnvG");
+declare_id!("CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ");
 
 #[cfg(not(feature = "no-entrypoint"))]
 solana_security_txt::security_txt! {
