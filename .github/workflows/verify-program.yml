@@ -51,11 +51,19 @@ jobs:
         elif [[ "${GIT_REF}" =~ ^release/candy-machine-core@* ]]; then
           echo program="candy-machine-core" >> "$GITHUB_OUTPUT"
           echo type="release" >> "$GITHUB_OUTPUT"
-        elif [[ "${GIT_REF}" == "candy-machine-core" || "${GIT_REF}" == "candy-guard" ]]; then
+        elif [[ -n "${INPUT_PROGRAM}" && ("${INPUT_PROGRAM}" == "candy-machine-core" || "${INPUT_PROGRAM}" == "candy-guard") ]]; then
+          # For non-release git_refs (commit hash, branch, arbitrary tag), the
+          # program cannot be inferred from the ref name, so the dispatch must
+          # supply `program` explicitly. We diverge from deploy-program.yml's
+          # check_tag here — that workflow's third branch only fires when
+          # git_ref equals the literal string "candy-guard" or
+          # "candy-machine-core", which makes re-verifying a specific commit
+          # impossible. Verify only needs the source at a commit, so we accept
+          # any git_ref as long as `program` is set.
           echo program="${INPUT_PROGRAM}" >> "$GITHUB_OUTPUT"
           echo type="ref" >> "$GITHUB_OUTPUT"
         else
-          echo "Non-release tag and program not specified"
+          echo "Non-release git_ref and program not specified"
           exit 1;
         fi
 
