@@ -64,10 +64,16 @@ jobs:
           esac
 
       - name: Run cargo fmt
-        run: cargo fmt --manifest-path ./Cargo.toml --package "${{ steps.program.outputs.package }}" -- --check
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --manifest-path ./Cargo.toml --package ${{ steps.program.outputs.package }} -- --check
 
       - name: Run cargo clippy
-        run: cargo clippy --all-targets --all-features --no-deps --manifest-path ./Cargo.toml --package "${{ steps.program.outputs.package }}"
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-targets --all-features --no-deps --manifest-path ./Cargo.toml --package ${{ steps.program.outputs.package }}
 
       - name: Run tests
         shell: bash
