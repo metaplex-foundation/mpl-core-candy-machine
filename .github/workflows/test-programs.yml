@@ -47,24 +47,27 @@ jobs:
 
       - name: Set package name
         id: program
+        env:
+          MATRIX_PROGRAM: ${{ matrix.program }}
         run: |
-          if [ "${{ matrix.program }}" == "candy-guard" ]; then
-            printf 'package=%s\n' "mpl-core-candy-guard" >> "$GITHUB_OUTPUT"
-          else
-            printf 'package=%s\n' "mpl-core-candy-machine-core" >> "$GITHUB_OUTPUT"
-          fi
+          case "$MATRIX_PROGRAM" in
+            candy-guard)
+              printf 'package=%s\n' "mpl-core-candy-guard" >> "$GITHUB_OUTPUT"
+              ;;
+            candy-machine-core)
+              printf 'package=%s\n' "mpl-core-candy-machine-core" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unsupported program: $MATRIX_PROGRAM" >&2
+              exit 1
+              ;;
+          esac
 
       - name: Run cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --manifest-path ./Cargo.toml --package ${{ steps.program.outputs.package }} -- --check
+        run: cargo fmt --manifest-path ./Cargo.toml --package "${{ steps.program.outputs.package }}" -- --check
 
       - name: Run cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-targets --all-features --no-deps --manifest-path ./Cargo.toml --package ${{ steps.program.outputs.package }}
+        run: cargo clippy --all-targets --all-features --no-deps --manifest-path ./Cargo.toml --package "${{ steps.program.outputs.package }}"
 
       - name: Run tests
         shell: bash
