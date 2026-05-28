@@ -158,7 +158,7 @@ jobs:
             echo ${{ secrets.CORE_CANDY_GUARD_ID }} > ./program-id.json
             echo PROGRAM_NAME="mpl_core_candy_guard" >> $GITHUB_ENV
             echo PROGRAM_PACKAGE="mpl-core-candy-guard" >> $GITHUB_ENV
-            echo PROGRAM_MOUNT_PATH="programs/candy-guard" >> $GITHUB_ENV
+            echo PROGRAM_MOUNT_PATH="." >> $GITHUB_ENV
           else
             if [ ! -e "./deploy-key.json" ]; then
               echo ${{ secrets.CORE_CANDY_MACHINE_CORE_DEPLOY_KEY }} > ./deploy-key.json
@@ -166,7 +166,7 @@ jobs:
             echo ${{ secrets.CORE_CANDY_MACHINE_CORE_ID }} > ./program-id.json
             echo PROGRAM_NAME="mpl_core_candy_machine_core" >> $GITHUB_ENV
             echo PROGRAM_PACKAGE="mpl-core-candy-machine-core" >> $GITHUB_ENV
-            echo PROGRAM_MOUNT_PATH="programs/candy-machine-core" >> $GITHUB_ENV
+            echo PROGRAM_MOUNT_PATH="." >> $GITHUB_ENV
           fi
 
       - name: Download Program Builds

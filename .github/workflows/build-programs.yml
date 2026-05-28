@@ -72,20 +72,20 @@ jobs:
       - name: Build candy-machine-core (verified)
         uses: metaplex-foundation/actions/verified-build@v1
         with:
-          working-directory: programs/candy-machine-core
+          working-directory: .
           library-name: mpl_core_candy_machine_core
           package: mpl-core-candy-machine-core
           solana-version: ${{ inputs.solana || steps.env_vars.outputs.solana_version }}
-          output-dir: ../.bin
+          output-dir: programs/.bin
 
       - name: Build candy-guard (verified)
         uses: metaplex-foundation/actions/verified-build@v1
         with:
-          working-directory: programs/candy-guard
+          working-directory: .
           library-name: mpl_core_candy_guard
           package: mpl-core-candy-guard
           solana-version: ${{ inputs.solana || steps.env_vars.outputs.solana_version }}
-          output-dir: ../.bin
+          output-dir: programs/.bin
 
       - name: Dump external program binaries
         run: ./configs/program-scripts/dump.sh ./programs/.bin
