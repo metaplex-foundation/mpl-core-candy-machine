@@ -30,7 +30,7 @@ jobs:
       - name: Install Rust
         uses: metaplex-foundation/actions/install-rust@v1
         with:
-          toolchain: ${{ env.RUST_VERSION }}
+          toolchain: ${{ env.IDL_RUST_VERSION }}
 
       - name: Install Solana
         uses: metaplex-foundation/actions/install-solana@v1
@@ -45,17 +45,35 @@ jobs:
           folder: ./programs/${{ matrix.program }}
           key: program-${{ matrix.program }}
 
+      - name: Set package name
+        id: program
+        env:
+          MATRIX_PROGRAM: ${{ matrix.program }}
+        run: |
+          case "$MATRIX_PROGRAM" in
+            candy-guard)
+              printf 'package=%s\n' "mpl-core-candy-guard" >> "$GITHUB_OUTPUT"
+              ;;
+            candy-machine-core)
+              printf 'package=%s\n' "mpl-core-candy-machine-core" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unsupported program: $MATRIX_PROGRAM" >&2
+              exit 1
+              ;;
+          esac
+
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
         with:
           command: fmt
-          args: --manifest-path ./programs/${{ matrix.program }}/Cargo.toml --all -- --check
+          args: --manifest-path ./Cargo.toml --package ${{ steps.program.outputs.package }} -- --check
 
       - name: Run cargo clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --all-targets --all-features --no-deps --manifest-path ./programs/${{ matrix.program }}/Cargo.toml
+          args: --all-targets --all-features --no-deps --manifest-path ./Cargo.toml --package ${{ steps.program.outputs.package }}
 
       - name: Run tests
         shell: bash

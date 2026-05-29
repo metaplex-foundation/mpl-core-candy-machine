@@ -1,0 +1,10 @@
+[profile.release]
+overflow-checks = true
+
+[workspace]
+resolver = "2"
+members = [
+    "programs/candy-machine-core/program",
+    "programs/candy-guard/program",
+    "programs/candy-guard/macro",
+]
