@@ -34,8 +34,19 @@ function installedAnchorVersion() {
     .pop();
 }
 
+// anchor-cli 0.29's lockfile pins `time` 0.3.29, which does not compile on
+// Rust 1.80+, so build it with the same toolchain CI uses for IDL generation.
+function idlRustVersion() {
+  const env = fs.readFileSync(path.join(__dirname, "..", ".github", ".env"), "utf8");
+  return process.env.IDL_RUST_VERSION ?? env.match(/^IDL_RUST_VERSION=(.+)$/m)[1].trim();
+}
+
 function ensureAnchorCli() {
   if (installedAnchorVersion() === anchorVersion) return;
+  const toolchain = idlRustVersion();
+  execFileSync("rustup", ["toolchain", "install", toolchain, "--profile", "minimal"], {
+    stdio: "inherit",
+  });
   execFileSync(
     "cargo",
     [
@@ -48,7 +59,7 @@ function ensureAnchorCli() {
       "--version",
       anchorVersion,
     ],
-    { stdio: "inherit" }
+    { stdio: "inherit", env: { ...process.env, RUSTUP_TOOLCHAIN: toolchain } }
   );
 }
 
