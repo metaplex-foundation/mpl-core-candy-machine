@@ -42,13 +42,13 @@ function idlRustVersion() {
 }
 
 // Without rustup the active toolchain is used, so it must predate 1.80.
-function cargoEnv() {
+function cargoCommand() {
   if (spawnSync("rustup", ["--version"], { stdio: "ignore" }).status === 0) {
     const toolchain = idlRustVersion();
     execFileSync("rustup", ["toolchain", "install", toolchain, "--profile", "minimal"], {
       stdio: "inherit",
     });
-    return { ...process.env, RUSTUP_TOOLCHAIN: toolchain };
+    return ["rustup", "run", toolchain, "cargo"];
   }
 
   const rustc = execFileSync("rustc", ["--version"], { encoding: "utf8" }).trim();
@@ -58,15 +58,16 @@ function cargoEnv() {
       `anchor-cli ${anchorVersion} does not build on ${rustc}; install Rust ${idlRustVersion()} (or rustup).`
     );
   }
-  return process.env;
+  return ["cargo"];
 }
 
 function ensureAnchorCli() {
   if (installedAnchorVersion() === anchorVersion) return;
-  const env = cargoEnv();
+  const [cargo, ...cargoArgs] = cargoCommand();
   execFileSync(
-    "cargo",
+    cargo,
     [
+      ...cargoArgs,
       "install",
       "--root",
       binaryInstallDir,
@@ -76,7 +77,7 @@ function ensureAnchorCli() {
       "--version",
       anchorVersion,
     ],
-    { stdio: "inherit", env }
+    { stdio: "inherit" }
   );
 }
 
