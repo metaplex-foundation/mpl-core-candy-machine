@@ -1,0 +1,91 @@
+name: Publish JS Client
+
+on:
+  workflow_dispatch:
+    inputs:
+      git_ref:
+        description: Release tag (release/candy-guard@0.2.2) or commit to publish from
+        required: false
+        type: string
+        default: ''
+      bump:
+        description: Version bump
+        required: true
+        default: patch
+        type: choice
+        options: [patch, minor, major, prerelease, prepatch, preminor, premajor]
+      tag:
+        description: NPM tag (and preid for pre-releases)
+        required: true
+        type: string
+        default: latest
+      create_release:
+        description: Open the release pull request and deploy docs
+        required: true
+        type: boolean
+        default: true
+
+permissions: {}
+
+jobs:
+  check_tag:
+    name: Check tag
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      type: ${{ steps.set_type.outputs.type }}
+    steps:
+      - name: Check tag
+        id: set_type
+        env:
+          GIT_REF: ${{ inputs.git_ref }}
+        run: |
+          # A program release tag was already built and tested when it was cut.
+          if [[ "$GIT_REF" == release/*@* ]]; then
+            echo "type=release" >> "$GITHUB_OUTPUT"
+          else
+            echo "type=ref" >> "$GITHUB_OUTPUT"
+          fi
+
+  build_programs:
+    name: Programs
+    if: needs.check_tag.outputs.type == 'ref'
+    needs: check_tag
+    uses: metaplex-foundation/actions/.github/workflows/build-programs.yml@269d4cbf2dbbebda3ff5ad7cb00caca8af134fad # v2.0.0
+    permissions:
+      contents: read
+    with:
+      git_ref: ${{ inputs.git_ref }}
+      runner: ubuntu-latest-16-cores
+
+  test_js:
+    name: JS client
+    if: needs.check_tag.outputs.type == 'ref'
+    needs: [check_tag, build_programs]
+    uses: metaplex-foundation/actions/.github/workflows/test-js-client.yml@269d4cbf2dbbebda3ff5ad7cb00caca8af134fad # v2.0.0
+    permissions:
+      contents: read
+    with:
+      git_ref: ${{ inputs.git_ref }}
+
+  publish:
+    name: JS client
+    if: |
+      always()
+      && (needs.test_js.result == 'success' || needs.test_js.result == 'skipped')
+    needs: [check_tag, test_js]
+    uses: metaplex-foundation/actions/.github/workflows/publish-js-client.yml@269d4cbf2dbbebda3ff5ad7cb00caca8af134fad # v2.0.0
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    with:
+      git_ref: ${{ inputs.git_ref }}
+      bump: ${{ inputs.bump }}
+      tag: ${{ inputs.tag }}
+      create_release: ${{ inputs.create_release }}
+      deploy_docs: true

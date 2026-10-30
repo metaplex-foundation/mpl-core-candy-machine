@@ -1,0 +1,65 @@
+{
+  "$comment": "Program descriptors for the shared CI in metaplex-foundation/actions. Toolchain pins live in .github/.env.",
+  "programs": [
+    {
+      "name": "candy-machine-core",
+      "package": "mpl-core-candy-machine-core",
+      "library": "mpl_core_candy_machine_core",
+      "manifest": "programs/candy-machine-core/program/Cargo.toml",
+      "deploy": {
+        "program_id": "CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J",
+        "repo_visibility": "public",
+        "clusters": {
+          "devnet": {
+            "type": "direct"
+          },
+          "mainnet-beta": {
+            "type": "direct"
+          },
+          "sonic-devnet": {
+            "type": "direct"
+          },
+          "sonic-testnet": {
+            "type": "direct"
+          },
+          "eclipse-devnet": {
+            "type": "direct"
+          },
+          "eclipse-mainnet": {
+            "type": "direct"
+          }
+        }
+      }
+    },
+    {
+      "name": "candy-guard",
+      "package": "mpl-core-candy-guard",
+      "library": "mpl_core_candy_guard",
+      "manifest": "programs/candy-guard/program/Cargo.toml",
+      "deploy": {
+        "program_id": "CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ",
+        "repo_visibility": "public",
+        "clusters": {
+          "devnet": {
+            "type": "direct"
+          },
+          "mainnet-beta": {
+            "type": "direct"
+          },
+          "sonic-devnet": {
+            "type": "direct"
+          },
+          "sonic-testnet": {
+            "type": "direct"
+          },
+          "eclipse-devnet": {
+            "type": "direct"
+          },
+          "eclipse-mainnet": {
+            "type": "direct"
+          }
+        }
+      }
+    }
+  ]
+}
