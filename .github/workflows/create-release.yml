@@ -23,10 +23,15 @@ on:
 
 permissions: {}
 
+concurrency:
+  # One release per program at a time.
+  group: create-release-${{ inputs.program }}
+  cancel-in-progress: false
+
 jobs:
   build_programs:
     name: Programs
-    uses: metaplex-foundation/actions/.github/workflows/build-programs.yml@7afc538992dfe77522d372163d6afe92b10dc15b # v2.0.0
+    uses: metaplex-foundation/actions/.github/workflows/build-programs.yml@772e5a7cf7408fb8346dccb5665f0502c33e9dbb # v2.0.0
     permissions:
       contents: read
     with:
@@ -35,7 +40,7 @@ jobs:
 
   test_programs:
     name: Programs
-    uses: metaplex-foundation/actions/.github/workflows/test-programs.yml@7afc538992dfe77522d372163d6afe92b10dc15b # v2.0.0
+    uses: metaplex-foundation/actions/.github/workflows/test-programs.yml@772e5a7cf7408fb8346dccb5665f0502c33e9dbb # v2.0.0
     permissions:
       contents: read
     with:
@@ -45,7 +50,7 @@ jobs:
   test_js:
     name: JS client
     needs: build_programs
-    uses: metaplex-foundation/actions/.github/workflows/test-js-client.yml@7afc538992dfe77522d372163d6afe92b10dc15b # v2.0.0
+    uses: metaplex-foundation/actions/.github/workflows/test-js-client.yml@772e5a7cf7408fb8346dccb5665f0502c33e9dbb # v2.0.0
     permissions:
       contents: read
     with:
@@ -54,7 +59,7 @@ jobs:
   create_release:
     name: Program
     needs: [test_js, test_programs]
-    uses: metaplex-foundation/actions/.github/workflows/create-release.yml@7afc538992dfe77522d372163d6afe92b10dc15b # v2.0.0
+    uses: metaplex-foundation/actions/.github/workflows/create-release.yml@772e5a7cf7408fb8346dccb5665f0502c33e9dbb # v2.0.0
     permissions:
       contents: write
     with:
