@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "programs:build": "./configs/program-scripts/build.sh",
-    "programs:test": "./configs/program-scripts/test.sh",
+    "programs:build": "./configs/scripts/program/build.sh",
+    "programs:test": "./configs/scripts/program/test.sh",
     "programs:clean": "rm -rf ./programs/.bin",
     "generate": "pnpm generate:idls && pnpm generate:clients",
     "generate:idls": "node ./configs/shank.cjs",
@@ -17,5 +17,5 @@
     "@metaplex-foundation/amman": "^0.12.1",
     "typescript": "^4.9.4"
   },
-  "packageManager": "pnpm@8.2.0"
+  "packageManager": "pnpm@8.15.9"
 }
